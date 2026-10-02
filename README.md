@@ -1,4 +1,4 @@
-# よみくらべ — セットアップ手順
+# ヨミクラーベ — セットアップ手順
 
 文書（PDF / Word）を「テーブル」に並べて読み比べるアプリです。
 GitHub Pages ＋ Firebase Realtime Database で動きます（Firebase は無料の Spark プランでOK）。
