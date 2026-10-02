@@ -113,6 +113,48 @@ select.input{width:auto;min-height:40px;padding:6px 10px}
 .thumb-ph .ic{width:40px;height:40px}
 .badge{position:absolute;left:8px;bottom:8px;font-size:10.5px;font-weight:700;background:rgba(42,38,32,.78);color:#fff;border-radius:5px;padding:2px 6px}
 .badge.w{background:#2b579a}
+.badge.im{background:#2f7d55}
+.merge-opt{display:flex;gap:8px;align-items:flex-start;background:#f0f7f3;border:1px solid #cfe5d8;border-radius:10px;padding:10px 12px;margin:10px 0 0;font-size:13.5px;cursor:pointer}
+.merge-opt small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+/* 投票 */
+.poll-bar{max-width:1400px;margin:8px auto 0;padding:0 12px}
+.poll-bar>div{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#fff3d6;color:#6b4a00;border-radius:10px;padding:8px 12px;font-size:13.5px}
+.poll-bar b{flex:1;min-width:0}
+.poll-bar .btn{min-height:32px;padding:4px 14px}
+.vote-btn{position:relative}
+.vote-btn .cnt{position:absolute;top:-4px;right:-4px;background:#d9480f;color:#fff;border-radius:9px;font-size:11px;min-width:18px;height:18px;line-height:18px;text-align:center;padding:0 4px}
+.plist{display:flex;flex-direction:column;gap:10px}
+.pcard{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+.pcard h4{margin:0 0 6px;font-size:15px;line-height:1.5}
+.pchips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.pchip{font-size:11.5px;background:var(--bg2);border-radius:999px;padding:2px 8px;color:#5a5248}
+.pchip.open{background:#2f7d55;color:#fff}.pchip.closed{background:#8a8172;color:#fff}.pchip.mine{background:#2f6fb0;color:#fff}
+.pactions{display:flex;gap:6px;flex-wrap:wrap}
+.pactions .btn{min-height:34px;padding:5px 12px;font-size:13px}
+.fset{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 12px}
+.fset legend{font-size:13px;font-weight:700;padding:0 4px}
+.chk{display:flex;gap:8px;align-items:flex-start;padding:5px 0;font-size:14px;cursor:pointer}
+.chk input{margin-top:3px;width:17px;height:17px;flex:none}
+.chk small{display:block;color:var(--muted);font-size:12px}
+.vrows{display:flex;flex-direction:column;gap:6px}
+.vrow{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff}
+.vrow.has{border-color:#e0a21c;background:#fffaf0}
+.vrow img{width:34px;height:44px;object-fit:cover;object-position:top;border:1px solid var(--line);flex:none}
+.vrow .vl{flex:1;min-width:0;font-size:14px}
+.vrow .vl small{display:block;color:var(--muted);font-size:12px}
+.vctl{display:flex;align-items:center;gap:4px;flex:none}
+.vctl button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:18px;line-height:1;display:grid;place-items:center}
+.vctl button:disabled{opacity:.3}
+.vctl b{min-width:26px;text-align:center;font-size:17px}
+.vremain{position:sticky;top:-6px;z-index:2;background:var(--surface);padding:6px 0 8px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.vremain .dots{letter-spacing:2px;color:var(--star)}
+.rrow{display:grid;grid-template-columns:28px 1fr auto;gap:4px 10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.rrow .rk{font-weight:800;color:var(--muted);text-align:center}
+.rrow .rl{min-width:0;font-size:14px}
+.rrow .rn{font-weight:800;font-size:16px}
+.rrow .rbar{grid-column:2/4;height:8px;background:var(--bg2);border-radius:4px;overflow:hidden}
+.rrow .rbar i{display:block;height:100%;background:var(--accent)}
+.rrow .rv{grid-column:2/4;font-size:12px;color:var(--muted)}
 .new{position:absolute;left:8px;top:10px;font-size:10px;font-weight:800;background:#d9480f;color:#fff;border-radius:5px;padding:2px 6px;letter-spacing:.05em}
 .checkbox{position:absolute;right:8px;top:10px;width:26px;height:26px;border-radius:8px;border:2px solid #fff;background:rgba(0,0,0,.25);display:grid;place-items:center;color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .checkbox.on{background:var(--accent)}
@@ -309,9 +351,18 @@ const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
 const LIB = {
   mammoth: 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js',
   html2pdf: 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js',
-  qr: 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
+  qr: 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js',
+  jspdf: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
 };
 const MAX_BYTES = 15 * 1024 * 1024;
+const ACCEPT = '.pdf,.docx,.jpg,.jpeg,.png,.gif,.webp,.heic,.heif,.bmp,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*';
+const isImage = f => (f.type || '').startsWith('image/') || /\.(jpe?g|png|gif|webp|heic|heif|bmp)$/i.test(f.name);
+const isDocx = f => /\.docx$/i.test(f.name);
+const isPdf = f => /\.pdf$/i.test(f.name) || f.type === 'application/pdf';
+const okFile = f => isPdf(f) || isDocx(f) || isImage(f);
+const stripExt = n => n.replace(/\.[^.]+$/, '');
+const TYPE_LABEL = { pdf: 'PDF', docx: 'Word', image: '画像' };
+const TYPE_CLS = { pdf: '', docx: ' w', image: ' im' };
 const GROUP_COLORS = ['#e76f51','#2a9d8f','#e9c46a','#457b9d','#8e7dbe','#d16ba5','#f4a261','#6c757d'];
 const PEN_COLORS = ['#1f2937','#dc2626','#2563eb','#16a34a'];
 const MARKER_COLORS = ['#fde047','#f9a8d4','#86efac','#93c5fd'];
@@ -359,6 +410,8 @@ const ICONS = {
   swap:'<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>',
   shuffle:'<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/>',
   alert:'<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+  bar:'<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>',
+  image:'<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
   folder:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>'
 };
 function icon(n, cls = '') {
@@ -481,6 +534,8 @@ function makeDemoBackend() {
       await ready; (db.blobs[code] ||= {})[newKey] = chunks; onProgress?.(1);
       Object.assign(db.tables[code].files[id], patch); if (oldKey !== newKey) delete db.blobs[code][oldKey]; await save(code);
     },
+    async tset(code, path, val) { await ready; const parts = path.split('/'); let o = db.tables[code]; for (const k of parts.slice(0, -1)) o = (o[k] ||= {}); if (val == null) delete o[parts.at(-1)]; else o[parts.at(-1)] = val; await save(code); },
+    async tupdate(code, path, patch) { await ready; const parts = path.split('/'); let o = db.tables[code]; for (const k of parts) o = (o[k] ||= {}); Object.assign(o, patch); await save(code); },
     async addComment(code, fid, cid, c) { await ready; ((db.tables[code].comments ||= {})[fid] ||= {})[cid] = c; await save(code); },
     async deleteComment(code, fid, cid) { await ready; const cs = db.tables[code]?.comments; if (!cs) return; if (cid) delete cs[fid]?.[cid]; else delete cs[fid]; await save(code); },
     async deleteFile(code, id, key) { await ready; delete db.tables[code].files[id]; delete db.blobs[code]?.[id]; if (key) delete db.blobs[code]?.[key]; await save(code); }
@@ -525,6 +580,8 @@ async function makeFirebaseBackend(cfg) {
       await D.update(R(`tables/${code}/files/${id}`), patch);
       if (oldKey !== newKey) await D.remove(R(`blobs/${code}/${oldKey}`)).catch(() => {});
     },
+    tset: (code, path, val) => val == null ? D.remove(R(`tables/${code}/${path}`)) : D.set(R(`tables/${code}/${path}`), val),
+    tupdate: (code, path, patch) => D.update(R(`tables/${code}/${path}`), patch),
     addComment: (code, fid, cid, c) => D.set(R(`tables/${code}/comments/${fid}/${cid}`), c),
     deleteComment: (code, fid, cid) => D.remove(R(`tables/${code}/comments/${fid}` + (cid ? `/${cid}` : ''))),
     async deleteFile(code, id, key) {
@@ -599,24 +656,49 @@ async function getPdfBytes(f) {
   idb.set('pdf', pdfKey(key), bytes.buffer.slice(0));
   return bytes;
 }
-// アップロード・置き換え共通：PDF化してページ数とサムネイルを作る
-async function preparePdf(file, onStatus) {
-  const isDocx = /\.docx$/i.test(file.name);
-  let bytes;
-  if (isDocx) { onStatus?.('変換中…'); bytes = await docxToPdf(file); }
-  else bytes = new Uint8Array(await file.arrayBuffer());
+// 画像 → PDF（複数枚なら1ページずつ）。長辺2400pxまで縮小してJPEGで埋め込む
+async function imageToJpeg(file) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error(`画像を読み込めませんでした（${file.name}）`)); i.src = url; });
+    const sc = Math.min(1, 2400 / Math.max(img.naturalWidth, img.naturalHeight));
+    const w = Math.max(1, Math.round(img.naturalWidth * sc)), hh = Math.max(1, Math.round(img.naturalHeight * sc));
+    const c = document.createElement('canvas'); c.width = w; c.height = hh;
+    const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, hh); ctx.drawImage(img, 0, 0, w, hh);
+    return { data: c.toDataURL('image/jpeg', 0.88), w, h: hh };
+  } finally { URL.revokeObjectURL(url); }
+}
+async function imagesToPdf(files) {
+  if (!window.jspdf?.jsPDF) await loadScript(LIB.jspdf);
+  const { jsPDF } = window.jspdf; let doc;
+  for (const f of files) {
+    const { data, w, h: hh } = await imageToJpeg(f);
+    const o = w > hh ? 'l' : 'p';
+    if (!doc) doc = new jsPDF({ unit: 'px', format: [w, hh], orientation: o, hotfixes: ['px_scaling'], compress: true });
+    else doc.addPage([w, hh], o);
+    doc.addImage(data, 'JPEG', 0, 0, w, hh);
+  }
+  return new Uint8Array(doc.output('arraybuffer'));
+}
+// アップロード・置き換え共通：PDF化してページ数とサムネイルを作る（files は1つ、または画像の配列）
+async function preparePdf(files, onStatus) {
+  files = [].concat(files);
+  let bytes, srcType;
+  if (files.every(isImage)) { onStatus?.('画像をPDFに変換中…'); bytes = await imagesToPdf(files); srcType = 'image'; }
+  else if (isDocx(files[0])) { onStatus?.('変換中…'); bytes = await docxToPdf(files[0]); srcType = 'docx'; }
+  else { bytes = new Uint8Array(await files[0].arrayBuffer()); srcType = 'pdf'; }
   if (bytes.length > MAX_BYTES) throw new Error(`大きすぎます（${fmtSize(bytes.length)}、上限15MB）`);
   onStatus?.('確認中…');
   const pdf = await openPdf(bytes);
   const pages = pdf.numPages; const thumb = await makeThumb(pdf).catch(() => null); pdf.destroy();
-  return { bytes, pages, thumb, srcType: isDocx ? 'docx' : 'pdf' };
+  return { bytes, pages, thumb, srcType };
 }
 
 /* ---------------- state ---------------- */
 const S = {
   backend: null, teacher: false,
   me: { name: LS.get('yk:name', ''), deviceId: LS.get('yk:device', null) || (() => { const d = rid(12); LS.set('yk:device', d); return d; })() },
-  code: null, table: null, files: [], comments: {}, unwatch: null, el: null,
+  code: null, table: null, files: [], comments: {}, polls: {}, votes: {}, pollViews: new Set(), unwatch: null, el: null,
   prefs: null,
   ui: { filter: 'all', sort: ['upload', 'title', 'random'].includes(LS.get('yk:sort')) ? LS.get('yk:sort') : 'upload', layout: LS.get('yk:layout', 'grid'), groupView: LS.get('yk:gview', false), search: '', select: false, selected: new Set() }
 };
@@ -625,7 +707,7 @@ function mount(...nodes) { app.replaceChildren(...(DEMO ? [h('div', { class: 'de
 function loadPrefs(code) {
   const p = LS.get('yk:p:' + code, {});
   return { fav: p.fav || {}, groups: p.groups || [], assign: p.assign || {}, seen: p.seen || {}, inked: p.inked || {}, mine: p.mine || {},
-    notes: p.notes || {}, myc: p.myc || {}, cseen: p.cseen || {} };
+    notes: p.notes || {}, myc: p.myc || {}, cseen: p.cseen || {}, vkeys: p.vkeys || {} };
 }
 function savePrefs() { if (S.code) LS.set('yk:p:' + S.code, S.prefs); }
 const groupOf = id => S.prefs.groups.find(g => g.id === S.prefs.assign[id]) || null;
@@ -831,6 +913,7 @@ function enterTable(code) {
     recent.unshift({ code, name: t.meta.name }); LS.set('yk:recent', recent.slice(0, 8));
     const prevComments = S.comments;
     S.comments = t.comments || {};
+    const prevPolls = S.polls; S.polls = t.polls || {}; S.votes = t.votes || {};
     S.files = Object.entries(t.files || {}).map(([id, f]) => ({ id, ...f }))
       .sort((a, b) => (a.createdAt - b.createdAt) || (a.id < b.id ? -1 : 1));
     S.files.forEach((f, i) => { f.no = i + 1; });
@@ -838,7 +921,8 @@ function enterTable(code) {
     for (const id of [...S.ui.selected]) if (!ids.has(id)) S.ui.selected.delete(id);
     updateTable();
     checkPanesForChanges();
-    if (!first) notifyNewComments(prevComments);
+    if (!first) { notifyNewComments(prevComments); notifyNewPolls(prevPolls); }
+    S.pollViews.forEach(fn => fn());
     V.panes?.forEach(p => p.cpanel && !p.cpanel.hidden && p.drawComments());
   });
 }
@@ -848,7 +932,9 @@ function buildTableShell() {
   E.title = h('h2', {}, '…');
   E.sub = h('div', { class: 'sub' });
   E.upBtn = h('button', { class: 'btn primary', onclick: () => E.fileIn.click() }, icon('upload'), h('span', { class: 'tb-hide-sm' }, 'アップロード'));
-  E.fileIn = h('input', { type: 'file', accept: '.pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document', multiple: true, hidden: true,
+  E.voteBtn = h('button', { class: 'btn vote-btn', onclick: openPolls }, icon('bar'), h('span', { class: 'tb-hide-sm' }, '投票'));
+  E.pollBar = h('div', { class: 'poll-bar', hidden: true });
+  E.fileIn = h('input', { type: 'file', accept: ACCEPT, multiple: true, hidden: true,
     onchange: e => { const fs = [...e.target.files]; e.target.value = ''; if (fs.length) startUpload(fs); } });
   const search = h('input', { class: 'input', type: 'search', placeholder: 'タイトル・名前で検索' });
   search.addEventListener('input', () => { S.ui.search = search.value; drawGrid(); });
@@ -870,11 +956,11 @@ function buildTableShell() {
     h('div', { class: 'topbar' }, h('div', { class: 'topbar-in' },
       h('button', { class: 'icon-btn', title: 'テーブルを出る', onclick: () => { S.code = null; history.replaceState(null, '', location.pathname); S.teacher ? renderTeacher() : renderJoin(); } }, icon('back')),
       h('div', { class: 'tb-title' }, E.title, E.sub),
-      E.upBtn, E.fileIn)),
+      E.voteBtn, E.upBtn, E.fileIn)),
     h('div', { class: 'toolbar' },
       h('div', { class: 'search' }, icon('search'), search), sort, E.shuffle, E.layout, E.gview, E.selTg,
       h('button', { class: 'tg', onclick: manageGroups }, icon('folder', 'i-s'), 'グループ管理')),
-    E.chips, E.teacherBar, E.notice, E.grid, E.selbar);
+    E.chips, E.pollBar, E.teacherBar, E.notice, E.grid, E.selbar);
   // drag & drop
   let dz = null, depth = 0;
   const hasFiles = e => [...(e.dataTransfer?.types || [])].includes('Files');
@@ -911,7 +997,7 @@ function updateTable() {
     } }, 'テーブル名変更')));
   E.notice.hidden = !(locked && !S.teacher);
   E.notice.replaceChildren(h('div', {}, icon('lock', 'i-s'), '現在アップロードは締め切られています（閲覧はできます）'));
-  drawChips(); drawGrid(); drawSelbar();
+  drawChips(); drawGrid(); drawSelbar(); drawPollBar();
 }
 
 function drawChips() {
@@ -952,7 +1038,7 @@ function drawGrid() {
   const mkGrid = list => h('div', { class: 'grid' + (S.ui.layout === 'list' ? ' list' : '') }, list.map(fileCard));
   let content;
   if (!S.files.length) {
-    content = h('div', { class: 'empty' }, icon('doc'), h('p', {}, 'まだ文書がありません。', h('br'), '右上の「アップロード」から PDF や Word を追加しましょう。', h('br'), h('small', {}, 'パソコンならファイルをこの画面にドラッグしてもOKです。')));
+    content = h('div', { class: 'empty' }, icon('doc'), h('p', {}, 'まだ文書がありません。', h('br'), '右上の「アップロード」から PDF・Word・画像を追加しましょう。', h('br'), h('small', {}, 'パソコンならファイルをこの画面にドラッグしてもOKです。')));
   } else if (!fs.length) {
     content = h('div', { class: 'empty' }, h('p', {}, '該当する文書はありません。'));
   } else if (S.ui.groupView && (S.ui.filter === 'all' || S.ui.filter === 'fav') && S.prefs.groups.length) {
@@ -977,7 +1063,7 @@ function fileCard(f) {
   },
     h('div', { class: 'thumb' },
       thumbOk ? h('img', { src: f.thumb, alt: '', loading: 'lazy' }) : h('div', { class: 'thumb-ph' }, icon('doc')),
-      h('span', { class: 'badge' + (f.srcType === 'docx' ? ' w' : '') }, f.srcType === 'docx' ? 'Word' : 'PDF'),
+      h('span', { class: 'badge' + (TYPE_CLS[f.srcType] || '') }, TYPE_LABEL[f.srcType] || 'PDF'),
       !P.seen[f.id] ? h('span', { class: 'new' }, 'NEW') : (P.seen[f.id] < verOf(f) ? h('span', { class: 'new upd' }, '更新') : null),
       S.ui.select ? h('span', { class: 'checkbox' + (sel ? ' on' : '') }, sel ? icon('check') : null) : null),
     h('div', { class: 'meta' },
@@ -1098,46 +1184,64 @@ function manageGroups() {
 async function startUpload(fileList) {
   if (!S.table) return;
   if (S.table.locked && !S.teacher) return toast('現在アップロードは締め切られています');
-  const ok = fileList.filter(f => /\.(pdf|docx)$/i.test(f.name));
+  const ok = fileList.filter(okFile);
   if (fileList.some(f => /\.doc$/i.test(f.name))) toast('古い形式(.doc)は非対応です。Wordで .docx か PDF に保存し直してください');
-  else if (ok.length < fileList.length) toast('PDF と Word(.docx) のみアップできます');
+  else if (ok.length < fileList.length) toast('PDF・Word(.docx)・画像のみアップできます');
   if (!ok.length) return;
   let anon = LS.get('yk:anon', false);
-  const rows = ok.map(file => {
-    const isDocx = /\.docx$/i.test(file.name);
-    const r = { file, isDocx, title: h('input', { class: 'input', value: file.name.replace(/\.(pdf|docx)$/i, '') }), stat: h('span', {}, isDocx ? 'Word → PDFに変換してアップ' : '待機中'), bar: h('i') };
-    r.el = h('div', { class: 'up-row' }, h('span', { class: 'badge' + (isDocx ? ' w' : '') }, isDocx ? 'Word' : 'PDF'),
-      h('div', { class: 'info' }, r.title, h('div', { class: 'stat' }, fmtSize(file.size), r.stat, h('span', { class: 'bar' }, r.bar))));
-    return r;
-  });
+  const imgs = ok.filter(isImage).sort((a, b) => new Intl.Collator('ja', { numeric: true }).compare(a.name, b.name));
+  let merge = false;
+  let rows = [];
+  const listEl = h('div');
+  const buildRows = () => {
+    const jobs = merge ? [imgs, ...ok.filter(f => !isImage(f)).map(f => [f])] : ok.map(f => [f]);
+    rows = jobs.map(files => {
+      const f0 = files[0], type = files.every(isImage) ? 'image' : isDocx(f0) ? 'docx' : 'pdf';
+      const size = files.reduce((a, f) => a + f.size, 0);
+      const r = { files, title: h('input', { class: 'input', value: stripExt(f0.name) }),
+        stat: h('span', {}, files.length > 1 ? `画像${files.length}枚 → 1つのPDFに` : type === 'docx' ? 'Word → PDFに変換してアップ' : type === 'image' ? '画像 → PDFに変換してアップ' : '待機中'), bar: h('i') };
+      r.el = h('div', { class: 'up-row' }, h('span', { class: 'badge' + TYPE_CLS[type] }, TYPE_LABEL[type]),
+        h('div', { class: 'info' }, r.title, h('div', { class: 'stat' }, fmtSize(size), r.stat, h('span', { class: 'bar' }, r.bar))));
+      return r;
+    });
+    listEl.replaceChildren(...rows.map(r => r.el));
+    if (titleEl) titleEl.textContent = `アップロード（${rows.length}件）`;
+  };
+  let titleEl = null;
+  buildRows();
+  const mergeChk = h('input', { type: 'checkbox', onchange: e => { merge = e.target.checked; buildRows(); } });
   const optNamed = h('button', { class: 'opt', onclick: () => setAnon(false) }, h('b', {}, icon('user', 'i-s'), '名前を出す'), h('small', {}, `「${S.me.name}」と表示されます`));
   const optAnon = h('button', { class: 'opt', onclick: () => setAnon(true) }, h('b', {}, icon('anon', 'i-s'), '匿名'), h('small', {}, '名前は保存されず、先生にも分かりません'));
   const setAnon = v => { anon = v; LS.set('yk:anon', v); optNamed.classList.toggle('on', !v); optAnon.classList.toggle('on', v); };
   setAnon(anon);
   let busy = false, ov = null;
-  await modal({ bind: (_c, o) => { ov = o; }, title: `アップロード（${rows.length}件）`, wide: true, body: [
-    h('div', {}, rows.map(r => r.el)),
+  await modal({ bind: (_c, o) => { ov = o; titleEl = o.querySelector('.modal-h h3'); }, title: `アップロード（${rows.length}件）`, wide: true, body: [
+    listEl,
+    imgs.length >= 2 ? h('label', { class: 'merge-opt' }, mergeChk, h('div', {}, h('b', {}, `画像${imgs.length}枚をまとめて1つの文書にする`),
+      h('small', {}, '手書きの原稿を何枚も撮ったときなどに。ページの順番はファイル名順です。'))) : null,
     h('div', { class: 'opt-cards' }, optNamed, optAnon),
-    rows.some(r => r.isDocx) ? h('p', { class: 'hint' }, 'Wordはこの端末でPDFに変換されます。文字・表・画像は残りますが、縦書きや細かいレイアウトは崩れることがあります。崩れる場合は Word で「PDFとして保存」してからアップしてください。') : null
+    ok.some(isDocx) ? h('p', { class: 'hint' }, 'Wordはこの端末でPDFに変換されます。文字・表・画像は残りますが、縦書きや細かいレイアウトは崩れることがあります。崩れる場合は Word で「PDFとして保存」してからアップしてください。') : null,
+    imgs.length ? h('p', { class: 'hint' }, '画像（JPG・PNGなど）はPDFに変換して置かれます。大きな写真は長い辺が2400pxになるよう縮小されます。') : null
   ], actions: [
     { text: 'キャンセル', value: null, onClick: () => busy ? false : undefined },
     { text: 'アップロード', kind: 'primary', onClick: async () => {
       if (busy) return false;
       busy = true;
       ov.dataset.busy = '1';
-      ov.querySelectorAll('.modal-f .btn, .opt, .up-row input').forEach(b => b.disabled = true);
+      ov.querySelectorAll('.modal-f .btn, .opt, .up-row input, .merge-opt input').forEach(b => b.disabled = true);
       let fail = 0;
       for (const r of rows) {
+        if (r.done) continue;
         try {
-          const { bytes, pages, thumb, srcType } = await preparePdf(r.file, t => { r.stat.textContent = t; });
+          const { bytes, pages, thumb, srcType } = await preparePdf(r.files, t => { r.stat.textContent = t; });
           r.stat.textContent = 'アップロード中…';
           const id = S.backend.newId();
-          const meta = { title: r.title.value.trim() || r.file.name, srcType, version: 1, anonymous: !!anon, author: anon ? null : S.me.name,
+          const meta = { title: r.title.value.trim() || stripExt(r.files[0].name), srcType, version: 1, anonymous: !!anon, author: anon ? null : S.me.name,
             pages, size: bytes.length, thumb, createdAt: Date.now() };
           S.prefs.mine[id] = 1; S.prefs.seen[id] = 1; savePrefs();
           await S.backend.addFile(S.code, id, meta, bytesToChunks(bytes), p => { r.bar.style.width = Math.round(p * 100) + '%'; });
           idb.set('pdf', pdfKey(id), bytes.buffer.slice(0));
-          r.bar.style.width = '100%'; r.stat.textContent = '完了 ✓';
+          r.bar.style.width = '100%'; r.stat.textContent = '完了 ✓'; r.done = true; r.stat.style.color = '';
         } catch (e) {
           console.error(e); fail++; r.stat.textContent = '失敗：' + (e.message || e); r.stat.style.color = 'var(--danger)';
         }
@@ -1148,6 +1252,203 @@ async function startUpload(fileList) {
       return false;
     } }
   ] });
+}
+
+/* =====================================================================
+   投票
+   polls/{pid}: { title, target:'docs'|'choices', choices:[{id,label}], votes:n,
+                  multi, noSelf, change, results:'teacher'|'publish'|'live', published, named, status:'open'|'closed', createdAt }
+   votes/{pid}/{voterKey}: { items:{targetId:count}, at, name? }   ※voterKeyは投票ごとのランダム値（端末内に保存）
+   ===================================================================== */
+const pollList = () => Object.entries(S.polls).map(([id, p]) => ({ id, ...p })).sort((a, b) => b.createdAt - a.createdAt);
+const myVoteKey = pid => S.prefs.vkeys[pid];
+const myVote = pid => { const k = myVoteKey(pid); return k ? S.votes[pid]?.[k] || null : null; };
+const canSeeResults = p => S.teacher || p.results === 'live' || (p.results === 'publish' && p.published);
+function pollTargets(p) {
+  if (p.target === 'choices') return (p.choices || []).map(c => ({ id: c.id, label: c.label }));
+  return S.files.map(f => ({ id: f.id, label: `#${f.no} ${f.title}`, sub: f.anonymous ? '匿名' : f.author, thumb: f.thumb, mine: !!S.prefs.mine[f.id] }));
+}
+function tally(pid) {
+  const t = {}, who = {}; let voters = 0;
+  for (const v of Object.values(S.votes[pid] || {})) {
+    voters++;
+    for (const [k, n] of Object.entries(v.items || {})) { t[k] = (t[k] || 0) + n; if (v.name) (who[k] ||= []).push(n > 1 ? `${v.name}(${n})` : v.name); }
+  }
+  return { t, who, voters };
+}
+function drawPollBar() {
+  const E = S.el; if (!E) return;
+  const open = pollList().filter(p => p.status === 'open');
+  const todo = S.teacher ? [] : open.filter(p => !myVote(p.id));
+  E.voteBtn.querySelector('.cnt')?.remove();
+  if (open.length) E.voteBtn.append(h('span', { class: 'cnt' }, open.length));
+  E.pollBar.hidden = !todo.length;
+  if (todo.length) E.pollBar.replaceChildren(h('div', {}, icon('bar', 'i-s'),
+    h('b', {}, todo.length === 1 ? `投票受付中：${todo[0].title}` : `投票受付中のお題が${todo.length}つあります`),
+    h('button', { class: 'btn primary', onclick: () => todo.length === 1 ? voteDialog(todo[0].id) : openPolls() }, '投票する')));
+}
+function notifyNewPolls(prev) {
+  const fresh = pollList().filter(p => !prev[p.id] && p.status === 'open');
+  if (fresh.length && !S.teacher) toast(`投票が始まりました：${fresh[0].title}`);
+  for (const p of pollList()) if (prev[p.id] && !prev[p.id].published && p.published && !S.teacher) toast(`投票の結果が公開されました：${p.title}`);
+}
+function pollChips(p) {
+  const res = { teacher: '結果は先生だけ', publish: p.published ? '結果公開中' : '結果は先生が公開', live: '結果はリアルタイム' }[p.results];
+  return h('div', { class: 'pchips' },
+    h('span', { class: 'pchip ' + p.status }, p.status === 'open' ? '受付中' : '締切'),
+    h('span', { class: 'pchip' }, p.target === 'docs' ? '文書に投票' : `選択肢${(p.choices || []).length}つ`),
+    h('span', { class: 'pchip' }, `1人${p.votes}票`),
+    p.votes > 1 ? h('span', { class: 'pchip' }, p.multi ? '同じものに複数票OK' : '1つに1票まで') : null,
+    p.target === 'docs' && p.noSelf ? h('span', { class: 'pchip' }, '自分の文書は不可') : null,
+    h('span', { class: 'pchip' }, p.change ? '入れ直しOK' : '入れ直し不可'),
+    h('span', { class: 'pchip' }, p.named ? '記名（先生は誰の票か分かる）' : '無記名'),
+    h('span', { class: 'pchip' }, res),
+    myVote(p.id) ? h('span', { class: 'pchip mine' }, '投票済み') : null);
+}
+function openPolls() {
+  const list = h('div', { class: 'plist' });
+  const draw = () => {
+    const ps = pollList();
+    list.replaceChildren(...(ps.length ? ps.map(p => {
+      const { voters } = tally(p.id), voted = !!myVote(p.id);
+      const acts = [];
+      if (p.status === 'open' && (!voted || p.change)) acts.push(h('button', { class: 'btn primary', onclick: () => voteDialog(p.id) }, voted ? '投票し直す' : '投票する'));
+      else if (voted) acts.push(h('button', { class: 'btn', onclick: () => voteDialog(p.id) }, '自分の票を見る'));
+      if (canSeeResults(p)) acts.push(h('button', { class: 'btn', onclick: () => resultsDialog(p.id) }, icon('bar', 'i-s'), '結果'));
+      if (S.teacher) {
+        acts.push(h('button', { class: 'btn', onclick: () => S.backend.tupdate(S.code, 'polls/' + p.id, { status: p.status === 'open' ? 'closed' : 'open' }) }, p.status === 'open' ? '締め切る' : '受付を再開'));
+        if (p.results === 'publish') acts.push(h('button', { class: 'btn', onclick: () => S.backend.tupdate(S.code, 'polls/' + p.id, { published: !p.published }) }, p.published ? '結果を非公開に' : '結果を全員に公開'));
+        acts.push(h('button', { class: 'btn', onclick: async () => {
+          if (!(await confirmBox('投票を削除', `「${p.title}」と、集まった票をすべて削除します。`, '削除', true))) return;
+          await S.backend.tset(S.code, 'votes/' + p.id, null); await S.backend.tset(S.code, 'polls/' + p.id, null);
+        } }, icon('trash', 'i-s')));
+      }
+      return h('div', { class: 'pcard' }, h('h4', {}, p.title), pollChips(p),
+        S.teacher ? h('p', { class: 'hint', style: { margin: '0 0 8px' } }, `投票した人：${voters}人`) : null,
+        h('div', { class: 'pactions' }, acts));
+    }) : [h('p', { class: 'hint' }, S.teacher ? 'まだ投票はありません。「新しい投票」から作りましょう。' : 'まだ投票はありません。')]));
+  };
+  draw(); S.pollViews.add(draw);
+  modal({ title: '投票', wide: true, body: [S.teacher ? h('button', { class: 'btn primary', style: { marginBottom: '12px' }, onclick: pollEditor }, icon('plus', 'i-s'), '新しい投票') : null, list],
+    actions: [{ text: '閉じる', kind: 'primary' }] }).then(() => S.pollViews.delete(draw));
+}
+async function pollEditor() {
+  const title = h('input', { class: 'input', placeholder: '例：一番説得力のある意見文はどれ？' });
+  let target = 'docs';
+  const tgtDocs = h('button', { class: 'opt on', onclick: () => setT('docs') }, h('b', {}, icon('doc', 'i-s'), 'テーブルの文書'), h('small', {}, '並んでいる文書に票を入れる'));
+  const tgtCh = h('button', { class: 'opt', onclick: () => setT('choices') }, h('b', {}, icon('list', 'i-s'), '選択肢を作る'), h('small', {}, 'A案・B案など、先生が入力'));
+  const choices = h('textarea', { class: 'input', rows: '4', placeholder: '1行に1つずつ\n例：\nA案\nB案\nC案', hidden: true, style: { marginTop: '8px' } });
+  const noSelfRow = h('label', { class: 'chk' });
+  const setT = t => { target = t; tgtDocs.classList.toggle('on', t === 'docs'); tgtCh.classList.toggle('on', t === 'choices'); choices.hidden = t !== 'choices'; noSelfRow.hidden = t !== 'docs'; };
+  const votes = h('input', { class: 'input', type: 'number', min: '1', max: '20', value: '3', style: { width: '90px' } });
+  const ck = (label, sub, checked) => { const i = h('input', { type: 'checkbox', checked }); return [i, h('label', { class: 'chk' }, i, h('div', {}, label, sub ? h('small', {}, sub) : null))]; };
+  const [multi, multiRow] = ck('1つに複数票を入れてもよい', 'オフなら、1つの文書（選択肢）には1票まで', false);
+  const noSelf = h('input', { type: 'checkbox', checked: true });
+  noSelfRow.append(noSelf, h('div', {}, '自分の文書には投票できない', h('small', {}, '自分がアップした文書には票を入れられない')));
+  const [change, changeRow] = ck('締切まで入れ直しできる', 'オフなら、一度投票したら変更できない', true);
+  const radios = (name, opts, def) => opts.map(([v, l, sub]) => h('label', { class: 'chk' }, h('input', { type: 'radio', name, value: v, checked: v === def }), h('div', {}, l, sub ? h('small', {}, sub) : null)));
+  const rn = 'res' + rid(4), nn = 'nam' + rid(4);
+  const err = h('div', { class: 'err' });
+  await modal({ title: '新しい投票', wide: true, body: [
+    h('div', { class: 'field' }, h('label', {}, 'お題'), title),
+    h('fieldset', { class: 'fset' }, h('legend', {}, '何に投票する？'), h('div', { class: 'opt-cards', style: { margin: '4px 0' } }, tgtDocs, tgtCh), choices),
+    h('fieldset', { class: 'fset' }, h('legend', {}, '票のルール'),
+      h('div', { class: 'chk' }, '1人あたりの票数', votes, '票'), multiRow, noSelfRow, changeRow),
+    h('fieldset', { class: 'fset' }, h('legend', {}, '結果を見せる'), radios(rn, [
+      ['publish', '先生が「公開」を押したら全員に', '投票中は先生だけが途中経過を見られる'],
+      ['live', 'いつでも全員にリアルタイム', '投票中から全員に票数が見える'],
+      ['teacher', '先生だけ', '参加者には結果を見せない']], 'publish')),
+    h('fieldset', { class: 'fset' }, h('legend', {}, '誰が投票したか'), radios(nn, [
+      ['anon', '記録しない（無記名）', '票数だけ集計。先生にも誰の票か分からない'],
+      ['named', '先生には分かる（記名）', '参加者の名前と一緒に記録。結果画面で先生だけが見られる']], 'anon')),
+    err
+  ], actions: [{ text: 'キャンセル', value: null }, { text: '投票を始める', kind: 'primary', onClick: async () => {
+    const t = title.value.trim(); if (!t) { err.textContent = 'お題を入れてください'; return false; }
+    const n = Math.max(1, Math.min(20, parseInt(votes.value, 10) || 1));
+    let chs = [];
+    if (target === 'choices') {
+      chs = choices.value.split('\n').map(x => x.trim()).filter(Boolean).map(label => ({ id: rid(6), label }));
+      if (chs.length < 2) { err.textContent = '選択肢を2つ以上入れてください'; return false; }
+    } else if (!S.files.length) { err.textContent = 'テーブルに文書がまだありません'; return false; }
+    const ov = err.closest('.overlay');
+    const poll = { title: t, target, choices: chs, votes: n, multi: n > 1 && multi.checked, noSelf: target === 'docs' && noSelf.checked, change: change.checked,
+      results: ov.querySelector(`input[name=${rn}]:checked`).value, published: false, named: ov.querySelector(`input[name=${nn}]:checked`).value === 'named',
+      status: 'open', createdAt: Date.now() };
+    await S.backend.tset(S.code, 'polls/' + S.backend.newId(), poll);
+    toast('投票を始めました');
+  } }] });
+}
+function voteDialog(pid) {
+  const p0 = S.polls[pid]; if (!p0) return;
+  const cur = myVote(pid);
+  const alloc = { ...(cur?.items || {}) };
+  const body = h('div');
+  let readOnly = false;
+  const draw = () => {
+    const p = S.polls[pid]; if (!p) { body.replaceChildren(h('p', { class: 'hint' }, 'この投票は削除されました。')); return; }
+    const voted = !!myVote(pid);
+    readOnly = p.status !== 'open' || (voted && !p.change);
+    const used = Object.values(alloc).reduce((a, n) => a + n, 0), left = p.votes - used;
+    const maxPer = p.multi ? p.votes : 1;
+    const targets = pollTargets(p);
+    body.replaceChildren(...[
+      h('p', { style: { margin: '0 0 6px', fontWeight: '700', fontSize: '15px' } }, p.title),
+      pollChips(p),
+      readOnly ? h('p', { class: 'hint' }, p.status !== 'open' ? 'この投票は締め切られました。' : '投票済みです（この投票は入れ直しできません）。') : null,
+      h('div', { class: 'vremain' }, h('span', {}, readOnly ? 'あなたの票' : `残り ${left} 票 / ${p.votes} 票`), h('span', { class: 'dots' }, '●'.repeat(Math.max(0, left)) + '○'.repeat(used))),
+      h('div', { class: 'vrows' }, targets.map(t => {
+        const n = alloc[t.id] || 0, blocked = p.noSelf && t.mine;
+        return h('div', { class: 'vrow' + (n ? ' has' : '') },
+          t.thumb ? h('img', { src: t.thumb, alt: '' }) : null,
+          h('div', { class: 'vl' }, t.label, t.sub ? h('small', {}, t.sub) : null, blocked ? h('small', {}, '自分の文書には投票できません') : null),
+          h('div', { class: 'vctl' },
+            readOnly ? null : h('button', { 'aria-label': '減らす', disabled: !n, onclick: () => { alloc[t.id] = n - 1; if (!alloc[t.id]) delete alloc[t.id]; draw(); } }, '−'),
+            h('b', {}, n),
+            readOnly ? null : h('button', { 'aria-label': '増やす', disabled: blocked || left <= 0 || n >= maxPer, onclick: () => { alloc[t.id] = n + 1; draw(); } }, '+')));
+      })),
+      p.target === 'docs' && !readOnly ? h('p', { class: 'hint', style: { marginTop: '10px' } }, '文書の中身は、この画面を閉じてテーブルから読めます（選んだ票は投票するまで保存されません）。') : null].filter(Boolean));
+    const sendBtn = body.closest('.modal')?.querySelector('.modal-f .btn.primary');
+    if (sendBtn) sendBtn.hidden = readOnly;
+  };
+  draw(); S.pollViews.add(draw);
+  modal({ title: '投票', wide: true, body, bind: () => setTimeout(draw), actions: [
+    { text: '閉じる', value: null },
+    { text: cur ? '投票し直す' : '投票する', kind: 'primary', onClick: async () => {
+      const p = S.polls[pid]; if (!p || readOnly) return false;
+      const used = Object.values(alloc).reduce((a, n) => a + n, 0);
+      if (!used) { toast('1票以上入れてください'); return false; }
+      if (used < p.votes && !(await confirmBox('投票する', `まだ ${p.votes - used} 票残っています。このまま投票しますか？`, '投票する'))) return false;
+      const key = myVoteKey(pid) || (S.prefs.vkeys[pid] = rid(10)); savePrefs();
+      const rec = { items: alloc, at: Date.now() }; if (p.named) rec.name = S.me.name;
+      try { await S.backend.tset(S.code, `votes/${pid}/${key}`, rec); } catch (e) { toast('投票できませんでした：' + e.message); return false; }
+      toast('投票しました');
+      if (canSeeResults(p)) setTimeout(() => resultsDialog(pid), 50);
+    } }
+  ] }).then(() => S.pollViews.delete(draw));
+}
+function resultsDialog(pid) {
+  const body = h('div');
+  const draw = () => {
+    const p = S.polls[pid]; if (!p) { body.replaceChildren(h('p', { class: 'hint' }, 'この投票は削除されました。')); return; }
+    if (!canSeeResults(p)) { body.replaceChildren(h('p', { class: 'hint' }, '結果はまだ公開されていません。')); return; }
+    const { t, who, voters } = tally(pid);
+    const rows = pollTargets(p).map(x => ({ ...x, n: t[x.id] || 0 })).sort((a, b) => b.n - a.n);
+    const max = Math.max(1, ...rows.map(r => r.n));
+    let rank = 0, prev = null;
+    body.replaceChildren(
+      h('p', { style: { margin: '0 0 6px', fontWeight: '700', fontSize: '15px' } }, p.title),
+      h('p', { class: 'hint' }, `投票した人：${voters}人　${p.status === 'open' ? '（受付中・数字は変わります）' : '（締切）'}`),
+      ...rows.map((r, i) => {
+        if (r.n !== prev) { rank = i + 1; prev = r.n; }
+        return h('div', { class: 'rrow' }, h('span', { class: 'rk' }, r.n ? rank : '–'),
+          h('div', { class: 'rl' }, r.label, r.sub ? h('small', { style: { color: 'var(--muted)', marginLeft: '6px' } }, r.sub) : null),
+          h('span', { class: 'rn' }, r.n + '票'),
+          h('div', { class: 'rbar' }, h('i', { style: { width: (r.n / max * 100) + '%' } })),
+          S.teacher && p.named && who[r.id] ? h('div', { class: 'rv' }, '入れた人：' + who[r.id].join('、')) : null);
+      }));
+  };
+  draw(); S.pollViews.add(draw);
+  modal({ title: '投票の結果', wide: true, body, actions: [{ text: '閉じる', kind: 'primary' }] }).then(() => S.pollViews.delete(draw));
 }
 
 /* =====================================================================
@@ -1304,20 +1605,20 @@ function checkPanesForChanges() {
 async function replaceFile(f) {
   if (!S.prefs.mine[f.id]) return toast('自分がアップしたファイルだけ置き換えられます');
   if (S.table.locked && !S.teacher) return toast('現在アップロードは締め切られています');
-  const inp = h('input', { type: 'file', accept: '.pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document', hidden: true });
+  const inp = h('input', { type: 'file', accept: ACCEPT, hidden: true });
   document.body.append(inp);
   const file = await new Promise(res => { inp.onchange = () => res(inp.files[0] || null); inp.click(); });
   inp.remove();
   if (!file) return;
-  if (!/\.(pdf|docx)$/i.test(file.name)) return toast('PDF と Word(.docx) のみ使えます');
-  const isDocx = /\.docx$/i.test(file.name);
+  if (!okFile(file)) return toast('PDF・Word(.docx)・画像のみ使えます');
+  const kind = isImage(file) ? '・画像はPDFに変換' : isDocx(file) ? '・WordはPDFに変換' : '';
   const titleIn = h('input', { class: 'input', value: f.title });
   const stat = h('span', {}, ''), bar = h('i');
   let busy = false, ov = null;
   await modal({ title: 'ファイルを置き換える', wide: true, bind: (_c, o) => { ov = o; }, body: [
     h('div', { class: 'cmp' },
       h('div', {}, h('small', {}, `いまのファイル（#${f.no}）`), h('b', {}, f.title)),
-      h('div', {}, h('small', {}, '新しいファイル'), h('b', {}, file.name), h('small', { style: { marginTop: '4px' } }, fmtSize(file.size) + (isDocx ? '・WordはPDFに変換' : '')))),
+      h('div', {}, h('small', {}, '新しいファイル'), h('b', {}, file.name), h('small', { style: { marginTop: '4px' } }, fmtSize(file.size) + kind))),
     h('div', { class: 'field' }, h('label', {}, 'タイトル'), titleIn),
     h('p', { class: 'hint' }, 'テーブル上の位置（番号）・匿名/顕名の設定はそのままです。いま読んでいる人の画面には置き換えのお知らせが出ます。このファイルへの書き込みと「自分用」コメントは、置き換え後は消えます（全員分）。「書き手に伝える」「みんなに共有」のコメントは「旧版」の印が付いて残ります。'),
     h('div', { class: 'stat', style: { display: 'flex', gap: '8px', alignItems: 'center', fontSize: '13px', color: 'var(--muted)' } }, stat, h('span', { class: 'bar' }, bar))
