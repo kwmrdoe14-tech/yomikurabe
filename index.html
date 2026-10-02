@@ -91,6 +91,13 @@ select.input{width:auto;min-height:40px;padding:6px 10px}
 .teacher-bar,.notice{max-width:1400px;margin:8px auto 0;padding:0 12px}
 .teacher-bar>div,.notice>div{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--accent-soft);color:#1d4036;border-radius:10px;padding:8px 12px;font-size:13px}
 .notice>div{background:#fbe9e5;color:#7a2a1f}
+.new.upd{background:#1c7ed6}
+.pane-notice{background:#c0392b;color:#fff;font-size:13px;line-height:1.6;padding:8px 12px;flex:none;display:flex;gap:8px;align-items:flex-start}
+.pane-notice .ic{width:18px;height:18px;margin-top:2px}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 12px}
+.cmp>div{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;min-width:0}
+.cmp small{display:block;color:var(--muted);font-size:11.5px;margin-bottom:2px}
+.cmp b{display:block;word-break:break-all;font-size:13.5px}
 .main{max-width:1400px;margin:0 auto;padding:6px 12px 120px}
 .section-h{display:flex;align-items:center;gap:8px;margin:18px 2px 10px;font-weight:700;font-size:14px}
 .section-h .dot{width:12px;height:12px;border-radius:4px}
@@ -200,9 +207,45 @@ select.input{width:auto;min-height:40px;padding:6px 10px}
 .pane-h .icon-btn{color:#fff;width:34px;height:34px}
 .pane-h .icon-btn:hover{background:rgba(255,255,255,.12)}
 .pane-h .icon-btn.on{background:rgba(255,255,255,.2);color:#ffd866}
-.memo-box{background:#fffbea;padding:8px;flex:none;border-bottom:1px solid #e6dcae}
-.memo-box textarea{width:100%;height:110px;border:1px solid #e6dcae;border-radius:8px;padding:8px;resize:vertical;background:#fff}
-.memo-box small{color:#7a6a2a;font-size:11.5px}
+.pane{container-type:inline-size}
+.pane-body{flex:1;display:flex;min-height:0;position:relative}
+.pane-body .pane-scroll{flex:1;min-width:0}
+.cpanel{width:320px;flex:none;background:var(--surface);border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+@container (max-width:680px){ .cpanel{position:absolute;left:0;right:0;bottom:0;width:auto;height:60%;border-left:0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.25);z-index:3} }
+.cp-h{display:flex;align-items:center;gap:6px;padding:8px 8px 8px 12px;border-bottom:1px solid var(--line);font-weight:700;font-size:14px}
+.cp-h .cp-title{flex:1}
+.cp-filter{display:flex;gap:4px;padding:6px 8px;border-bottom:1px solid var(--line);overflow-x:auto;flex:none}
+.cp-filter button{border:1px solid var(--line);background:#fff;border-radius:999px;font-size:12px;padding:3px 10px;white-space:nowrap}
+.cp-filter button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.cp-list{flex:1;overflow:auto;padding:8px;display:flex;flex-direction:column;gap:8px;min-height:60px}
+.cp-empty{color:var(--muted);font-size:13px;text-align:center;padding:20px 8px;line-height:1.7}
+.cmt{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff;font-size:13.5px}
+.cmt.self{background:#f6f3ee}
+.cmt.author{background:#eef5fc;border-color:#cfe1f3}
+.cmt.all{background:#f0f7f3;border-color:#cfe5d8}
+.cmt-h{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);margin-bottom:4px;flex-wrap:wrap}
+.cmt-h b{color:var(--ink);font-size:12px}
+.ctype{font-size:10.5px;font-weight:700;border-radius:5px;padding:1px 6px;color:#fff;white-space:nowrap}
+.ctype.self{background:#8a8172}.ctype.author{background:#2f6fb0}.ctype.all{background:#2f7d55}
+.cmt-t{white-space:pre-wrap;word-break:break-word;line-height:1.6}
+.cmt .pgtag{border:0;background:var(--bg2);border-radius:5px;font-size:11px;padding:1px 6px}
+.cmt .old{font-size:10.5px;color:#a15c00;background:#fff1d6;border-radius:5px;padding:1px 6px}
+.cmt .del{margin-left:auto;border:0;background:none;color:var(--muted);font-size:11.5px;padding:0 2px}
+.cp-form{border-top:1px solid var(--line);padding:8px;flex:none;display:flex;flex-direction:column;gap:6px;background:var(--surface)}
+.ctypes{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.ctypes button{border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:5px 2px;font-size:12px;font-weight:600;line-height:1.3}
+.ctypes button small{display:block;font-weight:400;font-size:10.5px;color:var(--muted)}
+.ctypes button.on.self{border-color:#8a8172;background:#f6f3ee}
+.ctypes button.on.author{border-color:#2f6fb0;background:#eef5fc}
+.ctypes button.on.all{border-color:#2f7d55;background:#f0f7f3}
+.ctypes button:disabled{opacity:.4}
+.cp-form textarea{width:100%;min-height:64px;max-height:160px;resize:vertical;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:14px}
+.cp-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.cp-row label{display:inline-flex;align-items:center;gap:4px}
+.cp-row .btn{margin-left:auto;min-height:34px;padding:6px 14px}
+.ccount{display:inline-flex;align-items:center;gap:2px}
+.ccount.unread{color:#d9480f;font-weight:700}
+.pane-h .cbadge{position:absolute;top:3px;right:3px;min-width:15px;height:15px;border-radius:8px;background:#d9480f;color:#fff;font-size:10px;line-height:15px;text-align:center;padding:0 3px}
 .pane-scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;position:relative}
 .pages{display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px;width:max-content;min-width:100%}
 .page{position:relative;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.35);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
@@ -299,6 +342,7 @@ const ICONS = {
   check:'<polyline points="20 6 9 17 4 12"/>',
   checkSq:'<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
   doc:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
+  chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
   memo:'<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
   zoomIn:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>',
   zoomOut:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/>',
@@ -312,6 +356,9 @@ const ICONS = {
   sync:'<polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/>',
   book:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
   key:'<path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>',
+  swap:'<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>',
+  shuffle:'<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/>',
+  alert:'<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
   folder:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>'
 };
 function icon(n, cls = '') {
@@ -430,7 +477,13 @@ function makeDemoBackend() {
     },
     async getFileData(code, id) { await ready; return db.blobs[code]?.[id] || null; },
     async updateFile(code, id, patch) { await ready; Object.assign(db.tables[code].files[id], patch); await save(code); },
-    async deleteFile(code, id) { await ready; delete db.tables[code].files[id]; delete db.blobs[code]?.[id]; await save(code); }
+    async replaceFile(code, id, oldKey, newKey, patch, chunks, onProgress) {
+      await ready; (db.blobs[code] ||= {})[newKey] = chunks; onProgress?.(1);
+      Object.assign(db.tables[code].files[id], patch); if (oldKey !== newKey) delete db.blobs[code][oldKey]; await save(code);
+    },
+    async addComment(code, fid, cid, c) { await ready; ((db.tables[code].comments ||= {})[fid] ||= {})[cid] = c; await save(code); },
+    async deleteComment(code, fid, cid) { await ready; const cs = db.tables[code]?.comments; if (!cs) return; if (cid) delete cs[fid]?.[cid]; else delete cs[fid]; await save(code); },
+    async deleteFile(code, id, key) { await ready; delete db.tables[code].files[id]; delete db.blobs[code]?.[id]; if (key) delete db.blobs[code]?.[key]; await save(code); }
   };
 }
 
@@ -467,7 +520,18 @@ async function makeFirebaseBackend(cfg) {
       return Array.isArray(v) ? v : Object.keys(v).sort((a, b) => a - b).map(k => v[k]);
     },
     updateFile: (code, id, patch) => D.update(R(`tables/${code}/files/${id}`), patch),
-    async deleteFile(code, id) { await D.remove(R(`tables/${code}/files/${id}`)); await D.remove(R(`blobs/${code}/${id}`)); }
+    async replaceFile(code, id, oldKey, newKey, patch, chunks, onProgress) {
+      for (let i = 0; i < chunks.length; i++) { await D.set(R(`blobs/${code}/${newKey}/${i}`), chunks[i]); onProgress?.((i + 1) / chunks.length); }
+      await D.update(R(`tables/${code}/files/${id}`), patch);
+      if (oldKey !== newKey) await D.remove(R(`blobs/${code}/${oldKey}`)).catch(() => {});
+    },
+    addComment: (code, fid, cid, c) => D.set(R(`tables/${code}/comments/${fid}/${cid}`), c),
+    deleteComment: (code, fid, cid) => D.remove(R(`tables/${code}/comments/${fid}` + (cid ? `/${cid}` : ''))),
+    async deleteFile(code, id, key) {
+      await D.remove(R(`tables/${code}/files/${id}`));
+      await D.remove(R(`blobs/${code}/${key || id}`));
+      if (key && key !== id) await D.remove(R(`blobs/${code}/${id}`)).catch(() => {});
+    }
   };
 }
 
@@ -521,30 +585,47 @@ async function docxToPdf(file) {
     return new Uint8Array(ab);
   } finally { host.remove(); }
 }
-const pdfKey = id => S.code + '/' + id;
-async function getPdfBytes(id) {
-  const cached = await idb.get('pdf', pdfKey(id));
+// 置き換えのたびに新しいキー（id~v2, id~v3 …）に保存する
+const blobKeyOf = f => f.blobKey || f.id;
+const verOf = f => f.version || 1;
+const pdfKey = key => S.code + '/' + key;
+async function getPdfBytes(f) {
+  const key = blobKeyOf(f);
+  const cached = await idb.get('pdf', pdfKey(key));
   if (cached) return new Uint8Array(cached);
-  const chunks = await S.backend.getFileData(S.code, id);
-  if (!chunks) throw new Error('ファイルのデータが見つかりません');
+  const chunks = await S.backend.getFileData(S.code, key);
+  if (!chunks) throw new Error('ファイルのデータが見つかりません（置き換え・削除された可能性があります）');
   const bytes = chunksToBytes(chunks);
-  idb.set('pdf', pdfKey(id), bytes.buffer.slice(0));
+  idb.set('pdf', pdfKey(key), bytes.buffer.slice(0));
   return bytes;
+}
+// アップロード・置き換え共通：PDF化してページ数とサムネイルを作る
+async function preparePdf(file, onStatus) {
+  const isDocx = /\.docx$/i.test(file.name);
+  let bytes;
+  if (isDocx) { onStatus?.('変換中…'); bytes = await docxToPdf(file); }
+  else bytes = new Uint8Array(await file.arrayBuffer());
+  if (bytes.length > MAX_BYTES) throw new Error(`大きすぎます（${fmtSize(bytes.length)}、上限15MB）`);
+  onStatus?.('確認中…');
+  const pdf = await openPdf(bytes);
+  const pages = pdf.numPages; const thumb = await makeThumb(pdf).catch(() => null); pdf.destroy();
+  return { bytes, pages, thumb, srcType: isDocx ? 'docx' : 'pdf' };
 }
 
 /* ---------------- state ---------------- */
 const S = {
   backend: null, teacher: false,
   me: { name: LS.get('yk:name', ''), deviceId: LS.get('yk:device', null) || (() => { const d = rid(12); LS.set('yk:device', d); return d; })() },
-  code: null, table: null, files: [], unwatch: null, el: null,
+  code: null, table: null, files: [], comments: {}, unwatch: null, el: null,
   prefs: null,
-  ui: { filter: 'all', sort: LS.get('yk:sort', 'old'), layout: LS.get('yk:layout', 'grid'), groupView: LS.get('yk:gview', false), search: '', select: false, selected: new Set() }
+  ui: { filter: 'all', sort: ['upload', 'title', 'random'].includes(LS.get('yk:sort')) ? LS.get('yk:sort') : 'upload', layout: LS.get('yk:layout', 'grid'), groupView: LS.get('yk:gview', false), search: '', select: false, selected: new Set() }
 };
 const app = $('#app');
 function mount(...nodes) { app.replaceChildren(...(DEMO ? [h('div', { class: 'demo-bar' }, 'デモモード：Firebase未設定のため、この端末のこのブラウザ内だけで動いています（別タブで開くと複数人の動作を試せます）')] : []), ...nodes); }
 function loadPrefs(code) {
   const p = LS.get('yk:p:' + code, {});
-  return { fav: p.fav || {}, groups: p.groups || [], assign: p.assign || {}, seen: p.seen || {}, inked: p.inked || {}, mine: p.mine || {} };
+  return { fav: p.fav || {}, groups: p.groups || [], assign: p.assign || {}, seen: p.seen || {}, inked: p.inked || {}, mine: p.mine || {},
+    notes: p.notes || {}, myc: p.myc || {}, cseen: p.cseen || {} };
 }
 function savePrefs() { if (S.code) LS.set('yk:p:' + S.code, S.prefs); }
 const groupOf = id => S.prefs.groups.find(g => g.id === S.prefs.assign[id]) || null;
@@ -744,15 +825,21 @@ function enterTable(code) {
   S.unwatch = S.backend.watchTable(code, t => {
     if (S.code !== code) return;
     if (!t || !t.meta) { closeViewer(true); renderJoin('テーブルが見つかりません（削除された可能性があります）'); history.replaceState(null, '', location.pathname); return; }
+    const first = !S.table;
     S.table = t.meta;
     const recent = LS.get('yk:recent', []).filter(r => r.code !== code);
     recent.unshift({ code, name: t.meta.name }); LS.set('yk:recent', recent.slice(0, 8));
+    const prevComments = S.comments;
+    S.comments = t.comments || {};
     S.files = Object.entries(t.files || {}).map(([id, f]) => ({ id, ...f }))
       .sort((a, b) => (a.createdAt - b.createdAt) || (a.id < b.id ? -1 : 1));
     S.files.forEach((f, i) => { f.no = i + 1; });
     const ids = new Set(S.files.map(f => f.id));
     for (const id of [...S.ui.selected]) if (!ids.has(id)) S.ui.selected.delete(id);
     updateTable();
+    checkPanesForChanges();
+    if (!first) notifyNewComments(prevComments);
+    V.panes?.forEach(p => p.cpanel && !p.cpanel.hidden && p.drawComments());
   });
 }
 
@@ -765,8 +852,10 @@ function buildTableShell() {
     onchange: e => { const fs = [...e.target.files]; e.target.value = ''; if (fs.length) startUpload(fs); } });
   const search = h('input', { class: 'input', type: 'search', placeholder: 'タイトル・名前で検索' });
   search.addEventListener('input', () => { S.ui.search = search.value; drawGrid(); });
-  const sort = h('select', { class: 'input', 'aria-label': '並び順', onchange: e => { S.ui.sort = e.target.value; LS.set('yk:sort', S.ui.sort); drawGrid(); } },
-    [['old', 'アップ順'], ['new', '新しい順'], ['title', 'タイトル順'], ['author', '名前順']].map(([v, t]) => h('option', { value: v, selected: S.ui.sort === v }, t)));
+  E.shuffle = h('button', { class: 'tg', title: 'ランダムに並べ直す', hidden: S.ui.sort !== 'random', onclick: () => { LS.set('yk:seed:' + S.code, rid(6)); drawGrid(); toast('並べ直しました'); } }, icon('shuffle', 'i-s'), 'シャッフル');
+  const sort = h('select', { class: 'input', 'aria-label': '並び順', onchange: e => {
+    S.ui.sort = e.target.value; LS.set('yk:sort', S.ui.sort); E.shuffle.hidden = S.ui.sort !== 'random'; drawGrid();
+  } }, [['upload', 'アップロード順'], ['title', 'ファイル名順'], ['random', 'ランダム']].map(([v, t]) => h('option', { value: v, selected: S.ui.sort === v }, t)));
   E.layout = h('div', { class: 'seg' },
     h('button', { title: 'アイコン表示', 'data-v': 'grid', onclick: () => setLayout('grid') }, icon('grid')),
     h('button', { title: 'リスト表示', 'data-v': 'list', onclick: () => setLayout('list') }, icon('list')));
@@ -783,7 +872,7 @@ function buildTableShell() {
       h('div', { class: 'tb-title' }, E.title, E.sub),
       E.upBtn, E.fileIn)),
     h('div', { class: 'toolbar' },
-      h('div', { class: 'search' }, icon('search'), search), sort, E.layout, E.gview, E.selTg,
+      h('div', { class: 'search' }, icon('search'), search), sort, E.shuffle, E.layout, E.gview, E.selTg,
       h('button', { class: 'tg', onclick: manageGroups }, icon('folder', 'i-s'), 'グループ管理')),
     E.chips, E.teacherBar, E.notice, E.grid, E.selbar);
   // drag & drop
@@ -829,12 +918,12 @@ function drawChips() {
   const fs = S.files, P = S.prefs;
   const chip = (key, label, n, dot) => h('button', { class: 'chip' + (S.ui.filter === key ? ' on' : ''), onclick: () => { S.ui.filter = key; drawChips(); drawGrid(); } },
     dot ? h('i', { class: 'dot', style: { background: dot } }) : null, label, h('span', { class: 'n' }, n));
-  S.el.chips.replaceChildren(
+  S.el.chips.replaceChildren(...[
     chip('all', 'すべて', fs.length),
     chip('fav', '★ お気に入り', fs.filter(f => P.fav[f.id]).length),
     ...P.groups.map(g => chip('g:' + g.id, g.name || '(名前なし)', fs.filter(f => P.assign[f.id] === g.id).length, g.color)),
     P.groups.length ? chip('none', '未分類', fs.filter(f => !groupOf(f.id)).length) : null,
-    h('button', { class: 'chip', onclick: async () => { const g = await newGroupDialog(); if (g) { drawChips(); } } }, icon('plus', 'i-s'), 'グループ'));
+    h('button', { class: 'chip', onclick: async () => { const g = await newGroupDialog(); if (g) { drawChips(); } } }, icon('plus', 'i-s'), 'グループ')].filter(Boolean));
 }
 
 function visibleFiles() {
@@ -844,10 +933,16 @@ function visibleFiles() {
   if (F === 'fav') fs = fs.filter(f => P.fav[f.id]);
   else if (F === 'none') fs = fs.filter(f => !groupOf(f.id));
   else if (F.startsWith('g:')) fs = fs.filter(f => P.assign[f.id] === F.slice(2));
-  const coll = new Intl.Collator('ja');
-  if (S.ui.sort === 'new') fs.reverse();
-  else if (S.ui.sort === 'title') fs.sort((a, b) => coll.compare(a.title || '', b.title || ''));
-  else if (S.ui.sort === 'author') fs.sort((a, b) => (a.anonymous - b.anonymous) || coll.compare(a.author || '', b.author || ''));
+  if (S.ui.sort === 'title') {
+    const coll = new Intl.Collator('ja', { numeric: true, sensitivity: 'base' });
+    fs.sort((a, b) => coll.compare(a.title || '', b.title || '') || a.no - b.no);
+  } else if (S.ui.sort === 'random') {
+    // 端末ごとに固定の並び（シャッフルを押すまで変わらない。新しい文書もランダムな位置に入る）
+    let seed = LS.get('yk:seed:' + S.code, null); if (!seed) { seed = rid(6); LS.set('yk:seed:' + S.code, seed); }
+    const hash = s => { let x = 2166136261; for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 16777619); } return x >>> 0; };
+    const k = new Map(fs.map(f => [f.id, hash(seed + f.id)]));
+    fs.sort((a, b) => k.get(a.id) - k.get(b.id));
+  }
   return fs;
 }
 
@@ -883,14 +978,16 @@ function fileCard(f) {
     h('div', { class: 'thumb' },
       thumbOk ? h('img', { src: f.thumb, alt: '', loading: 'lazy' }) : h('div', { class: 'thumb-ph' }, icon('doc')),
       h('span', { class: 'badge' + (f.srcType === 'docx' ? ' w' : '') }, f.srcType === 'docx' ? 'Word' : 'PDF'),
-      !P.seen[f.id] ? h('span', { class: 'new' }, 'NEW') : null,
+      !P.seen[f.id] ? h('span', { class: 'new' }, 'NEW') : (P.seen[f.id] < verOf(f) ? h('span', { class: 'new upd' }, '更新') : null),
       S.ui.select ? h('span', { class: 'checkbox' + (sel ? ' on' : '') }, sel ? icon('check') : null) : null),
     h('div', { class: 'meta' },
       h('div', { class: 'title', title: f.title }, h('span', { class: 'no' }, '#' + f.no), f.title),
       h('div', { class: 'sub' },
         f.anonymous ? [icon('anon', 'i-s'), '匿名'] : [icon('user', 'i-s'), f.author || ''],
         h('span', {}, '・' + (f.pages || '?') + 'p'),
-        P.inked[f.id] ? h('span', { title: '書き込み・メモあり', style: { display: 'inline-flex' } }, '・', icon('memo', 'i-s')) : null),
+        (() => { const cs = visibleComments(f); if (!cs.length) return null; const un = unreadCount(f, cs);
+          return h('span', { class: 'ccount' + (un ? ' unread' : ''), title: un ? `新しいコメント ${un}件` : 'コメント' }, '・', icon('chat', 'i-s'), cs.length + (un ? `（新${un}）` : '')); })(),
+        P.inked[f.id] === verOf(f) ? h('span', { title: '書き込みあり', style: { display: 'inline-flex' } }, '・', icon('memo', 'i-s')) : null),
       g ? h('div', { class: 'gtag' }, h('i', { style: { background: g.color } }), g.name || '(名前なし)') : null),
     h('div', { class: 'card-actions no-open' },
       h('button', { class: 'icon-btn star' + (fav ? ' on' : ''), title: 'お気に入り', onclick: () => toggleFav([f.id]) }, icon(fav ? 'starFill' : 'star')),
@@ -929,22 +1026,24 @@ function fileMenu(f, anchor) {
   const fav = !!S.prefs.fav[f.id];
   popMenu(anchor, [
     { text: fav ? 'お気に入りから外す' : 'お気に入りに追加', icon: 'star', action: () => toggleFav([f.id]) },
+    { text: 'コメントを見る・書く', icon: 'chat', action: () => openViewer([f.id], { comments: true }) },
     { text: '並べて読む…', icon: 'columns', action: () => pickFiles(f.id) },
     '-', ...groupMenuItems([f.id]), '-',
     { text: 'PDFをダウンロード', icon: 'download', action: () => downloadFile(f) },
+    S.prefs.mine[f.id] ? { text: '別のファイルに置き換え…', icon: 'swap', action: () => replaceFile(f) } : null,
     canEdit(f) ? { text: 'タイトルを変更', icon: 'memo', action: async () => {
       const t = await askText('タイトルを変更', '', f.title, '変更'); if (t) S.backend.updateFile(S.code, f.id, { title: t });
     } } : null,
     canEdit(f) ? { text: '削除', icon: 'trash', danger: true, action: async () => {
       if (await confirmBox('文書を削除', `「${f.title}」をテーブルから削除します。全員の画面から消えます。`, '削除する', true)) {
-        await S.backend.deleteFile(S.code, f.id); idb.del('pdf', pdfKey(f.id)); toast('削除しました');
+        await S.backend.deleteFile(S.code, f.id, blobKeyOf(f)); S.backend.deleteComment(S.code, f.id, null).catch(() => {}); idb.del('pdf', pdfKey(blobKeyOf(f))); toast('削除しました');
       }
     } } : null
   ]);
 }
 async function downloadFile(f) {
   try {
-    const bytes = await getPdfBytes(f.id);
+    const bytes = await getPdfBytes(f);
     const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
     const a = h('a', { href: url, download: (f.title || 'document') + '.pdf' }); document.body.append(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 5000);
@@ -1030,16 +1129,10 @@ async function startUpload(fileList) {
       let fail = 0;
       for (const r of rows) {
         try {
-          let bytes;
-          if (r.isDocx) { r.stat.textContent = '変換中…'; bytes = await docxToPdf(r.file); }
-          else bytes = new Uint8Array(await r.file.arrayBuffer());
-          if (bytes.length > MAX_BYTES) throw new Error(`大きすぎます（${fmtSize(bytes.length)}、上限15MB）`);
-          r.stat.textContent = '確認中…';
-          const pdf = await openPdf(bytes);
-          const pages = pdf.numPages; const thumb = await makeThumb(pdf).catch(() => null); pdf.destroy();
+          const { bytes, pages, thumb, srcType } = await preparePdf(r.file, t => { r.stat.textContent = t; });
           r.stat.textContent = 'アップロード中…';
           const id = S.backend.newId();
-          const meta = { title: r.title.value.trim() || r.file.name, srcType: r.isDocx ? 'docx' : 'pdf', anonymous: !!anon, author: anon ? null : S.me.name,
+          const meta = { title: r.title.value.trim() || r.file.name, srcType, version: 1, anonymous: !!anon, author: anon ? null : S.me.name,
             pages, size: bytes.length, thumb, createdAt: Date.now() };
           S.prefs.mine[id] = 1; S.prefs.seen[id] = 1; savePrefs();
           await S.backend.addFile(S.code, id, meta, bytesToChunks(bytes), p => { r.bar.style.width = Math.round(p * 100) + '%'; });
@@ -1116,20 +1209,21 @@ function drawTabs() {
 }
 function setActive(p) { V.active = p; V.panes.forEach(x => x.el.classList.toggle('active', x === p)); }
 
-function openViewer(ids) {
+function openViewer(ids, opt = {}) {
   if (!V.el) buildViewer();
   const wasOpen = !V.el.hidden;
   V.el.hidden = false; document.body.classList.add('noscroll');
   if (!wasOpen) history.pushState({ viewer: 1 }, '', location.hash || '#');
-  for (const id of ids) addPane(id);
+  for (const id of ids) addPane(id, opt);
   applyTool(); drawVbar(); drawTabs();
 }
-function addPane(id) {
+function addPane(id, opt = {}) {
   if (V.panes.length >= 3) return toast('並べられるのは3つまでです');
   if (V.panes.some(p => p.id === id)) return;
   const f = S.files.find(x => x.id === id); if (!f) return;
-  S.prefs.seen[id] = 1; savePrefs();
+  S.prefs.seen[id] = verOf(f); savePrefs();
   const p = new Pane(f); V.panes.push(p); V.panesEl.append(p.el);
+  if (opt.comments) p.toggleComments(true);
   V.tab = V.panes.length - 1; setActive(p);
   requestAnimationFrame(() => { V.panes.forEach(x => x !== p && x.layout()); p.load(); });
 }
@@ -1163,19 +1257,108 @@ async function pickFiles(firstId) {
   if (r) openViewer(S.files.filter(f => r.includes(f.id)).map(f => f.id));
 }
 
+/* ---------------- コメント ----------------
+   self  : 自分用に残す（この端末だけに保存。置き換えで消える）
+   author: 書き手に伝える（自分と、その文書をアップした端末にだけ表示）
+   all   : みんなに共有（全員に表示） */
+function visibleComments(f) {
+  const out = [];
+  const n = S.prefs.notes[f.id];
+  if (n && n.v === verOf(f)) for (const c of n.list) out.push({ ...c, type: 'self' });
+  const mineFile = !!S.prefs.mine[f.id];
+  for (const [id, c] of Object.entries(S.comments[f.id] || {})) {
+    if (c.type === 'all' || (c.type === 'author' && (mineFile || S.prefs.myc[id]))) out.push({ id, ...c });
+  }
+  return out.sort((a, b) => a.createdAt - b.createdAt);
+}
+function unreadCount(f, cs) {
+  const t = S.prefs.cseen[f.id] || 0;
+  return cs.filter(c => c.type !== 'self' && !S.prefs.myc[c.id] && c.createdAt > t).length;
+}
+function notifyNewComments(prev) {
+  let toMe = 0, shared = 0;
+  for (const [fid, cs] of Object.entries(S.comments)) {
+    const mineFile = !!S.prefs.mine[fid];
+    for (const [cid, c] of Object.entries(cs || {})) {
+      if (prev[fid]?.[cid] || S.prefs.myc[cid]) continue;
+      if (c.type === 'author' && mineFile) toMe++; else if (c.type === 'all') shared++;
+    }
+  }
+  if (toMe) toast(`あなたの文書にコメントが届きました（${toMe}件）`);
+  else if (shared) toast(`新しいコメントがあります（${shared}件）`);
+  V.panes?.forEach(p => p.updateCBadge());
+}
+
+const REPLACED_MSG = 'このファイルは置き換えられました。この画面を閉じると、新しいバージョンに変わります。メモ等は消えるので、必要に応じてスクリーンショットを撮ってください';
+function checkPanesForChanges() {
+  if (!V.el || V.el.hidden) return;
+  let changed = false;
+  for (const p of V.panes) {
+    const nf = S.files.find(f => f.id === p.id);
+    if (!nf) { if (p.noticeState !== 'deleted') { p.noticeState = 'deleted'; p.showNotice('このファイルは削除されました。この画面を閉じると、テーブルからも消えます。'); changed = true; } }
+    else if (verOf(nf) !== p.version && p.noticeState !== 'v' + verOf(nf)) { p.noticeState = 'v' + verOf(nf); p.showNotice(REPLACED_MSG); changed = true; }
+  }
+  if (changed) toast('読んでいるファイルが置き換え・削除されました');
+}
+
+async function replaceFile(f) {
+  if (!S.prefs.mine[f.id]) return toast('自分がアップしたファイルだけ置き換えられます');
+  if (S.table.locked && !S.teacher) return toast('現在アップロードは締め切られています');
+  const inp = h('input', { type: 'file', accept: '.pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document', hidden: true });
+  document.body.append(inp);
+  const file = await new Promise(res => { inp.onchange = () => res(inp.files[0] || null); inp.click(); });
+  inp.remove();
+  if (!file) return;
+  if (!/\.(pdf|docx)$/i.test(file.name)) return toast('PDF と Word(.docx) のみ使えます');
+  const isDocx = /\.docx$/i.test(file.name);
+  const titleIn = h('input', { class: 'input', value: f.title });
+  const stat = h('span', {}, ''), bar = h('i');
+  let busy = false, ov = null;
+  await modal({ title: 'ファイルを置き換える', wide: true, bind: (_c, o) => { ov = o; }, body: [
+    h('div', { class: 'cmp' },
+      h('div', {}, h('small', {}, `いまのファイル（#${f.no}）`), h('b', {}, f.title)),
+      h('div', {}, h('small', {}, '新しいファイル'), h('b', {}, file.name), h('small', { style: { marginTop: '4px' } }, fmtSize(file.size) + (isDocx ? '・WordはPDFに変換' : '')))),
+    h('div', { class: 'field' }, h('label', {}, 'タイトル'), titleIn),
+    h('p', { class: 'hint' }, 'テーブル上の位置（番号）・匿名/顕名の設定はそのままです。いま読んでいる人の画面には置き換えのお知らせが出ます。このファイルへの書き込みと「自分用」コメントは、置き換え後は消えます（全員分）。「書き手に伝える」「みんなに共有」のコメントは「旧版」の印が付いて残ります。'),
+    h('div', { class: 'stat', style: { display: 'flex', gap: '8px', alignItems: 'center', fontSize: '13px', color: 'var(--muted)' } }, stat, h('span', { class: 'bar' }, bar))
+  ], actions: [
+    { text: 'キャンセル', value: null, onClick: () => busy ? false : undefined },
+    { text: '置き換える', kind: 'primary', onClick: async () => {
+      if (busy) return false;
+      busy = true; ov.dataset.busy = '1'; ov.querySelectorAll('.modal-f .btn, input').forEach(b => b.disabled = true);
+      try {
+        const { bytes, pages, thumb, srcType } = await preparePdf(file, t => { stat.textContent = t; });
+        const cur = S.files.find(x => x.id === f.id);
+        if (!cur) throw new Error('元のファイルが削除されています');
+        const version = verOf(cur) + 1, oldKey = blobKeyOf(cur), newKey = f.id + '~v' + version;
+        stat.textContent = 'アップロード中…';
+        const patch = { title: titleIn.value.trim() || cur.title, srcType, pages, size: bytes.length, thumb, version, blobKey: newKey, replacedAt: Date.now() };
+        await S.backend.replaceFile(S.code, f.id, oldKey, newKey, patch, bytesToChunks(bytes), p => { bar.style.width = Math.round(p * 100) + '%'; });
+        idb.set('pdf', pdfKey(newKey), bytes.buffer.slice(0)); idb.del('pdf', pdfKey(oldKey));
+        S.prefs.seen[f.id] = version; savePrefs();
+        toast('置き換えました'); return 'done';
+      } catch (e) {
+        console.error(e); stat.textContent = '失敗：' + (e.message || e); stat.style.color = 'var(--danger)';
+        busy = false; delete ov.dataset.busy; ov.querySelectorAll('.modal-f .btn, input').forEach(b => b.disabled = false);
+        return false;
+      }
+    } }
+  ] });
+}
+
 class Pane {
   constructor(file) {
-    this.file = file; this.id = file.id; this.zoom = 1; this.pages = []; this.visible = new Set();
+    this.file = file; this.id = file.id; this.version = verOf(file); this.zoom = 1; this.pages = []; this.visible = new Set();
     this.ann = { pages: {}, memo: '' }; this.hist = []; this.drag = null;
     const fav = !!S.prefs.fav[this.id];
     this.pgEl = h('span', { class: 'pg' });
-    this.memoTa = h('textarea', { placeholder: 'この文書についてのメモ（自分だけに保存）' });
-    this.memoTa.addEventListener('input', () => { this.ann.memo = this.memoTa.value; this.save(); });
-    this.memoBox = h('div', { class: 'memo-box', hidden: true }, this.memoTa, h('small', {}, 'メモと書き込みはこの端末にだけ保存され、他の人には見えません。'));
-    this.memoBtn = h('button', { class: 'icon-btn', title: 'メモ', onclick: () => { this.memoBox.hidden = !this.memoBox.hidden; this.memoBtn.classList.toggle('on', !this.memoBox.hidden); if (!this.memoBox.hidden) this.memoTa.focus(); } }, icon('doc'));
+    this.cbadge = h('span', { class: 'cbadge', hidden: true });
+    this.cBtn = h('button', { class: 'icon-btn', title: 'コメント', style: { position: 'relative' }, onclick: () => this.toggleComments() }, icon('chat'), this.cbadge);
+    this.cpanel = null;
     this.starBtn = h('button', { class: 'icon-btn' + (fav ? ' on' : ''), title: 'お気に入り', onclick: () => {
       toggleFav([this.id]); const on = !!S.prefs.fav[this.id]; this.starBtn.classList.toggle('on', on); this.starBtn.replaceChildren(icon(on ? 'starFill' : 'star'));
     } }, icon(fav ? 'starFill' : 'star'));
+    this.noticeEl = h('div', { class: 'pane-notice', hidden: true });
     this.pagesEl = h('div', { class: 'pages' }, h('div', { class: 'pstatus' }, '読み込み中…'));
     this.scroll = h('div', { class: 'pane-scroll' }, this.pagesEl);
     this.scroll.addEventListener('scroll', () => this.onScroll(), { passive: true });
@@ -1185,16 +1368,114 @@ class Pane {
         this.pgEl,
         h('button', { class: 'icon-btn', title: '縮小', onclick: () => this.setZoom(-1) }, icon('zoomOut')),
         h('button', { class: 'icon-btn', title: '拡大', onclick: () => this.setZoom(1) }, icon('zoomIn')),
-        this.starBtn, this.memoBtn,
+        this.starBtn, this.cBtn,
         h('button', { class: 'icon-btn', title: 'ダウンロード', onclick: () => downloadFile(file) }, icon('download')),
         h('button', { class: 'icon-btn', title: '閉じる', onclick: () => removePane(this) }, icon('x'))),
-      this.memoBox, this.scroll);
+      this.noticeEl, this.body = h('div', { class: 'pane-body' }, this.scroll));
+    this.updateCBadge();
+  }
+  /* ---- comments ---- */
+  toggleComments(force) {
+    const show = force ?? (!this.cpanel || this.cpanel.hidden);
+    if (!this.cpanel) this.buildCPanel();
+    this.cpanel.hidden = !show; this.cBtn.classList.toggle('on', show);
+    if (show) { this.drawComments(); setTimeout(() => this.cTa.focus(), 50); }
+    else updateTable();
+  }
+  buildCPanel() {
+    const mine = !!S.prefs.mine[this.id];
+    this.cFilter = 'all'; this.cType = mine ? 'self' : 'all';
+    this.cList = h('div', { class: 'cp-list' });
+    this.cFilterEl = h('div', { class: 'cp-filter' });
+    this.cTypesEl = h('div', { class: 'ctypes' });
+    this.cTa = h('textarea', { placeholder: 'コメントを書く', maxlength: '1000' });
+    this.cAnon = h('input', { type: 'checkbox' });
+    this.cPage = h('input', { type: 'checkbox', checked: true });
+    this.cAnonLbl = h('label', {}, this.cAnon, '匿名で');
+    this.cPageLbl = h('label', {}, this.cPage, h('span', {}, 'ページを付ける'));
+    const send = h('button', { class: 'btn primary', onclick: () => this.postComment() }, '送信');
+    this.cTa.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); this.postComment(); } });
+    this.cpanel = h('div', { class: 'cpanel', hidden: true },
+      h('div', { class: 'cp-h' }, icon('chat', 'i-s'), h('span', { class: 'cp-title' }, 'コメント'), h('button', { class: 'icon-btn', title: '閉じる', onclick: () => this.toggleComments(false) }, icon('x'))),
+      this.cFilterEl, this.cList,
+      h('div', { class: 'cp-form' }, this.cTypesEl, this.cTa, h('div', { class: 'cp-row' }, this.cAnonLbl, this.cPageLbl, send)));
+    this.body.append(this.cpanel);
+    this.drawCTypes();
+  }
+  drawCTypes() {
+    const mine = !!S.prefs.mine[this.id];
+    const T = [['self', '自分用に残す', '自分だけ'], ['author', '書き手に伝える', mine ? '（自分の文書）' : '自分と書き手'], ['all', 'みんなに共有', '全員']];
+    this.cTypesEl.replaceChildren(...T.map(([k, l, sub]) => h('button', {
+      class: k + (this.cType === k ? ' on' : ''), disabled: k === 'author' && mine,
+      onclick: () => { this.cType = k; this.drawCTypes(); }
+    }, l, h('small', {}, sub))));
+    this.cAnonLbl.hidden = this.cType === 'self';
+    this.cTa.placeholder = { self: '自分用のメモ（他の人には見えません）', author: `書き手（${this.file.anonymous ? '匿名の人' : this.file.author}）にだけ伝わります`, all: 'テーブルの全員に見えます' }[this.cType];
+  }
+  async postComment() {
+    const text = this.cTa.value.trim(); if (!text) return;
+    const page = this.cPage.checked ? this.curPage || 1 : null;
+    const cid = Date.now().toString(36) + rid(5);
+    const base = { text, page, v: this.version, createdAt: Date.now() };
+    if (this.cType === 'self') {
+      const n = (S.prefs.notes[this.id] ||= { v: this.version, list: [] });
+      if (n.v !== this.version) { n.v = this.version; n.list = []; }
+      n.list.push({ id: cid, ...base }); savePrefs();
+    } else {
+      const anon = this.cAnon.checked;
+      S.prefs.myc[cid] = 1; S.prefs.cseen[this.id] = Date.now(); savePrefs();
+      try { await S.backend.addComment(S.code, this.id, cid, { ...base, type: this.cType, anonymous: anon, author: anon ? null : S.me.name }); }
+      catch (e) { delete S.prefs.myc[cid]; savePrefs(); return toast('送信できませんでした：' + e.message); }
+    }
+    this.cTa.value = ''; this.drawComments(); updateTable();
+    toast({ self: '自分用に保存しました', author: '書き手に送りました', all: 'みんなに共有しました' }[this.cType]);
+  }
+  drawComments() {
+    if (!this.cpanel) return;
+    const f = S.files.find(x => x.id === this.id) || this.file;
+    const all = visibleComments(f);
+    const cnt = k => all.filter(c => c.type === k).length;
+    const F = [['all', 'すべて', all.length], ['self', '自分用', cnt('self')], ['author', S.prefs.mine[this.id] ? 'あなたへ' : '書き手へ', cnt('author')], ['all2', 'みんな', cnt('all')]];
+    this.cFilterEl.replaceChildren(...F.map(([k, l, n]) => h('button', { class: this.cFilter === k ? 'on' : '', onclick: () => { this.cFilter = k; this.drawComments(); } }, `${l} ${n}`)));
+    const list = this.cFilter === 'all' ? all : all.filter(c => c.type === (this.cFilter === 'all2' ? 'all' : this.cFilter));
+    const mineFile = !!S.prefs.mine[this.id];
+    const atBottom = this.cList.scrollHeight - this.cList.scrollTop - this.cList.clientHeight < 40;
+    this.cList.replaceChildren(...(list.length ? list.map(c => {
+      const own = c.type === 'self' || !!S.prefs.myc[c.id];
+      const canDel = own || (S.teacher && c.type === 'all');
+      const label = { self: '自分用', author: mineFile && !own ? 'あなたへ' : '書き手へ', all: 'みんな' }[c.type];
+      return h('div', { class: 'cmt ' + c.type },
+        h('div', { class: 'cmt-h' }, h('span', { class: 'ctype ' + c.type }, label),
+          c.type === 'self' ? null : h('b', {}, c.anonymous ? '匿名' : (c.author || '')), own && c.type !== 'self' ? h('span', {}, '（自分）') : null,
+          h('span', {}, fmtTime(c.createdAt)),
+          c.page ? h('button', { class: 'pgtag', title: 'このページへ移動', onclick: () => this.goPage(c.page) }, 'p.' + c.page) : null,
+          (c.v || 1) < verOf(f) ? h('span', { class: 'old', title: '置き換え前の版へのコメント' }, '旧版') : null,
+          canDel ? h('button', { class: 'del', onclick: () => this.deleteComment(c) }, '削除') : null),
+        h('div', { class: 'cmt-t' }, c.text));
+    }) : [h('div', { class: 'cp-empty' }, 'まだコメントはありません。', h('br'), '下の欄から書けます。')]));
+    if (atBottom) this.cList.scrollTop = this.cList.scrollHeight;
+    S.prefs.cseen[this.id] = Date.now(); savePrefs(); this.updateCBadge();
+  }
+  async deleteComment(c) {
+    if (!(await confirmBox('コメントを削除', 'このコメントを削除しますか？', '削除', true))) return;
+    if (c.type === 'self') { const n = S.prefs.notes[this.id]; if (n) n.list = n.list.filter(x => x.id !== c.id); savePrefs(); }
+    else { await S.backend.deleteComment(S.code, this.id, c.id); delete S.prefs.myc[c.id]; savePrefs(); }
+    this.drawComments();
+  }
+  goPage(n) { const p = this.pages[n - 1]; if (p) this.scroll.scrollTop = p.el.offsetTop - 8; }
+  updateCBadge() {
+    const f = S.files.find(x => x.id === this.id) || this.file;
+    const un = (this.cpanel && !this.cpanel.hidden) ? 0 : unreadCount(f, visibleComments(f));
+    this.cbadge.hidden = !un; this.cbadge.textContent = un;
   }
   async load() {
     try {
-      const [bytes, ann] = await Promise.all([getPdfBytes(this.id), idb.get('ann', annKey(this.id))]);
+      const [bytes, ann0] = await Promise.all([getPdfBytes(this.file), idb.get('ann', annKey(this.id))]);
       if (this.dead) return;
-      if (ann) { this.ann = { pages: ann.pages || {}, memo: ann.memo || '' }; this.memoTa.value = this.ann.memo; if (this.ann.memo) { this.memoBox.hidden = false; this.memoBtn.classList.add('on'); } }
+      // 書き込み・メモはバージョンごと。置き換えられた後は古いものを捨てる
+      let ann = ann0;
+      if (ann && (ann.v || 1) !== this.version) { ann = null; idb.del('ann', annKey(this.id)); if (S.prefs.inked[this.id]) { delete S.prefs.inked[this.id]; savePrefs(); } }
+      if (ann) this.ann = { pages: ann.pages || {}, memo: '' };
       this.pdf = await openPdf(bytes);
       if (this.dead) return this.pdf.destroy();
       this.io = new IntersectionObserver(es => {
@@ -1256,7 +1537,7 @@ class Pane {
     if (this.pages.length) {
       const y = this.scroll.scrollTop + this.scroll.clientHeight / 3;
       let cur = 1; for (const p of this.pages) { if (p.el.offsetTop <= y) cur = p.i; else break; }
-      this.pgEl.textContent = `${cur} / ${this.pages.length}`;
+      this.curPage = cur; this.pgEl.textContent = `${cur} / ${this.pages.length}`;
     }
     if (V.sync && !V.syncing && V.panes.length > 1) {
       const s = this.scroll, r = s.scrollTop / Math.max(1, s.scrollHeight - s.clientHeight);
@@ -1329,7 +1610,7 @@ class Pane {
   }
   async clearAll() {
     if (!Object.values(this.ann.pages).some(a => a.length)) return toast('書き込みはありません');
-    if (!(await confirmBox('書き込みを消す', `「${this.file.title}」の線・マーカーをすべて消します（メモは残ります）。`, '消す', true))) return;
+    if (!(await confirmBox('書き込みを消す', `「${this.file.title}」の線・マーカーをすべて消します（コメントは残ります）。`, '消す', true))) return;
     this.hist.push({ op: 'clear', pages: this.ann.pages }); this.ann.pages = {};
     this.pages.forEach(p => this.drawInk(p)); this.save();
   }
@@ -1337,11 +1618,20 @@ class Pane {
     clearTimeout(this.st);
     const run = () => {
       this.st = null;
-      const has = Object.values(this.ann.pages).some(a => a.length) || !!this.ann.memo.trim();
-      idb.set('ann', annKey(this.id), { pages: this.ann.pages, memo: this.ann.memo, updatedAt: Date.now() });
-      if (!!S.prefs.inked[this.id] !== has) { has ? (S.prefs.inked[this.id] = 1) : delete S.prefs.inked[this.id]; savePrefs(); }
+      const has = Object.values(this.ann.pages).some(a => a.length);
+      // 置き換え後の新版に古い書き込みが混ざらないよう、読み込んだ版の番号と一緒に保存
+      idb.get('ann', annKey(this.id)).then(cur => {
+        if (cur && (cur.v || 1) > this.version) return;
+        idb.set('ann', annKey(this.id), { v: this.version, pages: this.ann.pages, updatedAt: Date.now() });
+      });
+      const want = has ? this.version : undefined;
+      if (S.prefs.inked[this.id] !== want) { has ? (S.prefs.inked[this.id] = this.version) : delete S.prefs.inked[this.id]; savePrefs(); }
     };
     if (now) run(); else this.st = setTimeout(run, 400);
+  }
+  showNotice(msg) {
+    this.noticeEl.replaceChildren(icon('alert'), h('div', {}, msg));
+    this.noticeEl.hidden = false;
   }
   destroy() {
     if (this.st) this.save(true);
