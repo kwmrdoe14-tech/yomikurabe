@@ -1,0 +1,35 @@
+{
+  "rules": {
+    "config": {
+      ".read": true,
+      "teacherHash": {
+        ".write": "!data.exists()",
+        ".validate": "newData.isString() && newData.val().length == 64"
+      }
+    },
+    "tableIndex": {
+      ".read": true,
+      "$code": { ".write": true }
+    },
+    "tables": {
+      "$code": {
+        ".read": true,
+        ".write": true
+      }
+    },
+    "blobs": {
+      "$code": {
+        ".write": "!newData.exists()",
+        "$id": {
+          ".read": true,
+          ".write": "!newData.exists()",
+          "$i": {
+            ".write": true,
+            ".validate": "newData.isString() && newData.val().length < 600000"
+          }
+        }
+      }
+    },
+    "_ids": { ".read": false, ".write": false }
+  }
+}
