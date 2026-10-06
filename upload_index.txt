@@ -1,0 +1,2044 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f5d50">
+<title>ヨミクラーベ</title>
+<style>
+:root{
+  --bg:#ece5d8; --bg2:#e3dacb; --surface:#fffdf8; --ink:#2a2620; --muted:#7a7064; --line:#ddd3c3;
+  --accent:#2f5d50; --accent-ink:#fff; --accent-soft:#dbe8e2; --danger:#b73a2b; --star:#e0a21c;
+  --shadow:0 1px 2px rgba(60,45,20,.08),0 4px 14px rgba(60,45,20,.08);
+  --r:12px;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
+  color:var(--ink);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);-webkit-tap-highlight-color:transparent;font-size:15px}
+body.noscroll{overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+input,textarea,select{font:inherit;color:inherit}
+[hidden]{display:none!important}
+.ic{display:inline-flex;width:20px;height:20px;flex:none}
+.ic svg{width:100%;height:100%}
+.i-s{width:14px;height:14px;vertical-align:-2px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--surface);
+  padding:9px 16px;border-radius:999px;font-weight:600;white-space:nowrap;min-height:40px}
+.btn:hover{background:#f6f1e7}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;border:0;background:transparent;flex:none}
+.icon-btn:hover{background:rgba(0,0,0,.06)}
+.icon-btn.on{background:var(--accent-soft);color:var(--accent)}
+.input{width:100%;border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 12px;min-height:42px}
+.input:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
+.err{color:var(--danger);font-size:13px;min-height:1.2em;margin-top:6px}
+.hint{color:var(--muted);font-size:13px;line-height:1.6;margin:0 0 10px}
+.demo-bar{background:#fff4d6;color:#6b5210;font-size:12.5px;text-align:center;padding:6px 12px;border-bottom:1px solid #f0dfa8}
+
+/* ---------- join / teacher ---------- */
+.center-wrap{min-height:100%;display:flex;align-items:flex-start;justify-content:center;padding:48px 16px}
+.panel{background:var(--surface);border-radius:18px;box-shadow:var(--shadow);padding:28px;width:100%;max-width:440px}
+.panel.wide{max-width:720px}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.logo-mark{width:40px;height:40px;border-radius:11px;background:var(--accent);color:#fff;display:grid;place-items:center}
+.logo h1{font-size:24px;margin:0;letter-spacing:.04em}
+.tagline{color:var(--muted);margin:0 0 22px;font-size:14px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.code-input{text-transform:uppercase;letter-spacing:.25em;font-weight:700;font-size:20px;text-align:center}
+.linkish{background:none;border:0;color:var(--accent);font-weight:600;padding:6px 0;display:inline-flex;align-items:center;gap:6px}
+.recent{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+.recent h4{margin:0 0 8px;font-size:13px;color:var(--muted);font-weight:600}
+.recent-item{display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;margin-bottom:6px;text-align:left}
+.recent-item code{color:var(--muted);letter-spacing:.1em}
+.tlist{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.trow{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;flex-wrap:wrap}
+.trow .tn{flex:1;min-width:140px}
+.trow .tn b{display:block}
+.trow .tn small{color:var(--muted)}
+.code-pill{font-family:ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.15em;background:var(--accent-soft);color:var(--accent);padding:3px 8px;border-radius:6px}
+
+/* ---------- table screen ---------- */
+.topbar{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.topbar-in{display:flex;align-items:center;gap:8px;padding:8px 12px;max-width:1400px;margin:0 auto}
+.tb-title{flex:1;min-width:0}
+.tb-title h2{margin:0;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-title .sub{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.chip-btn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:2px 9px;font-size:12px;display:inline-flex;align-items:center;gap:4px}
+.toolbar{display:flex;gap:8px;align-items:center;padding:10px 12px 0;max-width:1400px;margin:0 auto;flex-wrap:wrap}
+.search{position:relative;flex:1;min-width:160px;max-width:340px}
+.search .ic{position:absolute;left:10px;top:11px;color:var(--muted);width:18px;height:18px}
+.search input{padding-left:36px;min-height:40px}
+.seg{display:inline-flex;background:var(--bg2);border-radius:10px;padding:3px}
+.seg button{border:0;background:transparent;border-radius:8px;width:36px;height:34px;display:grid;place-items:center}
+.seg button.on{background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.1)}
+select.input{width:auto;min-height:40px;padding:6px 10px}
+.tg{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600}
+.tg.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.chips{display:flex;gap:6px;padding:10px 12px;max-width:1400px;margin:0 auto;overflow-x:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.chip .dot{width:10px;height:10px;border-radius:50%}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip .n{opacity:.6;font-size:12px}
+.teacher-bar,.notice{max-width:1400px;margin:8px auto 0;padding:0 12px}
+.teacher-bar>div,.notice>div{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--accent-soft);color:#1d4036;border-radius:10px;padding:8px 12px;font-size:13px}
+.notice>div{background:#fbe9e5;color:#7a2a1f}
+.new.upd{background:#1c7ed6}
+.pane-notice{background:#c0392b;color:#fff;font-size:13px;line-height:1.6;padding:8px 12px;flex:none;display:flex;gap:8px;align-items:flex-start}
+.pane-notice .ic{width:18px;height:18px;margin-top:2px}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 12px}
+.cmp>div{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;min-width:0}
+.cmp small{display:block;color:var(--muted);font-size:11.5px;margin-bottom:2px}
+.cmp b{display:block;word-break:break-all;font-size:13.5px}
+.main{max-width:1400px;margin:0 auto;padding:6px 12px 120px}
+.section-h{display:flex;align-items:center;gap:8px;margin:18px 2px 10px;font-weight:700;font-size:14px}
+.section-h .dot{width:12px;height:12px;border-radius:4px}
+.section-h .n{color:var(--muted);font-weight:400}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px}
+.card{position:relative;background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;overflow:hidden;border:2px solid transparent;transition:transform .12s}
+.card:hover{transform:translateY(-2px)}
+.card.selected{border-color:var(--accent)}
+.card::before{content:"";position:absolute;left:0;top:0;right:0;height:4px;background:var(--gc,transparent);z-index:2}
+.thumb{position:relative;aspect-ratio:1/1.2;background:#f4efe6;overflow:hidden;display:flex;justify-content:center;border-bottom:1px solid var(--line)}
+.thumb img{width:88%;margin-top:8%;object-fit:cover;object-position:top;box-shadow:0 1px 4px rgba(0,0,0,.18);background:#fff;align-self:flex-start}
+.thumb-ph{display:grid;place-items:center;width:100%;color:var(--muted)}
+.thumb-ph .ic{width:40px;height:40px}
+.badge{position:absolute;left:8px;bottom:8px;font-size:10.5px;font-weight:700;background:rgba(42,38,32,.78);color:#fff;border-radius:5px;padding:2px 6px}
+.badge.w{background:#2b579a}
+.badge.im{background:#2f7d55}
+.merge-opt{display:flex;gap:8px;align-items:flex-start;background:#f0f7f3;border:1px solid #cfe5d8;border-radius:10px;padding:10px 12px;margin:10px 0 0;font-size:13.5px;cursor:pointer}
+.merge-opt small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+/* 投票 */
+.poll-bar{max-width:1400px;margin:8px auto 0;padding:0 12px}
+.poll-bar>div{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#fff3d6;color:#6b4a00;border-radius:10px;padding:8px 12px;font-size:13.5px}
+.poll-bar b{flex:1;min-width:0}
+.poll-bar .btn{min-height:32px;padding:4px 14px}
+.vote-btn{position:relative}
+.vote-btn .cnt{position:absolute;top:-4px;right:-4px;background:#d9480f;color:#fff;border-radius:9px;font-size:11px;min-width:18px;height:18px;line-height:18px;text-align:center;padding:0 4px}
+.plist{display:flex;flex-direction:column;gap:10px}
+.pcard{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+.pcard h4{margin:0 0 6px;font-size:15px;line-height:1.5}
+.pchips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.pchip{font-size:11.5px;background:var(--bg2);border-radius:999px;padding:2px 8px;color:#5a5248}
+.pchip.open{background:#2f7d55;color:#fff}.pchip.closed{background:#8a8172;color:#fff}.pchip.mine{background:#2f6fb0;color:#fff}
+.pactions{display:flex;gap:6px;flex-wrap:wrap}
+.pactions .btn{min-height:34px;padding:5px 12px;font-size:13px}
+.fset{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 12px}
+.fset legend{font-size:13px;font-weight:700;padding:0 4px}
+.chk{display:flex;gap:8px;align-items:flex-start;padding:5px 0;font-size:14px;cursor:pointer}
+.chk input{margin-top:3px;width:17px;height:17px;flex:none}
+.chk small{display:block;color:var(--muted);font-size:12px}
+.vrows{display:flex;flex-direction:column;gap:6px}
+.vrow{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff}
+.vrow.has{border-color:#e0a21c;background:#fffaf0}
+.vrow img{width:34px;height:44px;object-fit:cover;object-position:top;border:1px solid var(--line);flex:none}
+.vrow .vl{flex:1;min-width:0;font-size:14px}
+.vrow .vl small{display:block;color:var(--muted);font-size:12px}
+.vctl{display:flex;align-items:center;gap:4px;flex:none}
+.vctl button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:18px;line-height:1;display:grid;place-items:center}
+.vctl button:disabled{opacity:.3}
+.vctl b{min-width:26px;text-align:center;font-size:17px}
+.vremain{position:sticky;top:-6px;z-index:2;background:var(--surface);padding:6px 0 8px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.vremain .dots{letter-spacing:2px;color:var(--star)}
+.rrow{display:grid;grid-template-columns:28px 1fr auto;gap:4px 10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.rrow .rk{font-weight:800;color:var(--muted);text-align:center}
+.rrow .rl{min-width:0;font-size:14px}
+.rrow .rn{font-weight:800;font-size:16px}
+.rrow .rbar{grid-column:2/4;height:8px;background:var(--bg2);border-radius:4px;overflow:hidden}
+.rrow .rbar i{display:block;height:100%;background:var(--accent)}
+.rrow .rv{grid-column:2/4;font-size:12px;color:var(--muted)}
+.roster{border-collapse:collapse;width:100%;font-size:13px}
+.roster th,.roster td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top;white-space:nowrap}
+.roster td:nth-child(3),.roster td:nth-child(4),.roster td:nth-child(2){white-space:normal;word-break:break-all;min-width:90px}
+.roster th{background:var(--bg2);font-size:12px}
+.new{position:absolute;left:8px;top:10px;font-size:10px;font-weight:800;background:#d9480f;color:#fff;border-radius:5px;padding:2px 6px;letter-spacing:.05em}
+.checkbox{position:absolute;right:8px;top:10px;width:26px;height:26px;border-radius:8px;border:2px solid #fff;background:rgba(0,0,0,.25);display:grid;place-items:center;color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.checkbox.on{background:var(--accent)}
+.checkbox .ic{width:16px;height:16px}
+.meta{padding:10px 10px 4px;flex:1;min-width:0}
+.meta .title{font-weight:700;font-size:14px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-all}
+.meta .no{color:var(--muted);font-weight:600;margin-right:4px}
+.meta .sub{font-size:12px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:3px;flex-wrap:wrap}
+.gtag{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;margin-top:5px;background:var(--bg2);border-radius:999px;padding:1px 8px 1px 6px}
+.gtag i{width:8px;height:8px;border-radius:50%}
+.card-actions{display:flex;justify-content:flex-end;padding:0 4px 4px}
+.card-actions .icon-btn{width:34px;height:34px}
+.star.on{color:var(--star)}
+.grid.list{grid-template-columns:1fr;gap:8px}
+.grid.list .card{flex-direction:row;align-items:center}
+.grid.list .card:hover{transform:none}
+.grid.list .thumb{width:56px;aspect-ratio:1/1.25;border-bottom:0;border-right:1px solid var(--line);flex:none}
+.grid.list .thumb img{width:80%;margin-top:10%}
+.grid.list .badge,.grid.list .new{display:none}
+.grid.list .checkbox{right:auto;left:14px;top:18px}
+.grid.list .meta{padding:8px 12px}
+.grid.list .meta .title{-webkit-line-clamp:1}
+.grid.list .card-actions{padding:0 6px}
+.grid.list .card::before{right:auto;bottom:0;width:4px;height:auto}
+.empty{text-align:center;color:var(--muted);padding:60px 20px;line-height:1.8}
+.empty .ic{width:48px;height:48px;opacity:.5}
+.selbar{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;background:var(--ink);color:#fff;border-radius:16px;padding:8px;display:flex;gap:6px;align-items:center;box-shadow:0 8px 30px rgba(0,0,0,.25);max-width:calc(100% - 24px);overflow-x:auto}
+.selbar .cnt{padding:0 8px;font-weight:700;white-space:nowrap}
+.selbar .btn{background:transparent;color:#fff;border-color:rgba(255,255,255,.25);min-height:38px;padding:7px 12px}
+.selbar .btn.primary{background:#fff;color:var(--ink);border-color:#fff}
+.dropzone{position:fixed;inset:0;z-index:60;background:rgba(47,93,80,.18);border:4px dashed var(--accent);display:grid;place-items:center;font-size:22px;font-weight:700;color:var(--accent);pointer-events:none}
+
+/* ---------- popover / modal / toast ---------- */
+.pop{position:fixed;z-index:200;background:var(--surface);border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.2);padding:6px;min-width:220px;max-width:300px;max-height:70vh;overflow:auto;border:1px solid var(--line)}
+.pop-item{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;text-align:left;padding:9px 10px;border-radius:8px;font-size:14px}
+.pop-item:hover{background:var(--bg)}
+.pop-item.danger{color:var(--danger)}
+.pop-item span{flex:1}
+.pop-item .dot{width:12px;height:12px;border-radius:50%;flex:none;margin:0 4px}
+.pop-item .i-check{color:var(--accent)}
+.pop-sep{height:1px;background:var(--line);margin:4px 6px}
+.pop-h{font-size:11.5px;color:var(--muted);font-weight:700;padding:8px 10px 4px}
+.overlay{position:fixed;inset:0;z-index:100;background:rgba(30,25,18,.45);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--surface);border-radius:18px;width:100%;max-width:440px;max-height:calc(100% - 16px);display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal.wide{max-width:640px}
+.modal-h{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 6px 20px}
+.modal-h h3{margin:0;font-size:17px}
+.modal-b{padding:6px 20px 14px;overflow:auto}
+.modal-f{display:flex;justify-content:flex-end;gap:8px;padding:12px 20px 18px;border-top:1px solid var(--line);flex-wrap:wrap}
+.toast{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:300;background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:calc(100% - 32px)}
+.up-row{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.up-row .badge{position:static;flex:none}
+.up-row .info{flex:1;min-width:0}
+.up-row .stat{font-size:12px;color:var(--muted);margin-top:4px;display:flex;gap:8px;align-items:center}
+.bar{height:4px;background:var(--bg2);border-radius:4px;overflow:hidden;flex:1;max-width:120px}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+.opt-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 6px}
+.opt{border:2px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;background:#fff;text-align:left}
+.opt.on{border-color:var(--accent);background:var(--accent-soft)}
+.opt b{display:flex;align-items:center;gap:6px;font-size:14px}
+.opt small{display:block;color:var(--muted);margin-top:3px;font-size:12px;line-height:1.5}
+.grow{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.cdot{width:30px;height:30px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px var(--line);flex:none}
+.gcount{font-size:12px;color:var(--muted);white-space:nowrap}
+.pick-list{display:flex;flex-direction:column;gap:6px}
+.pick-item{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;background:#fff;padding:8px 10px;text-align:left}
+.pick-item img{width:34px;height:44px;object-fit:cover;object-position:top;border:1px solid var(--line)}
+.share-code{font-size:44px;font-weight:800;letter-spacing:.2em;text-align:center;color:var(--accent);margin:4px 0}
+.qr{display:flex;justify-content:center;margin:10px 0}
+.qr img,.qr canvas{width:180px;height:180px}
+
+/* ---------- viewer ---------- */
+.viewer{position:fixed;inset:0;z-index:50;background:#5b5650;display:flex;flex-direction:column}
+.vbar{display:flex;align-items:center;gap:4px;background:var(--surface);padding:6px 8px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;flex:none}
+.vbar::-webkit-scrollbar{display:none}
+.vsep{width:1px;height:26px;background:var(--line);margin:0 4px;flex:none}
+.sw{width:26px;height:26px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px var(--line);flex:none;margin:0 2px;padding:0}
+.sw.on{box-shadow:0 0 0 2px var(--ink)}
+.szb{width:34px;height:34px;border:0;background:transparent;border-radius:8px;display:grid;place-items:center;flex:none}
+.szb i{display:block;border-radius:50%;background:var(--ink)}
+.szb.on{background:var(--accent-soft)}
+.vtabs{display:none;gap:4px;padding:6px 8px;background:#47433e;overflow-x:auto;flex:none}
+.vtabs button{border:0;border-radius:8px;padding:6px 10px;background:rgba(255,255,255,.12);color:#fff;font-size:13px;white-space:nowrap;max-width:46vw;overflow:hidden;text-overflow:ellipsis}
+.vtabs button.on{background:#fff;color:var(--ink)}
+.panes{flex:1;display:grid;grid-auto-columns:1fr;grid-auto-flow:column;gap:4px;min-height:0;padding:4px}
+.pane{display:flex;flex-direction:column;min-width:0;min-height:0;background:#6b665f;border-radius:8px;overflow:hidden;outline:3px solid transparent}
+.panes.multi .pane.active{outline-color:#f2c94c}
+.pane-h{display:flex;align-items:center;gap:2px;background:#3e3a35;color:#fff;padding:4px 4px 4px 10px;flex:none}
+.pane-h .pt{flex:1;min-width:0;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pane-h .pt small{font-weight:400;opacity:.7;margin-left:6px}
+.pane-h .pg{font-size:12px;opacity:.8;padding:0 6px;white-space:nowrap}
+.pane-h .icon-btn{color:#fff;width:34px;height:34px}
+.pane-h .icon-btn:hover{background:rgba(255,255,255,.12)}
+.pane-h .icon-btn.on{background:rgba(255,255,255,.2);color:#ffd866}
+.pane{container-type:inline-size}
+.pane-body{flex:1;display:flex;min-height:0;position:relative}
+.pane-body .pane-scroll{flex:1;min-width:0}
+.cpanel{width:320px;flex:none;background:var(--surface);border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+@container (max-width:680px){ .cpanel{position:absolute;left:0;right:0;bottom:0;width:auto;height:60%;border-left:0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.25);z-index:3} }
+.cp-h{display:flex;align-items:center;gap:6px;padding:8px 8px 8px 12px;border-bottom:1px solid var(--line);font-weight:700;font-size:14px}
+.cp-h .cp-title{flex:1}
+.cp-filter{display:flex;gap:4px;padding:6px 8px;border-bottom:1px solid var(--line);overflow-x:auto;flex:none}
+.cp-filter button{border:1px solid var(--line);background:#fff;border-radius:999px;font-size:12px;padding:3px 10px;white-space:nowrap}
+.cp-filter button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.cp-list{flex:1;overflow:auto;padding:8px;display:flex;flex-direction:column;gap:8px;min-height:60px}
+.cp-empty{color:var(--muted);font-size:13px;text-align:center;padding:20px 8px;line-height:1.7}
+.cmt{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff;font-size:13.5px}
+.cmt.self{background:#f6f3ee}
+.cmt.author{background:#eef5fc;border-color:#cfe1f3}
+.cmt.all{background:#f0f7f3;border-color:#cfe5d8}
+.cmt-h{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);margin-bottom:4px;flex-wrap:wrap}
+.cmt-h b{color:var(--ink);font-size:12px}
+.ctype{font-size:10.5px;font-weight:700;border-radius:5px;padding:1px 6px;color:#fff;white-space:nowrap}
+.ctype.self{background:#8a8172}.ctype.author{background:#2f6fb0}.ctype.all{background:#2f7d55}
+.cmt-t{white-space:pre-wrap;word-break:break-word;line-height:1.6}
+.cmt .pgtag{border:0;background:var(--bg2);border-radius:5px;font-size:11px;padding:1px 6px}
+.cmt .old{font-size:10.5px;color:#a15c00;background:#fff1d6;border-radius:5px;padding:1px 6px}
+.cmt .del{margin-left:auto;border:0;background:none;color:var(--muted);font-size:11.5px;padding:0 2px}
+.cp-form{border-top:1px solid var(--line);padding:8px;flex:none;display:flex;flex-direction:column;gap:6px;background:var(--surface)}
+.ctypes{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.ctypes button{border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:5px 2px;font-size:12px;font-weight:600;line-height:1.3}
+.ctypes button small{display:block;font-weight:400;font-size:10.5px;color:var(--muted)}
+.ctypes button.on.self{border-color:#8a8172;background:#f6f3ee}
+.ctypes button.on.author{border-color:#2f6fb0;background:#eef5fc}
+.ctypes button.on.all{border-color:#2f7d55;background:#f0f7f3}
+.ctypes button:disabled{opacity:.4}
+.cp-form textarea{width:100%;min-height:64px;max-height:160px;resize:vertical;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:14px}
+.cp-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.cp-row label{display:inline-flex;align-items:center;gap:4px}
+.cp-row .btn{margin-left:auto;min-height:34px;padding:6px 14px}
+.ccount{display:inline-flex;align-items:center;gap:2px}
+.ccount.unread{color:#d9480f;font-weight:700}
+.pane-h .cbadge{position:absolute;top:3px;right:3px;min-width:15px;height:15px;border-radius:8px;background:#d9480f;color:#fff;font-size:10px;line-height:15px;text-align:center;padding:0 3px}
+.pane-scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;position:relative}
+.pages{display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px;width:max-content;min-width:100%}
+.page{position:relative;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.35);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.page canvas{position:absolute;left:0;top:0;width:100%;height:100%}
+.page .ink{mix-blend-mode:multiply;touch-action:auto}
+.viewer.drawing .page .ink{touch-action:none;cursor:crosshair}
+.viewer.erasing .page .ink{touch-action:none;cursor:cell}
+.pstatus{color:#fff;text-align:center;padding:40px 16px}
+.pnum{position:absolute;right:-2px;bottom:-18px;font-size:11px;color:rgba(255,255,255,.7)}
+
+/* docx -> pdf rendering */
+.docx-render{width:680px;background:#fff;color:#000;font-family:"Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif JP","MS Mincho",serif;font-size:10.5pt;line-height:1.75;word-break:break-all}
+.docx-render p{margin:0 0 .2em}
+.docx-render p:empty::after{content:"\00a0"}
+.docx-render h1{font-size:16pt;margin:.4em 0}.docx-render h2{font-size:14pt;margin:.4em 0}.docx-render h3{font-size:12pt;margin:.4em 0}
+.docx-render table{border-collapse:collapse;width:100%;margin:.4em 0}
+.docx-render td,.docx-render th{border:1px solid #777;padding:3px 6px;vertical-align:top}
+.docx-render img{max-width:100%;height:auto}
+.docx-render ul,.docx-render ol{margin:.2em 0;padding-left:1.6em}
+
+@media (max-width:760px){
+  .center-wrap{padding:24px 12px}
+  .panel{padding:22px 18px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+  .tb-hide-sm{display:none!important}
+  .panes.multi{grid-auto-flow:row;grid-auto-rows:1fr}
+  .panes.multi .pane.tab-hidden{display:none}
+  .vtabs.show{display:flex}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+/* =====================================================================
+   ヨミクラーベ — 文書を「テーブル」に並べて読み比べるアプリ
+   ---------------------------------------------------------------------
+   ▼ Firebase の設定をここに貼り付けてください（README.md 参照）
+     空のままだと「デモモード」（この端末のこのブラウザ内だけで動作）になります。
+   ===================================================================== */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAz74Mvj_-tjVVyHnZ3-dpBXojyyly4uWY",
+  authDomain: "yomikurabe-a0357.firebaseapp.com",
+  databaseURL: "https://yomikurabe-a0357-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "yomikurabe-a0357",
+  storageBucket: "yomikurabe-a0357.firebasestorage.app",
+  messagingSenderId: "11549072007",
+  appId: "1:11549072007:web:2b4d6cd6fe8ab67aec7622"
+};
+</script>
+
+<script>
+(() => {
+'use strict';
+
+const DEMO = !FIREBASE_CONFIG.apiKey || !FIREBASE_CONFIG.databaseURL;
+const FB_VER = '10.12.2';
+const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+const LIB = {
+  mammoth: 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js',
+  html2pdf: 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js',
+  qr: 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js',
+  jspdf: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
+};
+const MAX_BYTES = 15 * 1024 * 1024;
+const ACCEPT = '.pdf,.docx,.jpg,.jpeg,.png,.gif,.webp,.heic,.heif,.bmp,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*';
+const isImage = f => (f.type || '').startsWith('image/') || /\.(jpe?g|png|gif|webp|heic|heif|bmp)$/i.test(f.name);
+const isDocx = f => /\.docx$/i.test(f.name);
+const isPdf = f => /\.pdf$/i.test(f.name) || f.type === 'application/pdf';
+const okFile = f => isPdf(f) || isDocx(f) || isImage(f);
+const stripExt = n => n.replace(/\.[^.]+$/, '');
+const TYPE_LABEL = { pdf: 'PDF', docx: 'Word', image: '画像' };
+const TYPE_CLS = { pdf: '', docx: ' w', image: ' im' };
+const GROUP_COLORS = ['#e76f51','#2a9d8f','#e9c46a','#457b9d','#8e7dbe','#d16ba5','#f4a261','#6c757d'];
+const PEN_COLORS = ['#1f2937','#dc2626','#2563eb','#16a34a'];
+const MARKER_COLORS = ['#fde047','#f9a8d4','#86efac','#93c5fd'];
+const SIZES = { pen:[1.5,3,5], marker:[12,20,30] }; // 幅800pxのページ基準(px)
+const ZOOMS = [0.5,0.67,0.8,1,1.25,1.5,2,2.5,3];
+
+if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS + 'pdf.worker.min.js';
+
+/* ---------------- icons ---------------- */
+const ICONS = {
+  back:'<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>',
+  upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+  download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
+  star:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  more:'<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
+  hand:'<path d="M18 11V6a2 2 0 0 0-4 0v0"/><path d="M14 10V4a2 2 0 0 0-4 0v2"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>',
+  pen:'<path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>',
+  marker:'<path d="m9 11-6 6v3h9l3-3"/><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/>',
+  eraser:'<path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/>',
+  undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/>',
+  trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+  plus:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+  x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+  columns:'<path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7m0-18H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7m0-18v18"/>',
+  grid:'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
+  list:'<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  check:'<polyline points="20 6 9 17 4 12"/>',
+  checkSq:'<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+  doc:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
+  chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  memo:'<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
+  zoomIn:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>',
+  zoomOut:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  unlock:'<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
+  layers:'<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+  search:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+  user:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  anon:'<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>',
+  logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>',
+  sync:'<polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/>',
+  book:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  key:'<path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>',
+  swap:'<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>',
+  shuffle:'<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/>',
+  alert:'<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+  bar:'<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>',
+  image:'<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
+  folder:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>'
+};
+function icon(n, cls = '') {
+  const s = document.createElement('span');
+  s.className = 'ic ' + cls;
+  const fill = n === 'starFill' ? 'currentColor' : 'none';
+  s.innerHTML = `<svg viewBox="0 0 24 24" fill="${fill}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[n === 'starFill' ? 'star' : n] || ''}</svg>`;
+  return s;
+}
+
+/* ---------------- helpers ---------------- */
+function h(tag, props, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v;
+    else if (k === 'style' && typeof v === 'object') {
+      for (const [sk, sv] of Object.entries(v)) sk.startsWith('--') ? el.style.setProperty(sk, sv) : (el.style[sk] = sv);
+    } else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2).toLowerCase(), v);
+    else if (k === 'html') el.innerHTML = v;
+    else if (k === 'value') el.value = v;
+    else el.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat(Infinity)) {
+    if (c == null || c === false) continue;
+    el.append(c instanceof Node ? c : document.createTextNode(String(c)));
+  }
+  return el;
+}
+const $ = (s, el = document) => el.querySelector(s);
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+const rid = (n = 8) => Array.from(crypto.getRandomValues(new Uint8Array(n)), b => (b % 36).toString(36)).join('');
+async function sha256(s) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf), b => b.toString(16).padStart(2, '0')).join('');
+}
+function fmtSize(b) { return b > 1048576 ? (b / 1048576).toFixed(1) + 'MB' : Math.max(1, Math.round(b / 1024)) + 'KB'; }
+function fmtTime(t) {
+  const d = new Date(t), now = new Date();
+  const hm = d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
+  return d.toDateString() === now.toDateString() ? hm : `${d.getMonth() + 1}/${d.getDate()} ${hm}`;
+}
+const loaded = {};
+function loadScript(src) {
+  return loaded[src] ||= new Promise((res, rej) => {
+    const s = document.createElement('script'); s.src = src; s.onload = res;
+    s.onerror = () => { delete loaded[src]; rej(new Error('ライブラリを読み込めませんでした')); };
+    document.head.append(s);
+  });
+}
+let toastTimer;
+function toast(msg) {
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+  const t = h('div', { class: 'toast' }, msg); document.body.append(t);
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.remove(), 2600);
+}
+async function copyText(s) {
+  try { await navigator.clipboard.writeText(s); toast('コピーしました'); }
+  catch { await askText('コピーしてください', '', s); }
+}
+
+/* ---------------- IndexedDB (端末内保存) ---------------- */
+const idb = (() => {
+  let dbp;
+  const open = () => dbp ||= new Promise((res, rej) => {
+    const r = indexedDB.open('yomikurabe', 1);
+    r.onupgradeneeded = () => { for (const n of ['ann', 'pdf', 'demo']) if (!r.result.objectStoreNames.contains(n)) r.result.createObjectStore(n); };
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  });
+  const tx = async (store, mode, fn) => {
+    const d = await open();
+    return new Promise((res, rej) => {
+      const t = d.transaction(store, mode); const req = fn(t.objectStore(store));
+      t.oncomplete = () => res(req ? req.result : undefined); t.onerror = () => rej(t.error);
+    });
+  };
+  const safe = p => p.catch(e => { console.warn('idb', e); return undefined; });
+  return {
+    get: (s, k) => safe(tx(s, 'readonly', st => st.get(k))),
+    set: (s, k, v) => safe(tx(s, 'readwrite', st => st.put(v, k))),
+    del: (s, k) => safe(tx(s, 'readwrite', st => st.delete(k)))
+  };
+})();
+
+/* ---------------- バックエンド：デモ（この端末内） ---------------- */
+function makeDemoBackend() {
+  let db; const listeners = new Map();
+  const bc = 'BroadcastChannel' in window ? new BroadcastChannel('yk-demo') : null;
+  const clone = o => o == null ? null : JSON.parse(JSON.stringify(o));
+  const load = async () => { db = (await idb.get('demo', 'db')) || { config: {}, tables: {}, blobs: {} }; };
+  const notify = code => { for (const cb of listeners.get(code) || []) cb(clone(db.tables[code])); };
+  const save = async code => { await idb.set('demo', 'db', db); if (code) notify(code); bc?.postMessage({ code }); };
+  if (bc) bc.onmessage = async e => { await load(); if (e.data.code) notify(e.data.code); };
+  const ready = load();
+  return {
+    demo: true,
+    async getConfig() { await ready; return clone(db.config); },
+    async setTeacherHash(v) { await ready; db.config.teacherHash = v; await save(); },
+    async createTable(code, meta) { await ready; db.tables[code] = { meta, files: {} }; await save(code); },
+    async getTableMeta(code) { await ready; return clone(db.tables[code]?.meta); },
+    async listTables() { await ready; return Object.entries(db.tables).map(([code, t]) => ({ code, ...t.meta, count: Object.keys(t.files || {}).length })); },
+    async updateTableMeta(code, patch) { await ready; Object.assign(db.tables[code].meta, patch); await save(code); },
+    async deleteTable(code) { await ready; delete db.tables[code]; delete db.blobs[code]; await save(code); },
+    watchTable(code, cb) {
+      if (!listeners.has(code)) listeners.set(code, new Set());
+      listeners.get(code).add(cb); ready.then(() => cb(clone(db.tables[code])));
+      return () => listeners.get(code)?.delete(cb);
+    },
+    newId: () => Date.now().toString(36) + rid(4),
+    async addFile(code, id, meta, chunks, onProgress) {
+      await ready; (db.blobs[code] ||= {})[id] = chunks; onProgress?.(1);
+      (db.tables[code].files ||= {})[id] = meta; await save(code);
+    },
+    async getFileData(code, id) { await ready; return db.blobs[code]?.[id] || null; },
+    async updateFile(code, id, patch) { await ready; Object.assign(db.tables[code].files[id], patch); await save(code); },
+    async replaceFile(code, id, oldKey, newKey, patch, chunks, onProgress) {
+      await ready; (db.blobs[code] ||= {})[newKey] = chunks; onProgress?.(1);
+      Object.assign(db.tables[code].files[id], patch); if (oldKey !== newKey) delete db.blobs[code][oldKey]; await save(code);
+    },
+    async tset(code, path, val) { await ready; const parts = path.split('/'); let o = db.tables[code]; for (const k of parts.slice(0, -1)) o = (o[k] ||= {}); if (val == null) delete o[parts.at(-1)]; else o[parts.at(-1)] = val; await save(code); },
+    async tupdate(code, path, patch) { await ready; const parts = path.split('/'); let o = db.tables[code]; for (const k of parts) o = (o[k] ||= {}); Object.assign(o, patch); await save(code); },
+    async addComment(code, fid, cid, c) { await ready; ((db.tables[code].comments ||= {})[fid] ||= {})[cid] = c; await save(code); },
+    async deleteComment(code, fid, cid) { await ready; const cs = db.tables[code]?.comments; if (!cs) return; if (cid) delete cs[fid]?.[cid]; else delete cs[fid]; await save(code); },
+    async deleteFile(code, id, key) { await ready; delete db.tables[code].files[id]; delete db.blobs[code]?.[id]; if (key) delete db.blobs[code]?.[key]; await save(code); }
+  };
+}
+
+/* ---------------- バックエンド：Firebase Realtime Database ---------------- */
+async function makeFirebaseBackend(cfg) {
+  const appMod = await import(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-app.js`);
+  const D = await import(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-database.js`);
+  const db = D.getDatabase(appMod.initializeApp(cfg));
+  const R = p => D.ref(db, p);
+  const val = async p => (await D.get(R(p))).val();
+  return {
+    demo: false,
+    async getConfig() { return (await val('config')) || {}; },
+    async setTeacherHash(v) { await D.set(R('config/teacherHash'), v); },
+    async createTable(code, meta) {
+      await D.set(R(`tables/${code}/meta`), meta);
+      await D.set(R(`tableIndex/${code}`), { name: meta.name, createdAt: meta.createdAt });
+    },
+    getTableMeta: code => val(`tables/${code}/meta`),
+    async listTables() { const v = (await val('tableIndex')) || {}; return Object.entries(v).map(([code, m]) => ({ code, ...m })); },
+    async updateTableMeta(code, patch) {
+      await D.update(R(`tables/${code}/meta`), patch);
+      if (patch.name) await D.update(R(`tableIndex/${code}`), { name: patch.name });
+    },
+    async deleteTable(code) { await D.remove(R(`blobs/${code}`)); await D.remove(R(`tables/${code}`)); await D.remove(R(`tableIndex/${code}`)); },
+    watchTable(code, cb) { return D.onValue(R(`tables/${code}`), s => cb(s.val()), e => { console.error(e); toast('通信エラー：' + e.message); }); },
+    newId: () => D.push(R('_ids')).key,
+    async addFile(code, id, meta, chunks, onProgress) {
+      for (let i = 0; i < chunks.length; i++) { await D.set(R(`blobs/${code}/${id}/${i}`), chunks[i]); onProgress?.((i + 1) / chunks.length); }
+      await D.set(R(`tables/${code}/files/${id}`), meta);
+    },
+    async getFileData(code, id) {
+      const v = await val(`blobs/${code}/${id}`); if (!v) return null;
+      return Array.isArray(v) ? v : Object.keys(v).sort((a, b) => a - b).map(k => v[k]);
+    },
+    updateFile: (code, id, patch) => D.update(R(`tables/${code}/files/${id}`), patch),
+    async replaceFile(code, id, oldKey, newKey, patch, chunks, onProgress) {
+      for (let i = 0; i < chunks.length; i++) { await D.set(R(`blobs/${code}/${newKey}/${i}`), chunks[i]); onProgress?.((i + 1) / chunks.length); }
+      await D.update(R(`tables/${code}/files/${id}`), patch);
+      if (oldKey !== newKey) await D.remove(R(`blobs/${code}/${oldKey}`)).catch(() => {});
+    },
+    tset: (code, path, val) => val == null ? D.remove(R(`tables/${code}/${path}`)) : D.set(R(`tables/${code}/${path}`), val),
+    tupdate: (code, path, patch) => D.update(R(`tables/${code}/${path}`), patch),
+    addComment: (code, fid, cid, c) => D.set(R(`tables/${code}/comments/${fid}/${cid}`), c),
+    deleteComment: (code, fid, cid) => D.remove(R(`tables/${code}/comments/${fid}` + (cid ? `/${cid}` : ''))),
+    async deleteFile(code, id, key) {
+      await D.remove(R(`tables/${code}/files/${id}`));
+      await D.remove(R(`blobs/${code}/${key || id}`));
+      if (key && key !== id) await D.remove(R(`blobs/${code}/${id}`)).catch(() => {});
+    }
+  };
+}
+
+/* ---------------- binary <-> base64 chunks ---------------- */
+function bytesToChunks(u8, size = 393216) {
+  const out = [];
+  for (let i = 0; i < u8.length; i += size) {
+    const sub = u8.subarray(i, i + size); let s = '';
+    for (let j = 0; j < sub.length; j += 0x8000) s += String.fromCharCode.apply(null, sub.subarray(j, j + 0x8000));
+    out.push(btoa(s));
+  }
+  return out;
+}
+function chunksToBytes(chunks) {
+  const parts = chunks.map(b => { const s = atob(b); const u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u; });
+  const out = new Uint8Array(parts.reduce((a, p) => a + p.length, 0)); let o = 0;
+  for (const p of parts) { out.set(p, o); o += p.length; }
+  return out;
+}
+
+/* ---------------- PDF ---------------- */
+function openPdf(bytes) {
+  if (!window.pdfjsLib) throw new Error('PDF表示ライブラリを読み込めませんでした（ネット接続を確認）');
+  return pdfjsLib.getDocument({ data: bytes.slice(0), cMapUrl: PDFJS + 'cmaps/', cMapPacked: true, standardFontDataUrl: PDFJS + 'standard_fonts/' }).promise;
+}
+async function makeThumb(pdf) {
+  const page = await pdf.getPage(1);
+  const vp0 = page.getViewport({ scale: 1 });
+  const vp = page.getViewport({ scale: 260 / vp0.width });
+  const c = document.createElement('canvas'); c.width = Math.round(vp.width); c.height = Math.round(Math.min(vp.height, 260 * 1.6));
+  const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+  await page.render({ canvasContext: ctx, viewport: vp }).promise;
+  return c.toDataURL('image/jpeg', 0.7);
+}
+async function docxToPdf(file) {
+  await loadScript(LIB.mammoth); await loadScript(LIB.html2pdf);
+  const arrayBuffer = await file.arrayBuffer();
+  const { value: html } = await mammoth.convertToHtml({ arrayBuffer }, { ignoreEmptyParagraphs: false });
+  const wrap = h('div', { class: 'docx-render', html });
+  const host = h('div', { style: { position: 'fixed', left: '-10000px', top: '0' } }, wrap);
+  document.body.append(host);
+  try {
+    await Promise.all([...wrap.querySelectorAll('img')].map(img => img.complete ? 0 : new Promise(r => { img.onload = img.onerror = r; })));
+    const ab = await html2pdf().set({
+      margin: [15, 15, 15, 15],
+      image: { type: 'jpeg', quality: 0.9 },
+      html2canvas: { scale: 2, backgroundColor: '#ffffff', logging: false },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css', 'legacy'], avoid: ['tr', 'img', 'li', 'p', 'h1', 'h2', 'h3'] }
+    }).from(wrap).outputPdf('arraybuffer');
+    return new Uint8Array(ab);
+  } finally { host.remove(); }
+}
+// 置き換えのたびに新しいキー（id~v2, id~v3 …）に保存する
+const blobKeyOf = f => f.blobKey || f.id;
+const verOf = f => f.version || 1;
+const pdfKey = key => S.code + '/' + key;
+async function getPdfBytes(f) {
+  const key = blobKeyOf(f);
+  const cached = await idb.get('pdf', pdfKey(key));
+  if (cached) return new Uint8Array(cached);
+  const chunks = await S.backend.getFileData(S.code, key);
+  if (!chunks) throw new Error('ファイルのデータが見つかりません（置き換え・削除された可能性があります）');
+  const bytes = chunksToBytes(chunks);
+  idb.set('pdf', pdfKey(key), bytes.buffer.slice(0));
+  return bytes;
+}
+// 画像 → PDF（複数枚なら1ページずつ）。長辺2400pxまで縮小してJPEGで埋め込む
+async function imageToJpeg(file) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error(`画像を読み込めませんでした（${file.name}）`)); i.src = url; });
+    const sc = Math.min(1, 2400 / Math.max(img.naturalWidth, img.naturalHeight));
+    const w = Math.max(1, Math.round(img.naturalWidth * sc)), hh = Math.max(1, Math.round(img.naturalHeight * sc));
+    const c = document.createElement('canvas'); c.width = w; c.height = hh;
+    const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, hh); ctx.drawImage(img, 0, 0, w, hh);
+    return { data: c.toDataURL('image/jpeg', 0.88), w, h: hh };
+  } finally { URL.revokeObjectURL(url); }
+}
+async function imagesToPdf(files) {
+  if (!window.jspdf?.jsPDF) await loadScript(LIB.jspdf);
+  const { jsPDF } = window.jspdf; let doc;
+  for (const f of files) {
+    const { data, w, h: hh } = await imageToJpeg(f);
+    const o = w > hh ? 'l' : 'p';
+    if (!doc) doc = new jsPDF({ unit: 'px', format: [w, hh], orientation: o, hotfixes: ['px_scaling'], compress: true });
+    else doc.addPage([w, hh], o);
+    doc.addImage(data, 'JPEG', 0, 0, w, hh);
+  }
+  return new Uint8Array(doc.output('arraybuffer'));
+}
+// アップロード・置き換え共通：PDF化してページ数とサムネイルを作る（files は1つ、または画像の配列）
+async function preparePdf(files, onStatus) {
+  files = [].concat(files);
+  let bytes, srcType;
+  if (files.every(isImage)) { onStatus?.('画像をPDFに変換中…'); bytes = await imagesToPdf(files); srcType = 'image'; }
+  else if (isDocx(files[0])) { onStatus?.('変換中…'); bytes = await docxToPdf(files[0]); srcType = 'docx'; }
+  else { bytes = new Uint8Array(await files[0].arrayBuffer()); srcType = 'pdf'; }
+  if (bytes.length > MAX_BYTES) throw new Error(`大きすぎます（${fmtSize(bytes.length)}、上限15MB）`);
+  onStatus?.('確認中…');
+  const pdf = await openPdf(bytes);
+  const pages = pdf.numPages; const thumb = await makeThumb(pdf).catch(() => null); pdf.destroy();
+  return { bytes, pages, thumb, srcType };
+}
+
+/* ---------------- state ---------------- */
+const S = {
+  backend: null, teacher: false,
+  me: { name: LS.get('yk:name', ''), deviceId: LS.get('yk:device', null) || (() => { const d = rid(12); LS.set('yk:device', d); return d; })() },
+  code: null, table: null, files: [], comments: {}, polls: {}, votes: {}, pollViews: new Set(), unwatch: null, el: null,
+  prefs: null,
+  ui: { filter: 'all', sort: ['upload', 'title', 'random'].includes(LS.get('yk:sort')) ? LS.get('yk:sort') : 'upload', layout: LS.get('yk:layout', 'grid'), groupView: LS.get('yk:gview', false), search: '', select: false, selected: new Set() }
+};
+const app = $('#app');
+function mount(...nodes) { app.replaceChildren(...(DEMO ? [h('div', { class: 'demo-bar' }, 'デモモード：Firebase未設定のため、この端末のこのブラウザ内だけで動いています（別タブで開くと複数人の動作を試せます）')] : []), ...nodes); }
+function loadPrefs(code) {
+  const p = LS.get('yk:p:' + code, {});
+  return { fav: p.fav || {}, groups: p.groups || [], assign: p.assign || {}, seen: p.seen || {}, inked: p.inked || {}, mine: p.mine || {},
+    notes: p.notes || {}, myc: p.myc || {}, cseen: p.cseen || {}, vkeys: p.vkeys || {} };
+}
+function savePrefs() { if (S.code) LS.set('yk:p:' + S.code, S.prefs); }
+const groupOf = id => S.prefs.groups.find(g => g.id === S.prefs.assign[id]) || null;
+const canEdit = f => S.teacher || !!S.prefs.mine[f.id];
+/* 表示名：匿名処理（先生がON）なら ul01, ul02…（アップ順）。タイトル表示ONなら「名前_タイトル」 */
+const ulName = f => 'ul' + String(f.no || 0).padStart(2, '0');
+const isAnonView = () => !!S.table?.anonymize;
+const showTitles = () => S.table?.showTitle !== false;
+const nameOf = f => isAnonView() ? ulName(f) : (f.author || '（署名なし）');
+const fileLabel = f => showTitles() ? `${nameOf(f)}_${f.title || ''}` : nameOf(f);
+const liveFile = f => S.files.find(x => x.id === f.id) || f;
+function hashCode() { const m = location.hash.match(/t=([A-Za-z0-9]+)/); return m ? m[1].toUpperCase() : ''; }
+function shareUrl(code) { return location.origin + location.pathname + '#t=' + code; }
+
+/* ---------------- popover / modal ---------------- */
+let popEl = null, popOff = null;
+function closePop() { popEl?.remove(); popEl = null; popOff?.(); popOff = null; }
+function popMenu(anchor, items) {
+  closePop();
+  const m = h('div', { class: 'pop' }, items.filter(Boolean).map(it =>
+    it === '-' ? h('div', { class: 'pop-sep' }) :
+    it.header ? h('div', { class: 'pop-h' }, it.header) :
+    h('button', { class: 'pop-item' + (it.danger ? ' danger' : ''), onclick: () => { closePop(); it.action(); } },
+      it.dot ? h('i', { class: 'dot', style: { background: it.dot } }) : it.icon ? icon(it.icon) : null,
+      h('span', {}, it.text), it.checked ? icon('check', 'i-check') : null)));
+  document.body.append(m); popEl = m;
+  const r = anchor.getBoundingClientRect();
+  m.style.left = Math.max(8, Math.min(r.right - m.offsetWidth, innerWidth - m.offsetWidth - 8)) + 'px';
+  const below = r.bottom + 4;
+  m.style.top = (below + m.offsetHeight > innerHeight - 8 ? Math.max(8, r.top - m.offsetHeight - 4) : below) + 'px';
+  const off = e => { if (!m.contains(e.target)) closePop(); };
+  setTimeout(() => document.addEventListener('pointerdown', off, true));
+  popOff = () => document.removeEventListener('pointerdown', off, true);
+}
+function modal({ title, body, actions = [], wide, bind }) {
+  return new Promise(res => {
+    let done = false;
+    const close = v => { if (done) return; done = true; ov.remove(); document.removeEventListener('keydown', kd); res(v); };
+    const kd = e => { if (e.key === 'Escape' && !ov.dataset.busy) close(null); };
+    const ov = h('div', { class: 'overlay', onclick: e => { if (e.target === ov && !ov.dataset.busy) close(null); } },
+      h('div', { class: 'modal' + (wide ? ' wide' : '') },
+        h('div', { class: 'modal-h' }, h('h3', {}, title), h('button', { class: 'icon-btn', 'aria-label': '閉じる', onclick: () => { if (!ov.dataset.busy) close(null); } }, icon('x'))),
+        h('div', { class: 'modal-b' }, body),
+        actions.length ? h('div', { class: 'modal-f' }, actions.map(a => h('button', {
+          class: 'btn ' + (a.kind || ''), onclick: async () => {
+            if (a.onClick) { const r = await a.onClick(); if (r === false) return; close(r === undefined ? a.value : r); }
+            else close(a.value);
+          }
+        }, a.text))) : null));
+    document.body.append(ov); document.addEventListener('keydown', kd);
+    bind?.(close, ov);
+    setTimeout(() => ov.querySelector('input:not([type=radio]),textarea')?.focus(), 60);
+  });
+}
+function askText(title, label, value = '', okText = 'OK') {
+  const inp = h('input', { class: 'input', value });
+  let ok;
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) ok?.(inp.value.trim()); });
+  return modal({ title, body: [label ? h('p', { class: 'hint' }, label) : null, inp],
+    actions: [{ text: 'キャンセル', value: null }, { text: okText, kind: 'primary', onClick: () => inp.value.trim() }],
+    bind: close => { ok = close; } });
+}
+function confirmBox(title, msg, okText = 'OK', danger = false) {
+  return modal({ title, body: h('p', { style: { lineHeight: '1.7', margin: '0' } }, msg),
+    actions: [{ text: 'キャンセル', value: false }, { text: okText, kind: danger ? 'danger' : 'primary', value: true }] });
+}
+
+/* =====================================================================
+   画面：参加
+   ===================================================================== */
+function stopWatch() { S.unwatch?.(); S.unwatch = null; }
+function renderJoin(msg) {
+  stopWatch(); S.code = null;
+  const codeIn = h('input', { class: 'input code-input', placeholder: 'コード', maxlength: '8', autocapitalize: 'characters', autocomplete: 'off', value: hashCode() });
+  const nameIn = h('input', { class: 'input', placeholder: '例：3番 山田', value: S.me.name, autocomplete: 'off' });
+  const err = h('div', { class: 'err' }, msg || '');
+  const btn = h('button', { class: 'btn primary', style: { width: '100%' }, onclick: join }, '参加する');
+  async function join() {
+    const code = codeIn.value.trim().toUpperCase(), name = nameIn.value.trim();
+    if (!code) return void (err.textContent = 'テーブルコードを入れてください');
+    if (!name) return void (err.textContent = '名前を入れてください');
+    btn.disabled = true; err.textContent = '';
+    try {
+      const meta = await S.backend.getTableMeta(code);
+      if (!meta) { err.textContent = 'そのコードのテーブルは見つかりません'; return; }
+      S.me.name = name; LS.set('yk:name', name); enterTable(code);
+    } catch (e) { err.textContent = '接続できませんでした：' + e.message; }
+    finally { btn.disabled = false; }
+  }
+  [codeIn, nameIn].forEach(i => i.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) join(); }));
+  const recent = LS.get('yk:recent', []);
+  mount(h('div', { class: 'center-wrap' }, h('div', { class: 'panel' },
+    h('div', { class: 'logo' }, h('div', { class: 'logo-mark' }, icon('book')), h('h1', {}, 'ヨミクラーベ')),
+    h('p', { class: 'tagline' }, '文書をテーブルに並べて、読み比べる'),
+    h('div', { class: 'field' }, h('label', {}, 'テーブルコード'), codeIn),
+    h('div', { class: 'field' }, h('label', {}, 'あなたの名前'), nameIn),
+    btn, err,
+    recent.length ? h('div', { class: 'recent' }, h('h4', {}, '最近のテーブル'),
+      recent.slice(0, 5).map(r => h('button', { class: 'recent-item', onclick: () => { codeIn.value = r.code; if (nameIn.value.trim()) join(); else nameIn.focus(); } },
+        h('span', {}, r.name), h('code', {}, r.code)))) : null,
+    h('div', { style: { marginTop: '18px', textAlign: 'center' } },
+      h('button', { class: 'linkish', onclick: renderTeacher }, icon('key'), '先生メニュー（テーブルを作る）'))
+  )));
+  if (!codeIn.value) codeIn.focus();
+}
+
+/* =====================================================================
+   画面：先生メニュー
+   ===================================================================== */
+async function renderTeacher() {
+  stopWatch(); S.code = null;
+  const cfg = await S.backend.getConfig();
+  const back = h('button', { class: 'linkish', onclick: () => renderJoin() }, icon('back'), '参加画面へ');
+  const err = h('div', { class: 'err' });
+  if (!cfg.teacherHash) {
+    const p1 = h('input', { class: 'input', type: 'password', placeholder: '合言葉' });
+    const p2 = h('input', { class: 'input', type: 'password', placeholder: 'もう一度' });
+    mount(h('div', { class: 'center-wrap' }, h('div', { class: 'panel' }, back,
+      h('h2', {}, '先生用の合言葉を決める'),
+      h('p', { class: 'hint' }, '最初の1回だけ設定します。テーブルの作成・削除や、他の人の文書の削除に使います。'),
+      h('div', { class: 'field' }, p1), h('div', { class: 'field' }, p2), err,
+      h('button', { class: 'btn primary', style: { width: '100%' }, onclick: async () => {
+        if (p1.value.length < 4) return void (err.textContent = '4文字以上にしてください');
+        if (p1.value !== p2.value) return void (err.textContent = '2つが一致しません');
+        const hh = await sha256('yk:' + p1.value);
+        try { await S.backend.setTeacherHash(hh); LS.set('yk:teacher', hh); S.teacher = true; renderTeacher(); }
+        catch (e) { err.textContent = '保存できませんでした：' + e.message; }
+      } }, '設定する'))));
+    return p1.focus();
+  }
+  if (LS.get('yk:teacher') !== cfg.teacherHash) {
+    S.teacher = false;
+    const p = h('input', { class: 'input', type: 'password', placeholder: '先生用の合言葉' });
+    const go = async () => {
+      const hh = await sha256('yk:' + p.value);
+      if (hh !== cfg.teacherHash) return void (err.textContent = '合言葉が違います');
+      LS.set('yk:teacher', hh); S.teacher = true; renderTeacher();
+    };
+    p.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+    mount(h('div', { class: 'center-wrap' }, h('div', { class: 'panel' }, back,
+      h('h2', {}, '先生メニュー'), h('div', { class: 'field' }, p), err,
+      h('button', { class: 'btn primary', style: { width: '100%' }, onclick: go }, '入る'))));
+    return p.focus();
+  }
+  S.teacher = true;
+  const nameIn = h('input', { class: 'input', placeholder: '例：2年1組 国語「羅生門」感想' });
+  const list = h('div', { class: 'tlist' }, h('p', { class: 'hint' }, '読み込み中…'));
+  const create = async () => {
+    const name = nameIn.value.trim(); if (!name) return void (err.textContent = 'テーブル名を入れてください');
+    const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; let code;
+    for (let i = 0; i < 20; i++) {
+      code = Array.from(crypto.getRandomValues(new Uint8Array(5)), b => A[b % A.length]).join('');
+      if (!(await S.backend.getTableMeta(code))) break;
+    }
+    await S.backend.createTable(code, { name, createdAt: Date.now(), locked: false });
+    nameIn.value = ''; err.textContent = ''; toast('テーブル「' + name + '」を作りました'); drawList();
+  };
+  nameIn.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) create(); });
+  async function drawList() {
+    const ts = (await S.backend.listTables()).sort((a, b) => b.createdAt - a.createdAt);
+    list.replaceChildren(...(ts.length ? ts.map(t => h('div', { class: 'trow' },
+      h('div', { class: 'tn' }, h('b', {}, t.name), h('small', {}, new Date(t.createdAt).toLocaleDateString('ja-JP'), t.count != null ? ` ・ ${t.count}件` : '')),
+      h('span', { class: 'code-pill' }, t.code),
+      h('button', { class: 'btn', onclick: () => showShare(t.code, t.name) }, icon('link'), '共有'),
+      h('button', { class: 'btn primary', onclick: () => { if (!S.me.name) { S.me.name = '先生'; LS.set('yk:name', '先生'); } enterTable(t.code); } }, '開く'),
+      h('button', { class: 'icon-btn', title: '削除', onclick: async () => {
+        if (await confirmBox('テーブルを削除', `「${t.name}」と、アップされた文書をすべて削除します。元に戻せません。`, '削除する', true)) {
+          await S.backend.deleteTable(t.code); toast('削除しました'); drawList();
+        }
+      } }, icon('trash'))
+    )) : [h('p', { class: 'hint' }, 'まだテーブルがありません。')]));
+  }
+  mount(h('div', { class: 'center-wrap' }, h('div', { class: 'panel wide' },
+    h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } }, back,
+      h('button', { class: 'linkish', onclick: () => { LS.set('yk:teacher', null); S.teacher = false; toast('先生モードを終了しました'); renderJoin(); } }, icon('logout'), '先生モード終了')),
+    h('h2', {}, '先生メニュー'),
+    h('div', { class: 'field' }, h('label', {}, '新しいテーブル'),
+      h('div', { style: { display: 'flex', gap: '8px' } }, nameIn, h('button', { class: 'btn primary', onclick: create }, icon('plus'), '作成'))),
+    err,
+    h('h3', { style: { marginBottom: '0' } }, 'テーブル一覧'), list
+  )));
+  drawList();
+}
+async function showShare(code, name) {
+  const qr = h('div', { class: 'qr' });
+  modal({ title: name || 'テーブルに参加', wide: false, body: [
+    h('p', { class: 'hint', style: { textAlign: 'center', margin: '0' } }, 'テーブルコード'),
+    h('div', { class: 'share-code' }, code), qr,
+    h('div', { style: { display: 'flex', gap: '8px' } }, h('input', { class: 'input', value: shareUrl(code), readonly: true }),
+      h('button', { class: 'btn', onclick: () => copyText(shareUrl(code)) }, 'コピー'))
+  ], actions: [{ text: '閉じる', kind: 'primary' }] });
+  try { await loadScript(LIB.qr); new QRCode(qr, { text: shareUrl(code), width: 360, height: 360, correctLevel: QRCode.CorrectLevel.M }); } catch {}
+}
+
+/* =====================================================================
+   画面：テーブル
+   ===================================================================== */
+function enterTable(code) {
+  stopWatch();
+  S.code = code; S.prefs = loadPrefs(code); S.files = []; S.table = null;
+  S.ui.select = false; S.ui.selected.clear(); S.ui.filter = 'all'; S.ui.search = '';
+  history.replaceState(null, '', '#t=' + code);
+  buildTableShell();
+  S.unwatch = S.backend.watchTable(code, t => {
+    if (S.code !== code) return;
+    if (!t || !t.meta) { closeViewer(true); renderJoin('テーブルが見つかりません（削除された可能性があります）'); history.replaceState(null, '', location.pathname); return; }
+    const first = !S.table;
+    S.table = t.meta;
+    const recent = LS.get('yk:recent', []).filter(r => r.code !== code);
+    recent.unshift({ code, name: t.meta.name }); LS.set('yk:recent', recent.slice(0, 8));
+    const prevComments = S.comments;
+    S.comments = t.comments || {};
+    const prevPolls = S.polls; S.polls = t.polls || {}; S.votes = t.votes || {};
+    S.files = Object.entries(t.files || {}).map(([id, f]) => ({ id, ...f }))
+      .sort((a, b) => (a.createdAt - b.createdAt) || (a.id < b.id ? -1 : 1));
+    S.files.forEach((f, i) => { f.no = i + 1; });
+    const ids = new Set(S.files.map(f => f.id));
+    for (const id of [...S.ui.selected]) if (!ids.has(id)) S.ui.selected.delete(id);
+    updateTable();
+    checkPanesForChanges();
+    if (!first) { notifyNewComments(prevComments); notifyNewPolls(prevPolls); }
+    S.pollViews.forEach(fn => fn());
+    V.panes?.forEach(p => { p.updateLabel(); if (p.cpanel && !p.cpanel.hidden) p.drawComments(); });
+    if (V.el && !V.el.hidden) drawTabs();
+  });
+}
+
+function buildTableShell() {
+  const E = S.el = {};
+  E.title = h('h2', {}, '…');
+  E.sub = h('div', { class: 'sub' });
+  E.upBtn = h('button', { class: 'btn primary', onclick: () => E.fileIn.click() }, icon('upload'), h('span', { class: 'tb-hide-sm' }, 'アップロード'));
+  E.voteBtn = h('button', { class: 'btn vote-btn', onclick: openPolls }, icon('bar'), h('span', { class: 'tb-hide-sm' }, '投票'));
+  E.pollBar = h('div', { class: 'poll-bar', hidden: true });
+  E.fileIn = h('input', { type: 'file', accept: ACCEPT, multiple: true, hidden: true,
+    onchange: e => { const fs = [...e.target.files]; e.target.value = ''; if (fs.length) startUpload(fs); } });
+  const search = h('input', { class: 'input', type: 'search', placeholder: '表示名で検索' });
+  search.addEventListener('input', () => { S.ui.search = search.value; drawGrid(); });
+  E.shuffle = h('button', { class: 'tg', title: 'ランダムに並べ直す', hidden: S.ui.sort !== 'random', onclick: () => { LS.set('yk:seed:' + S.code, rid(6)); drawGrid(); toast('並べ直しました'); } }, icon('shuffle', 'i-s'), 'シャッフル');
+  const sort = h('select', { class: 'input', 'aria-label': '並び順', onchange: e => {
+    S.ui.sort = e.target.value; LS.set('yk:sort', S.ui.sort); E.shuffle.hidden = S.ui.sort !== 'random'; drawGrid();
+  } }, [['upload', 'アップロード順'], ['title', 'ファイル名順'], ['random', 'ランダム']].map(([v, t]) => h('option', { value: v, selected: S.ui.sort === v }, t)));
+  E.layout = h('div', { class: 'seg' },
+    h('button', { title: 'アイコン表示', 'data-v': 'grid', onclick: () => setLayout('grid') }, icon('grid')),
+    h('button', { title: 'リスト表示', 'data-v': 'list', onclick: () => setLayout('list') }, icon('list')));
+  E.gview = h('button', { class: 'tg', onclick: () => { S.ui.groupView = !S.ui.groupView; LS.set('yk:gview', S.ui.groupView); updateTable(); } }, icon('layers', 'i-s'), 'グループ別');
+  E.selTg = h('button', { class: 'tg', onclick: () => { S.ui.select = !S.ui.select; S.ui.selected.clear(); updateTable(); } }, icon('checkSq', 'i-s'), '選択');
+  E.chips = h('div', { class: 'chips' });
+  E.teacherBar = h('div', { class: 'teacher-bar' });
+  E.notice = h('div', { class: 'notice' });
+  E.grid = h('div', { class: 'main' });
+  E.selbar = h('div', { class: 'selbar', hidden: true });
+  mount(
+    h('div', { class: 'topbar' }, h('div', { class: 'topbar-in' },
+      h('button', { class: 'icon-btn', title: 'テーブルを出る', onclick: () => { S.code = null; history.replaceState(null, '', location.pathname); S.teacher ? renderTeacher() : renderJoin(); } }, icon('back')),
+      h('div', { class: 'tb-title' }, E.title, E.sub),
+      E.voteBtn, E.upBtn, E.fileIn)),
+    h('div', { class: 'toolbar' },
+      h('div', { class: 'search' }, icon('search'), search), sort, E.shuffle, E.layout, E.gview, E.selTg,
+      h('button', { class: 'tg', onclick: manageGroups }, icon('folder', 'i-s'), 'グループ管理')),
+    E.chips, E.pollBar, E.teacherBar, E.notice, E.grid, E.selbar);
+  // drag & drop
+  let dz = null, depth = 0;
+  const hasFiles = e => [...(e.dataTransfer?.types || [])].includes('Files');
+  app.ondragenter = e => { if (!hasFiles(e) || !S.code) return; depth++; if (!dz) { dz = h('div', { class: 'dropzone' }, 'ここにドロップしてアップロード'); document.body.append(dz); } };
+  app.ondragleave = () => { if (--depth <= 0) { depth = 0; dz?.remove(); dz = null; } };
+  app.ondragover = e => { if (hasFiles(e)) e.preventDefault(); };
+  app.ondrop = e => { if (!hasFiles(e)) return; e.preventDefault(); depth = 0; dz?.remove(); dz = null; if (S.code) startUpload([...e.dataTransfer.files]); };
+}
+function setLayout(v) { S.ui.layout = v; LS.set('yk:layout', v); updateTable(); }
+
+function updateTable() {
+  const E = S.el; if (!E || !S.table) return;
+  document.title = S.table.name + ' - ヨミクラーベ';
+  E.title.textContent = S.table.name;
+  E.sub.replaceChildren(
+    h('button', { class: 'chip-btn', title: '参加方法を表示', onclick: () => showShare(S.code, S.table.name) }, icon('link', 'i-s'), S.code),
+    h('button', { class: 'chip-btn', title: '名前を変更', onclick: async () => {
+      const n = await askText('名前を変更', 'これから顕名でアップする文書に表示される名前です。', S.me.name, '変更');
+      if (n) { S.me.name = n; LS.set('yk:name', n); updateTable(); }
+    } }, icon('user', 'i-s'), S.me.name),
+    h('span', {}, `${S.files.length}件`));
+  const locked = !!S.table.locked;
+  E.upBtn.disabled = locked && !S.teacher;
+  E.layout.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === S.ui.layout));
+  E.gview.classList.toggle('on', S.ui.groupView);
+  E.selTg.classList.toggle('on', S.ui.select);
+  E.teacherBar.hidden = !S.teacher;
+  if (S.teacher) E.teacherBar.replaceChildren(h('div', {},
+    h('b', {}, '先生モード'), h('span', { style: { flex: '1' } }),
+    h('button', { class: 'tg' + (S.table.anonymize ? ' on' : ''), title: 'ONにすると、全員の画面で名前が ul01, ul02… になります', onclick: () => S.backend.updateTableMeta(S.code, { anonymize: !S.table.anonymize }) },
+      icon('anon', 'i-s'), '生徒に対して匿名：' + (S.table.anonymize ? 'ON' : 'OFF')),
+    h('button', { class: 'tg' + (showTitles() ? ' on' : ''), onclick: () => S.backend.updateTableMeta(S.code, { showTitle: !showTitles() }) },
+      icon('doc', 'i-s'), 'タイトル表示：' + (showTitles() ? 'ON' : 'OFF')),
+    h('button', { class: 'btn', style: { minHeight: '32px', padding: '4px 12px' }, onclick: showRoster }, icon('list', 'i-s'), '提出者対応一覧'),
+    h('button', { class: 'btn', style: { minHeight: '32px', padding: '4px 12px' }, onclick: () => S.backend.updateTableMeta(S.code, { locked: !locked }) },
+      icon(locked ? 'lock' : 'unlock', 'i-s'), locked ? 'アップ受付：停止中' : 'アップ受付：受付中'),
+    h('button', { class: 'btn', style: { minHeight: '32px', padding: '4px 12px' }, onclick: async () => {
+      const n = await askText('テーブル名を変更', '', S.table.name, '変更'); if (n) S.backend.updateTableMeta(S.code, { name: n });
+    } }, 'テーブル名変更')));
+  E.notice.hidden = !(locked && !S.teacher);
+  E.notice.replaceChildren(h('div', {}, icon('lock', 'i-s'), '現在アップロードは締め切られています（閲覧はできます）'));
+  drawChips(); drawGrid(); drawSelbar(); drawPollBar();
+}
+
+function drawChips() {
+  const fs = S.files, P = S.prefs;
+  const chip = (key, label, n, dot) => h('button', { class: 'chip' + (S.ui.filter === key ? ' on' : ''), onclick: () => { S.ui.filter = key; drawChips(); drawGrid(); } },
+    dot ? h('i', { class: 'dot', style: { background: dot } }) : null, label, h('span', { class: 'n' }, n));
+  S.el.chips.replaceChildren(...[
+    chip('all', 'すべて', fs.length),
+    chip('fav', '★ お気に入り', fs.filter(f => P.fav[f.id]).length),
+    ...P.groups.map(g => chip('g:' + g.id, g.name || '(名前なし)', fs.filter(f => P.assign[f.id] === g.id).length, g.color)),
+    P.groups.length ? chip('none', '未分類', fs.filter(f => !groupOf(f.id)).length) : null,
+    h('button', { class: 'chip', onclick: async () => { const g = await newGroupDialog(); if (g) { drawChips(); } } }, icon('plus', 'i-s'), 'グループ')].filter(Boolean));
+}
+
+function visibleFiles() {
+  let fs = S.files.slice(); const P = S.prefs, F = S.ui.filter;
+  const q = S.ui.search.trim().toLowerCase();
+  if (q) fs = fs.filter(f => fileLabel(f).toLowerCase().includes(q));
+  if (F === 'fav') fs = fs.filter(f => P.fav[f.id]);
+  else if (F === 'none') fs = fs.filter(f => !groupOf(f.id));
+  else if (F.startsWith('g:')) fs = fs.filter(f => P.assign[f.id] === F.slice(2));
+  if (S.ui.sort === 'title') {
+    const coll = new Intl.Collator('ja', { numeric: true, sensitivity: 'base' });
+    fs.sort((a, b) => coll.compare(fileLabel(a), fileLabel(b)) || a.no - b.no);
+  } else if (S.ui.sort === 'random') {
+    // 端末ごとに固定の並び（シャッフルを押すまで変わらない。新しい文書もランダムな位置に入る）
+    let seed = LS.get('yk:seed:' + S.code, null); if (!seed) { seed = rid(6); LS.set('yk:seed:' + S.code, seed); }
+    const hash = s => { let x = 2166136261; for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 16777619); } return x >>> 0; };
+    const k = new Map(fs.map(f => [f.id, hash(seed + f.id)]));
+    fs.sort((a, b) => k.get(a.id) - k.get(b.id));
+  }
+  return fs;
+}
+
+function drawGrid() {
+  const E = S.el; if (!E) return;
+  const fs = visibleFiles();
+  const mkGrid = list => h('div', { class: 'grid' + (S.ui.layout === 'list' ? ' list' : '') }, list.map(fileCard));
+  let content;
+  if (!S.files.length) {
+    content = h('div', { class: 'empty' }, icon('doc'), h('p', {}, 'まだ文書がありません。', h('br'), '右上の「アップロード」から PDF・Word・画像を追加しましょう。', h('br'), h('small', {}, 'パソコンならファイルをこの画面にドラッグしてもOKです。')));
+  } else if (!fs.length) {
+    content = h('div', { class: 'empty' }, h('p', {}, '該当する文書はありません。'));
+  } else if (S.ui.groupView && (S.ui.filter === 'all' || S.ui.filter === 'fav') && S.prefs.groups.length) {
+    const secs = [];
+    for (const g of S.prefs.groups) {
+      const l = fs.filter(f => S.prefs.assign[f.id] === g.id); if (!l.length) continue;
+      secs.push(h('div', { class: 'section-h' }, h('i', { class: 'dot', style: { background: g.color } }), g.name || '(名前なし)', h('span', { class: 'n' }, l.length + '件')), mkGrid(l));
+    }
+    const rest = fs.filter(f => !groupOf(f.id));
+    if (rest.length) secs.push(h('div', { class: 'section-h' }, '未分類', h('span', { class: 'n' }, rest.length + '件')), mkGrid(rest));
+    content = secs;
+  } else content = [h('div', { style: { height: '6px' } }), mkGrid(fs)];
+  E.grid.replaceChildren(...[content].flat());
+}
+
+function fileCard(f) {
+  const P = S.prefs, g = groupOf(f.id), fav = !!P.fav[f.id], sel = S.ui.selected.has(f.id);
+  const thumbOk = typeof f.thumb === 'string' && f.thumb.startsWith('data:image/');
+  return h('div', {
+    class: 'card' + (sel ? ' selected' : ''), 'data-id': f.id, style: g ? { '--gc': g.color } : null,
+    onclick: e => { if (e.target.closest('.no-open')) return; if (S.ui.select) toggleSel(f.id); else openViewer([f.id]); }
+  },
+    h('div', { class: 'thumb' },
+      thumbOk ? h('img', { src: f.thumb, alt: '', loading: 'lazy' }) : h('div', { class: 'thumb-ph' }, icon('doc')),
+      h('span', { class: 'badge' + (TYPE_CLS[f.srcType] || '') }, TYPE_LABEL[f.srcType] || 'PDF'),
+      !P.seen[f.id] ? h('span', { class: 'new' }, 'NEW') : (P.seen[f.id] < verOf(f) ? h('span', { class: 'new upd' }, '更新') : null),
+      S.ui.select ? h('span', { class: 'checkbox' + (sel ? ' on' : '') }, sel ? icon('check') : null) : null),
+    h('div', { class: 'meta' },
+      h('div', { class: 'title', title: fileLabel(f) }, fileLabel(f)),
+      h('div', { class: 'sub' },
+        h('span', {}, (f.pages || '?') + 'p'),
+        (() => { const cs = visibleComments(f); if (!cs.length) return null; const un = unreadCount(f, cs);
+          return h('span', { class: 'ccount' + (un ? ' unread' : ''), title: un ? `新しいコメント ${un}件` : 'コメント' }, '・', icon('chat', 'i-s'), cs.length + (un ? `（新${un}）` : '')); })(),
+        P.inked[f.id] === verOf(f) ? h('span', { title: '書き込みあり', style: { display: 'inline-flex' } }, '・', icon('memo', 'i-s')) : null),
+      g ? h('div', { class: 'gtag' }, h('i', { style: { background: g.color } }), g.name || '(名前なし)') : null),
+    h('div', { class: 'card-actions no-open' },
+      h('button', { class: 'icon-btn star' + (fav ? ' on' : ''), title: 'お気に入り', onclick: () => toggleFav([f.id]) }, icon(fav ? 'starFill' : 'star')),
+      h('button', { class: 'icon-btn', title: 'メニュー', onclick: e => fileMenu(f, e.currentTarget) }, icon('more'))));
+}
+
+function toggleSel(id) { S.ui.selected.has(id) ? S.ui.selected.delete(id) : S.ui.selected.add(id); drawGrid(); drawSelbar(); }
+function toggleFav(ids, force) {
+  const on = force ?? !ids.every(id => S.prefs.fav[id]);
+  for (const id of ids) on ? (S.prefs.fav[id] = 1) : delete S.prefs.fav[id];
+  savePrefs(); drawChips(); drawGrid();
+}
+function assignGroup(ids, gid) {
+  for (const id of ids) gid ? (S.prefs.assign[id] = gid) : delete S.prefs.assign[id];
+  savePrefs(); drawChips(); drawGrid();
+}
+function createGroup(name) {
+  const used = new Set(S.prefs.groups.map(g => g.color));
+  const color = GROUP_COLORS.find(c => !used.has(c)) || GROUP_COLORS[S.prefs.groups.length % GROUP_COLORS.length];
+  const g = { id: rid(6), name, color }; S.prefs.groups.push(g); savePrefs(); return g;
+}
+async function newGroupDialog() {
+  const n = await askText('新しいグループ', 'グループは自分の画面だけのものです（他の人には見えません）。', 'グループ' + (S.prefs.groups.length + 1), '作成');
+  return n ? createGroup(n) : null;
+}
+function groupMenuItems(ids) {
+  const cur = ids.length === 1 ? S.prefs.assign[ids[0]] : null;
+  return [
+    { header: 'グループに入れる' },
+    ...S.prefs.groups.map(g => ({ text: g.name || '(名前なし)', dot: g.color, checked: cur === g.id, action: () => assignGroup(ids, g.id) })),
+    { text: '新しいグループを作って入れる', icon: 'plus', action: async () => { const g = await newGroupDialog(); if (g) assignGroup(ids, g.id); } },
+    ids.some(id => S.prefs.assign[id]) ? { text: 'グループから外す', icon: 'x', action: () => assignGroup(ids, null) } : null
+  ];
+}
+function fileMenu(f, anchor) {
+  const fav = !!S.prefs.fav[f.id];
+  popMenu(anchor, [
+    { text: fav ? 'お気に入りから外す' : 'お気に入りに追加', icon: 'star', action: () => toggleFav([f.id]) },
+    { text: 'コメントを見る・書く', icon: 'chat', action: () => openViewer([f.id], { comments: true }) },
+    { text: '並べて読む…', icon: 'columns', action: () => pickFiles(f.id) },
+    '-', ...groupMenuItems([f.id]), '-',
+    { text: 'PDFをダウンロード', icon: 'download', action: () => downloadFile(f) },
+    S.prefs.mine[f.id] ? { text: '別のファイルに置き換え…', icon: 'swap', action: () => replaceFile(f) } : null,
+    canEdit(f) ? { text: '署名・タイトルを変更', icon: 'memo', action: () => editSignature(f) } : null,
+    canEdit(f) ? { text: '削除', icon: 'trash', danger: true, action: async () => {
+      if (await confirmBox('文書を削除', `「${fileLabel(f)}」をテーブルから削除します。全員の画面から消えます。`, '削除する', true)) {
+        await S.backend.deleteFile(S.code, f.id, blobKeyOf(f)); S.backend.deleteComment(S.code, f.id, null).catch(() => {}); idb.del('pdf', pdfKey(blobKeyOf(f))); toast('削除しました');
+      }
+    } } : null
+  ]);
+}
+async function downloadFile(f) {
+  try {
+    const bytes = await getPdfBytes(f);
+    const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+    const a = h('a', { href: url, download: fileLabel(liveFile(f)).replace(/[\\/:*?"<>|]/g, '_') + '.pdf' }); document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  } catch (e) { toast('ダウンロードできませんでした：' + e.message); }
+}
+function drawSelbar() {
+  const E = S.el, n = S.ui.selected.size, ids = [...S.ui.selected];
+  E.selbar.hidden = !S.ui.select;
+  if (!S.ui.select) return;
+  E.selbar.replaceChildren(
+    h('span', { class: 'cnt' }, n ? `${n}件選択` : '文書をタップして選択'),
+    h('button', { class: 'btn primary', disabled: !n, onclick: () => {
+      if (n > 3) return toast('並べて読めるのは3つまでです');
+      const order = S.files.filter(f => S.ui.selected.has(f.id)).map(f => f.id);
+      S.ui.select = false; S.ui.selected.clear(); updateTable(); openViewer(order);
+    } }, icon('columns', 'i-s'), '並べて読む'),
+    h('button', { class: 'btn', disabled: !n, onclick: () => toggleFav(ids) }, icon('star', 'i-s'), 'お気に入り'),
+    h('button', { class: 'btn', disabled: !n, onclick: e => popMenu(e.currentTarget, groupMenuItems(ids)) }, icon('folder', 'i-s'), 'グループ'),
+    h('button', { class: 'btn', onclick: () => { const v = visibleFiles(); const all = v.every(f => S.ui.selected.has(f.id)); v.forEach(f => all ? S.ui.selected.delete(f.id) : S.ui.selected.add(f.id)); drawGrid(); drawSelbar(); } }, '全選択'),
+    h('button', { class: 'btn', onclick: () => { S.ui.select = false; S.ui.selected.clear(); updateTable(); } }, '終了'));
+}
+
+function manageGroups() {
+  const list = h('div');
+  const draw = () => {
+    const P = S.prefs;
+    list.replaceChildren(...(P.groups.length ? P.groups.map((g, i) => h('div', { class: 'grow' },
+      h('button', { class: 'cdot', title: '色を変える', style: { background: g.color }, onclick: () => {
+        g.color = GROUP_COLORS[(GROUP_COLORS.indexOf(g.color) + 1) % GROUP_COLORS.length]; savePrefs(); draw(); updateTable();
+      } }),
+      h('input', { class: 'input', value: g.name, oninput: e => { g.name = e.target.value; savePrefs(); drawChips(); drawGrid(); } }),
+      h('span', { class: 'gcount' }, S.files.filter(f => P.assign[f.id] === g.id).length + '件'),
+      h('button', { class: 'icon-btn', title: '上へ', disabled: i === 0, onclick: () => { P.groups.splice(i - 1, 0, P.groups.splice(i, 1)[0]); savePrefs(); draw(); updateTable(); } }, '↑'),
+      h('button', { class: 'icon-btn', title: '削除', onclick: async () => {
+        if (!(await confirmBox('グループを削除', `「${g.name}」を削除します。中の文書は消えず「未分類」に戻ります。`, '削除', true))) return;
+        P.groups = P.groups.filter(x => x.id !== g.id);
+        for (const [fid, gid] of Object.entries(P.assign)) if (gid === g.id) delete P.assign[fid];
+        if (S.ui.filter === 'g:' + g.id) S.ui.filter = 'all';
+        savePrefs(); draw(); updateTable();
+      } }, icon('trash'))
+    )) : [h('p', { class: 'hint' }, 'まだグループがありません。')]));
+  };
+  draw();
+  modal({ title: 'グループ管理', body: [
+    h('p', { class: 'hint' }, 'グループ分けは自分の端末だけに保存され、他の参加者には見えません。色の丸をタップすると色が変わります。'),
+    list,
+    h('button', { class: 'btn ghost', onclick: () => { createGroup('グループ' + (S.prefs.groups.length + 1)); draw(); updateTable(); } }, icon('plus'), 'グループを追加')
+  ], actions: [{ text: '閉じる', kind: 'primary' }] });
+}
+
+/* ---------------- アップロード ---------------- */
+async function editSignature(f) {
+  const sig = h('input', { class: 'input', value: f.author || '' }), ttl = h('input', { class: 'input', value: f.title || '' });
+  const err = h('div', { class: 'err' });
+  await modal({ title: '署名・タイトルを変更', body: [h('div', { class: 'field' }, h('label', {}, '署名'), sig), h('div', { class: 'field' }, h('label', {}, 'タイトル'), ttl), err],
+    actions: [{ text: 'キャンセル', value: null }, { text: '変更', kind: 'primary', onClick: async () => {
+      if (!sig.value.trim() || !ttl.value.trim()) { err.textContent = '署名とタイトルを入れてください'; return false; }
+      await S.backend.updateFile(S.code, f.id, { author: sig.value.trim(), title: ttl.value.trim(), anonymous: false });
+    } }] });
+}
+function showRoster() {
+  const body = h('div');
+  const rowsOf = () => S.files.map(f => [ulName(f), fileLabel(f), f.author || '', f.title || '', TYPE_LABEL[f.srcType] || 'PDF', new Date(f.createdAt).toLocaleString('ja-JP')]);
+  const draw = () => {
+    const rows = rowsOf();
+    body.replaceChildren(
+      h('p', { class: 'hint' }, `いまの表示：生徒に対して匿名 ${isAnonView() ? 'ON' : 'OFF'}／タイトル表示 ${showTitles() ? 'ON' : 'OFF'}。この一覧は先生の画面にだけ表示されます。`),
+      rows.length ? h('div', { style: { overflowX: 'auto' } }, h('table', { class: 'roster' },
+        h('thead', {}, h('tr', {}, ['番号', '表示名', '署名', 'タイトル', '種類', '提出日時'].map(x => h('th', {}, x)))),
+        h('tbody', {}, rows.map(r => h('tr', {}, r.map(c => h('td', {}, c))))))) : h('p', { class: 'hint' }, 'まだ提出はありません。'));
+  };
+  draw(); S.pollViews.add(draw);
+  modal({ title: '提出者対応一覧', wide: true, body, actions: [
+    { text: 'CSVで保存', onClick: () => {
+      const csv = [['番号', '表示名', '署名', 'タイトル', '種類', '提出日時'], ...rowsOf()].map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+      const url = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv' }));
+      const a = h('a', { href: url, download: `${S.table.name}_提出者対応一覧.csv` }); document.body.append(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 5000); return false;
+    } },
+    { text: '閉じる', kind: 'primary' }] }).then(() => S.pollViews.delete(draw));
+}
+
+async function startUpload(fileList) {
+  if (!S.table) return;
+  if (S.table.locked && !S.teacher) return toast('現在アップロードは締め切られています');
+  const ok = fileList.filter(okFile);
+  if (fileList.some(f => /\.doc$/i.test(f.name))) toast('古い形式(.doc)は非対応です。Wordで .docx か PDF に保存し直してください');
+  else if (ok.length < fileList.length) toast('PDF・Word(.docx)・画像のみアップできます');
+  if (!ok.length) return;
+  const imgs = ok.filter(isImage).sort((a, b) => new Intl.Collator('ja', { numeric: true }).compare(a.name, b.name));
+  let merge = false;
+  let rows = [];
+  const listEl = h('div');
+  const buildRows = () => {
+    const jobs = merge ? [imgs, ...ok.filter(f => !isImage(f)).map(f => [f])] : ok.map(f => [f]);
+    rows = jobs.map(files => {
+      const f0 = files[0], type = files.every(isImage) ? 'image' : isDocx(f0) ? 'docx' : 'pdf';
+      const size = files.reduce((a, f) => a + f.size, 0);
+      const r = { files, title: h('input', { class: 'input', placeholder: `タイトル（${files.length > 1 ? '画像' + files.length + '枚' : f0.name}）` }),
+        stat: h('span', {}, files.length > 1 ? `画像${files.length}枚 → 1つのPDFに` : type === 'docx' ? 'Word → PDFに変換してアップ' : type === 'image' ? '画像 → PDFに変換してアップ' : '待機中'), bar: h('i') };
+      r.el = h('div', { class: 'up-row' }, h('span', { class: 'badge' + TYPE_CLS[type] }, TYPE_LABEL[type]),
+        h('div', { class: 'info' }, r.title, h('div', { class: 'stat' }, fmtSize(size), r.stat, h('span', { class: 'bar' }, r.bar))));
+      return r;
+    });
+    listEl.replaceChildren(...rows.map(r => r.el));
+    if (titleEl) titleEl.textContent = `アップロード（${rows.length}件）`;
+  };
+  let titleEl = null;
+  buildRows();
+  const mergeChk = h('input', { type: 'checkbox', onchange: e => { merge = e.target.checked; buildRows(); } });
+  const sigIn = h('input', { class: 'input', value: LS.get('yk:sig', '') || S.me.name, placeholder: '署名（先生の指示どおりに）' });
+  const upErr = h('div', { class: 'err' });
+  let busy = false, ov = null;
+  await modal({ bind: (_c, o) => { ov = o; titleEl = o.querySelector('.modal-h h3'); }, title: `アップロード（${rows.length}件）`, wide: true, body: [
+    h('p', { class: 'hint', style: { margin: '0 0 8px' } }, '署名とタイトルは、先生の指示どおりに書いてください。'),
+    h('div', { class: 'field' }, h('label', {}, '署名'), sigIn),
+    h('div', { style: { fontSize: '13px', fontWeight: '600', margin: '4px 0 0' } }, 'タイトル'),
+    listEl,
+    imgs.length >= 2 ? h('label', { class: 'merge-opt' }, mergeChk, h('div', {}, h('b', {}, `画像${imgs.length}枚をまとめて1つの文書にする`),
+      h('small', {}, '手書きの原稿を何枚も撮ったときなどに。ページの順番はファイル名順です。'))) : null,
+    upErr,
+    ok.some(isDocx) ? h('p', { class: 'hint' }, 'Wordはこの端末でPDFに変換されます。文字・表・画像は残りますが、縦書きや細かいレイアウトは崩れることがあります。崩れる場合は Word で「PDFとして保存」してからアップしてください。') : null,
+    imgs.length ? h('p', { class: 'hint' }, '画像（JPG・PNGなど）はPDFに変換して置かれます。大きな写真は長い辺が2400pxになるよう縮小されます。') : null
+  ], actions: [
+    { text: 'キャンセル', value: null, onClick: () => busy ? false : undefined },
+    { text: 'アップロード', kind: 'primary', onClick: async () => {
+      if (busy) return false;
+      const sig = sigIn.value.trim();
+      if (!sig) { upErr.textContent = '署名を入れてください'; sigIn.focus(); return false; }
+      const emptyT = rows.find(r => !r.done && !r.title.value.trim());
+      if (emptyT) { upErr.textContent = 'タイトルを入れてください'; emptyT.title.focus(); return false; }
+      upErr.textContent = ''; LS.set('yk:sig', sig);
+      busy = true;
+      ov.dataset.busy = '1';
+      ov.querySelectorAll('.modal-f .btn, .up-row input, .merge-opt input, .field input').forEach(b => b.disabled = true);
+      let fail = 0;
+      for (const r of rows) {
+        if (r.done) continue;
+        try {
+          const { bytes, pages, thumb, srcType } = await preparePdf(r.files, t => { r.stat.textContent = t; });
+          r.stat.textContent = 'アップロード中…';
+          const id = S.backend.newId();
+          const meta = { title: r.title.value.trim(), srcType, version: 1, anonymous: false, author: sig,
+            pages, size: bytes.length, thumb, createdAt: Date.now() };
+          S.prefs.mine[id] = 1; S.prefs.seen[id] = 1; savePrefs();
+          await S.backend.addFile(S.code, id, meta, bytesToChunks(bytes), p => { r.bar.style.width = Math.round(p * 100) + '%'; });
+          idb.set('pdf', pdfKey(id), bytes.buffer.slice(0));
+          r.bar.style.width = '100%'; r.stat.textContent = '完了 ✓'; r.done = true; r.stat.style.color = '';
+        } catch (e) {
+          console.error(e); fail++; r.stat.textContent = '失敗：' + (e.message || e); r.stat.style.color = 'var(--danger)';
+        }
+      }
+      delete ov.dataset.busy; busy = false;
+      if (!fail) { toast('アップロードしました'); return 'done'; }
+      ov.querySelectorAll('.modal-f .btn').forEach(b => b.disabled = false);
+      return false;
+    } }
+  ] });
+}
+
+/* =====================================================================
+   投票
+   polls/{pid}: { title, target:'docs'|'choices', choices:[{id,label}], votes:n,
+                  multi, noSelf, change, results:'teacher'|'publish'|'live', published, named, status:'open'|'closed', createdAt }
+   votes/{pid}/{voterKey}: { items:{targetId:count}, at, name? }   ※voterKeyは投票ごとのランダム値（端末内に保存）
+   ===================================================================== */
+const pollList = () => Object.entries(S.polls).map(([id, p]) => ({ id, ...p })).sort((a, b) => b.createdAt - a.createdAt);
+const myVoteKey = pid => S.prefs.vkeys[pid];
+const myVote = pid => { const k = myVoteKey(pid); return k ? S.votes[pid]?.[k] || null : null; };
+const canSeeResults = p => S.teacher || p.results === 'live' || (p.results === 'publish' && p.published);
+function pollTargets(p) {
+  if (p.target === 'choices') return (p.choices || []).map(c => ({ id: c.id, label: c.label }));
+  return S.files.map(f => ({ id: f.id, label: fileLabel(f), thumb: f.thumb, mine: !!S.prefs.mine[f.id] }));
+}
+function tally(pid) {
+  const t = {}, who = {}; let voters = 0;
+  for (const v of Object.values(S.votes[pid] || {})) {
+    voters++;
+    for (const [k, n] of Object.entries(v.items || {})) { t[k] = (t[k] || 0) + n; if (v.name) (who[k] ||= []).push(n > 1 ? `${v.name}(${n})` : v.name); }
+  }
+  return { t, who, voters };
+}
+function drawPollBar() {
+  const E = S.el; if (!E) return;
+  const open = pollList().filter(p => p.status === 'open');
+  const todo = S.teacher ? [] : open.filter(p => !myVote(p.id));
+  E.voteBtn.querySelector('.cnt')?.remove();
+  if (open.length) E.voteBtn.append(h('span', { class: 'cnt' }, open.length));
+  E.pollBar.hidden = !todo.length;
+  if (todo.length) E.pollBar.replaceChildren(h('div', {}, icon('bar', 'i-s'),
+    h('b', {}, todo.length === 1 ? `投票受付中：${todo[0].title}` : `投票受付中のお題が${todo.length}つあります`),
+    h('button', { class: 'btn primary', onclick: () => todo.length === 1 ? voteDialog(todo[0].id) : openPolls() }, '投票する')));
+}
+function notifyNewPolls(prev) {
+  const fresh = pollList().filter(p => !prev[p.id] && p.status === 'open');
+  if (fresh.length && !S.teacher) toast(`投票が始まりました：${fresh[0].title}`);
+  for (const p of pollList()) if (prev[p.id] && !prev[p.id].published && p.published && !S.teacher) toast(`投票の結果が公開されました：${p.title}`);
+}
+function pollChips(p) {
+  const res = { teacher: '結果は先生だけ', publish: p.published ? '結果公開中' : '結果は先生が公開', live: '結果はリアルタイム' }[p.results];
+  return h('div', { class: 'pchips' },
+    h('span', { class: 'pchip ' + p.status }, p.status === 'open' ? '受付中' : '締切'),
+    h('span', { class: 'pchip' }, p.target === 'docs' ? '文書に投票' : `選択肢${(p.choices || []).length}つ`),
+    h('span', { class: 'pchip' }, `1人${p.votes}票`),
+    p.votes > 1 ? h('span', { class: 'pchip' }, p.multi ? '同じものに複数票OK' : '1つに1票まで') : null,
+    p.target === 'docs' && p.noSelf ? h('span', { class: 'pchip' }, '自分の文書は不可') : null,
+    h('span', { class: 'pchip' }, p.change ? '入れ直しOK' : '入れ直し不可'),
+    h('span', { class: 'pchip' }, p.named ? '記名（先生は誰の票か分かる）' : '無記名'),
+    h('span', { class: 'pchip' }, res),
+    myVote(p.id) ? h('span', { class: 'pchip mine' }, '投票済み') : null);
+}
+function openPolls() {
+  const list = h('div', { class: 'plist' });
+  const draw = () => {
+    const ps = pollList();
+    list.replaceChildren(...(ps.length ? ps.map(p => {
+      const { voters } = tally(p.id), voted = !!myVote(p.id);
+      const acts = [];
+      if (p.status === 'open' && (!voted || p.change)) acts.push(h('button', { class: 'btn primary', onclick: () => voteDialog(p.id) }, voted ? '投票し直す' : '投票する'));
+      else if (voted) acts.push(h('button', { class: 'btn', onclick: () => voteDialog(p.id) }, '自分の票を見る'));
+      if (canSeeResults(p)) acts.push(h('button', { class: 'btn', onclick: () => resultsDialog(p.id) }, icon('bar', 'i-s'), '結果'));
+      if (S.teacher) {
+        acts.push(h('button', { class: 'btn', onclick: () => S.backend.tupdate(S.code, 'polls/' + p.id, { status: p.status === 'open' ? 'closed' : 'open' }) }, p.status === 'open' ? '締め切る' : '受付を再開'));
+        if (p.results === 'publish') acts.push(h('button', { class: 'btn', onclick: () => S.backend.tupdate(S.code, 'polls/' + p.id, { published: !p.published }) }, p.published ? '結果を非公開に' : '結果を全員に公開'));
+        acts.push(h('button', { class: 'btn', onclick: async () => {
+          if (!(await confirmBox('投票を削除', `「${p.title}」と、集まった票をすべて削除します。`, '削除', true))) return;
+          await S.backend.tset(S.code, 'votes/' + p.id, null); await S.backend.tset(S.code, 'polls/' + p.id, null);
+        } }, icon('trash', 'i-s')));
+      }
+      return h('div', { class: 'pcard' }, h('h4', {}, p.title), pollChips(p),
+        S.teacher ? h('p', { class: 'hint', style: { margin: '0 0 8px' } }, `投票した人：${voters}人`) : null,
+        h('div', { class: 'pactions' }, acts));
+    }) : [h('p', { class: 'hint' }, S.teacher ? 'まだ投票はありません。「新しい投票」から作りましょう。' : 'まだ投票はありません。')]));
+  };
+  draw(); S.pollViews.add(draw);
+  modal({ title: '投票', wide: true, body: [S.teacher ? h('button', { class: 'btn primary', style: { marginBottom: '12px' }, onclick: pollEditor }, icon('plus', 'i-s'), '新しい投票') : null, list],
+    actions: [{ text: '閉じる', kind: 'primary' }] }).then(() => S.pollViews.delete(draw));
+}
+async function pollEditor() {
+  const title = h('input', { class: 'input', placeholder: '例：一番説得力のある意見文はどれ？' });
+  let target = 'docs';
+  const tgtDocs = h('button', { class: 'opt on', onclick: () => setT('docs') }, h('b', {}, icon('doc', 'i-s'), 'テーブルの文書'), h('small', {}, '並んでいる文書に票を入れる'));
+  const tgtCh = h('button', { class: 'opt', onclick: () => setT('choices') }, h('b', {}, icon('list', 'i-s'), '選択肢を作る'), h('small', {}, 'A案・B案など、先生が入力'));
+  const choices = h('textarea', { class: 'input', rows: '4', placeholder: '1行に1つずつ\n例：\nA案\nB案\nC案', hidden: true, style: { marginTop: '8px' } });
+  const noSelfRow = h('label', { class: 'chk' });
+  const setT = t => { target = t; tgtDocs.classList.toggle('on', t === 'docs'); tgtCh.classList.toggle('on', t === 'choices'); choices.hidden = t !== 'choices'; noSelfRow.hidden = t !== 'docs'; };
+  const votes = h('input', { class: 'input', type: 'number', min: '1', max: '20', value: '3', style: { width: '90px' } });
+  const ck = (label, sub, checked) => { const i = h('input', { type: 'checkbox', checked }); return [i, h('label', { class: 'chk' }, i, h('div', {}, label, sub ? h('small', {}, sub) : null))]; };
+  const [multi, multiRow] = ck('1つに複数票を入れてもよい', 'オフなら、1つの文書（選択肢）には1票まで', false);
+  const noSelf = h('input', { type: 'checkbox', checked: true });
+  noSelfRow.append(noSelf, h('div', {}, '自分の文書には投票できない', h('small', {}, '自分がアップした文書には票を入れられない')));
+  const [change, changeRow] = ck('締切まで入れ直しできる', 'オフなら、一度投票したら変更できない', true);
+  const radios = (name, opts, def) => opts.map(([v, l, sub]) => h('label', { class: 'chk' }, h('input', { type: 'radio', name, value: v, checked: v === def }), h('div', {}, l, sub ? h('small', {}, sub) : null)));
+  const rn = 'res' + rid(4), nn = 'nam' + rid(4);
+  const err = h('div', { class: 'err' });
+  await modal({ title: '新しい投票', wide: true, body: [
+    h('div', { class: 'field' }, h('label', {}, 'お題'), title),
+    h('fieldset', { class: 'fset' }, h('legend', {}, '何に投票する？'), h('div', { class: 'opt-cards', style: { margin: '4px 0' } }, tgtDocs, tgtCh), choices),
+    h('fieldset', { class: 'fset' }, h('legend', {}, '票のルール'),
+      h('div', { class: 'chk' }, '1人あたりの票数', votes, '票'), multiRow, noSelfRow, changeRow),
+    h('fieldset', { class: 'fset' }, h('legend', {}, '結果を見せる'), radios(rn, [
+      ['publish', '先生が「公開」を押したら全員に', '投票中は先生だけが途中経過を見られる'],
+      ['live', 'いつでも全員にリアルタイム', '投票中から全員に票数が見える'],
+      ['teacher', '先生だけ', '参加者には結果を見せない']], 'publish')),
+    h('fieldset', { class: 'fset' }, h('legend', {}, '誰が投票したか'), radios(nn, [
+      ['anon', '記録しない（無記名）', '票数だけ集計。先生にも誰の票か分からない'],
+      ['named', '先生には分かる（記名）', '参加者の名前と一緒に記録。結果画面で先生だけが見られる']], 'anon')),
+    err
+  ], actions: [{ text: 'キャンセル', value: null }, { text: '投票を始める', kind: 'primary', onClick: async () => {
+    const t = title.value.trim(); if (!t) { err.textContent = 'お題を入れてください'; return false; }
+    const n = Math.max(1, Math.min(20, parseInt(votes.value, 10) || 1));
+    let chs = [];
+    if (target === 'choices') {
+      chs = choices.value.split('\n').map(x => x.trim()).filter(Boolean).map(label => ({ id: rid(6), label }));
+      if (chs.length < 2) { err.textContent = '選択肢を2つ以上入れてください'; return false; }
+    } else if (!S.files.length) { err.textContent = 'テーブルに文書がまだありません'; return false; }
+    const ov = err.closest('.overlay');
+    const poll = { title: t, target, choices: chs, votes: n, multi: n > 1 && multi.checked, noSelf: target === 'docs' && noSelf.checked, change: change.checked,
+      results: ov.querySelector(`input[name=${rn}]:checked`).value, published: false, named: ov.querySelector(`input[name=${nn}]:checked`).value === 'named',
+      status: 'open', createdAt: Date.now() };
+    await S.backend.tset(S.code, 'polls/' + S.backend.newId(), poll);
+    toast('投票を始めました');
+  } }] });
+}
+function voteDialog(pid) {
+  const p0 = S.polls[pid]; if (!p0) return;
+  const cur = myVote(pid);
+  const alloc = { ...(cur?.items || {}) };
+  const body = h('div');
+  let readOnly = false;
+  const draw = () => {
+    const p = S.polls[pid]; if (!p) { body.replaceChildren(h('p', { class: 'hint' }, 'この投票は削除されました。')); return; }
+    const voted = !!myVote(pid);
+    readOnly = p.status !== 'open' || (voted && !p.change);
+    const used = Object.values(alloc).reduce((a, n) => a + n, 0), left = p.votes - used;
+    const maxPer = p.multi ? p.votes : 1;
+    const targets = pollTargets(p);
+    body.replaceChildren(...[
+      h('p', { style: { margin: '0 0 6px', fontWeight: '700', fontSize: '15px' } }, p.title),
+      pollChips(p),
+      readOnly ? h('p', { class: 'hint' }, p.status !== 'open' ? 'この投票は締め切られました。' : '投票済みです（この投票は入れ直しできません）。') : null,
+      h('div', { class: 'vremain' }, h('span', {}, readOnly ? 'あなたの票' : `残り ${left} 票 / ${p.votes} 票`), h('span', { class: 'dots' }, '●'.repeat(Math.max(0, left)) + '○'.repeat(used))),
+      h('div', { class: 'vrows' }, targets.map(t => {
+        const n = alloc[t.id] || 0, blocked = p.noSelf && t.mine;
+        return h('div', { class: 'vrow' + (n ? ' has' : '') },
+          t.thumb ? h('img', { src: t.thumb, alt: '' }) : null,
+          h('div', { class: 'vl' }, t.label, t.sub ? h('small', {}, t.sub) : null, blocked ? h('small', {}, '自分の文書には投票できません') : null),
+          h('div', { class: 'vctl' },
+            readOnly ? null : h('button', { 'aria-label': '減らす', disabled: !n, onclick: () => { alloc[t.id] = n - 1; if (!alloc[t.id]) delete alloc[t.id]; draw(); } }, '−'),
+            h('b', {}, n),
+            readOnly ? null : h('button', { 'aria-label': '増やす', disabled: blocked || left <= 0 || n >= maxPer, onclick: () => { alloc[t.id] = n + 1; draw(); } }, '+')));
+      })),
+      p.target === 'docs' && !readOnly ? h('p', { class: 'hint', style: { marginTop: '10px' } }, '文書の中身は、この画面を閉じてテーブルから読めます（選んだ票は投票するまで保存されません）。') : null].filter(Boolean));
+    const sendBtn = body.closest('.modal')?.querySelector('.modal-f .btn.primary');
+    if (sendBtn) sendBtn.hidden = readOnly;
+  };
+  draw(); S.pollViews.add(draw);
+  modal({ title: '投票', wide: true, body, bind: () => setTimeout(draw), actions: [
+    { text: '閉じる', value: null },
+    { text: cur ? '投票し直す' : '投票する', kind: 'primary', onClick: async () => {
+      const p = S.polls[pid]; if (!p || readOnly) return false;
+      const used = Object.values(alloc).reduce((a, n) => a + n, 0);
+      if (!used) { toast('1票以上入れてください'); return false; }
+      if (used < p.votes && !(await confirmBox('投票する', `まだ ${p.votes - used} 票残っています。このまま投票しますか？`, '投票する'))) return false;
+      const key = myVoteKey(pid) || (S.prefs.vkeys[pid] = rid(10)); savePrefs();
+      const rec = { items: alloc, at: Date.now() }; if (p.named) rec.name = S.me.name;
+      try { await S.backend.tset(S.code, `votes/${pid}/${key}`, rec); } catch (e) { toast('投票できませんでした：' + e.message); return false; }
+      toast('投票しました');
+      if (canSeeResults(p)) setTimeout(() => resultsDialog(pid), 50);
+    } }
+  ] }).then(() => S.pollViews.delete(draw));
+}
+function resultsDialog(pid) {
+  const body = h('div');
+  const draw = () => {
+    const p = S.polls[pid]; if (!p) { body.replaceChildren(h('p', { class: 'hint' }, 'この投票は削除されました。')); return; }
+    if (!canSeeResults(p)) { body.replaceChildren(h('p', { class: 'hint' }, '結果はまだ公開されていません。')); return; }
+    const { t, who, voters } = tally(pid);
+    const rows = pollTargets(p).map(x => ({ ...x, n: t[x.id] || 0 })).sort((a, b) => b.n - a.n);
+    const max = Math.max(1, ...rows.map(r => r.n));
+    let rank = 0, prev = null;
+    body.replaceChildren(
+      h('p', { style: { margin: '0 0 6px', fontWeight: '700', fontSize: '15px' } }, p.title),
+      h('p', { class: 'hint' }, `投票した人：${voters}人　${p.status === 'open' ? '（受付中・数字は変わります）' : '（締切）'}`),
+      ...rows.map((r, i) => {
+        if (r.n !== prev) { rank = i + 1; prev = r.n; }
+        return h('div', { class: 'rrow' }, h('span', { class: 'rk' }, r.n ? rank : '–'),
+          h('div', { class: 'rl' }, r.label, r.sub ? h('small', { style: { color: 'var(--muted)', marginLeft: '6px' } }, r.sub) : null),
+          h('span', { class: 'rn' }, r.n + '票'),
+          h('div', { class: 'rbar' }, h('i', { style: { width: (r.n / max * 100) + '%' } })),
+          S.teacher && p.named && who[r.id] ? h('div', { class: 'rv' }, '入れた人：' + who[r.id].join('、')) : null);
+      }));
+  };
+  draw(); S.pollViews.add(draw);
+  modal({ title: '投票の結果', wide: true, body, actions: [{ text: '閉じる', kind: 'primary' }] }).then(() => S.pollViews.delete(draw));
+}
+
+/* =====================================================================
+   ビューア（1つ〜3つ並べて表示・書き込み）
+   ===================================================================== */
+const V = { el: null, panes: [], active: null, tool: 'hand', colors: { pen: PEN_COLORS[1], marker: MARKER_COLORS[0] }, size: { pen: 1, marker: 1 }, sync: false, syncing: false, tab: 0 };
+const annKey = id => S.code + '/' + id;
+
+function buildViewer() {
+  V.bar = h('div', { class: 'vbar' });
+  V.tabs = h('div', { class: 'vtabs' });
+  V.panesEl = h('div', { class: 'panes' });
+  V.el = h('div', { class: 'viewer', hidden: true }, V.bar, V.tabs, V.panesEl);
+  document.body.append(V.el);
+  addEventListener('resize', () => { clearTimeout(V.rt); V.rt = setTimeout(() => V.panes.forEach(p => p.layout()), 200); });
+  addEventListener('popstate', () => { if (!V.el.hidden) closeViewer(true); });
+  addEventListener('keydown', e => {
+    if (V.el.hidden || document.querySelector('.overlay')) return;
+    if ((e.metaKey || e.ctrlKey) && e.key === 'z') { e.preventDefault(); V.active?.undoOnce(); }
+    if (e.key === 'Escape') closeViewer();
+  });
+}
+function drawVbar() {
+  const tool = (t, ic, label) => h('button', { class: 'icon-btn' + (V.tool === t ? ' on' : ''), title: label, 'aria-label': label, onclick: () => { V.tool = t; applyTool(); drawVbar(); } }, icon(ic));
+  const t = V.tool, multi = V.panes.length > 1;
+  const items = [
+    h('button', { class: 'btn', style: { minHeight: '36px', padding: '6px 12px' }, onclick: () => closeViewer() }, icon('back', 'i-s'), 'テーブル'),
+    h('span', { class: 'vsep' }),
+    tool('hand', 'hand', 'スクロール'), tool('pen', 'pen', 'ペン'), tool('marker', 'marker', 'マーカー'), tool('eraser', 'eraser', '消しゴム')
+  ];
+  if (t === 'pen' || t === 'marker') {
+    items.push(h('span', { class: 'vsep' }));
+    for (const c of (t === 'pen' ? PEN_COLORS : MARKER_COLORS))
+      items.push(h('button', { class: 'sw' + (V.colors[t] === c ? ' on' : ''), style: { background: c }, 'aria-label': '色', onclick: () => { V.colors[t] = c; drawVbar(); } }));
+    items.push(h('span', { class: 'vsep' }));
+    SIZES[t].forEach((_, i) => items.push(h('button', { class: 'szb' + (V.size[t] === i ? ' on' : ''), title: ['細', '中', '太'][i], onclick: () => { V.size[t] = i; drawVbar(); } },
+      h('i', { style: { width: (4 + i * 4) + 'px', height: (4 + i * 4) + 'px' } }))));
+  }
+  items.push(h('span', { class: 'vsep' }),
+    h('button', { class: 'icon-btn', title: '元に戻す', onclick: () => V.active?.undoOnce() }, icon('undo')),
+    h('button', { class: 'icon-btn', title: '書き込みを全部消す', onclick: () => V.active?.clearAll() }, icon('trash')));
+  if (multi) items.push(h('span', { class: 'vsep' }),
+    h('button', { class: 'tg' + (V.sync ? ' on' : ''), style: { flex: 'none' }, onclick: () => { V.sync = !V.sync; drawVbar(); } }, icon('sync', 'i-s'), 'スクロール連動'));
+  if (V.panes.length < 3) items.push(h('span', { class: 'vsep' }),
+    h('button', { class: 'tg', style: { flex: 'none' }, onclick: () => pickFiles() }, icon('columns', 'i-s'), '並べる'));
+  V.bar.replaceChildren(...items);
+}
+function applyTool() {
+  V.el.classList.toggle('drawing', V.tool === 'pen' || V.tool === 'marker');
+  V.el.classList.toggle('erasing', V.tool === 'eraser');
+}
+function drawTabs() {
+  const multi = V.panes.length > 1;
+  V.panesEl.classList.toggle('multi', multi);
+  V.tabs.classList.toggle('show', multi);
+  V.tab = Math.min(V.tab, V.panes.length - 1);
+  V.panes.forEach((p, i) => p.el.classList.toggle('tab-hidden', i !== V.tab));
+  V.tabs.replaceChildren(...V.panes.map((p, i) => h('button', { class: i === V.tab ? 'on' : '', onclick: () => { V.tab = i; setActive(p); drawTabs(); p.layout(); } }, fileLabel(liveFile(p.file)))));
+}
+function setActive(p) { V.active = p; V.panes.forEach(x => x.el.classList.toggle('active', x === p)); }
+
+function openViewer(ids, opt = {}) {
+  if (!V.el) buildViewer();
+  const wasOpen = !V.el.hidden;
+  V.el.hidden = false; document.body.classList.add('noscroll');
+  if (!wasOpen) history.pushState({ viewer: 1 }, '', location.hash || '#');
+  for (const id of ids) addPane(id, opt);
+  applyTool(); drawVbar(); drawTabs();
+}
+function addPane(id, opt = {}) {
+  if (V.panes.length >= 3) return toast('並べられるのは3つまでです');
+  if (V.panes.some(p => p.id === id)) return;
+  const f = S.files.find(x => x.id === id); if (!f) return;
+  S.prefs.seen[id] = verOf(f); savePrefs();
+  const p = new Pane(f); V.panes.push(p); V.panesEl.append(p.el);
+  if (opt.comments) p.toggleComments(true);
+  V.tab = V.panes.length - 1; setActive(p);
+  requestAnimationFrame(() => { V.panes.forEach(x => x !== p && x.layout()); p.load(); });
+}
+function removePane(p) {
+  p.destroy(); V.panes = V.panes.filter(x => x !== p); p.el.remove();
+  if (!V.panes.length) return closeViewer();
+  if (V.active === p) setActive(V.panes[0]);
+  drawVbar(); drawTabs(); requestAnimationFrame(() => V.panes.forEach(x => x.layout()));
+}
+function closeViewer(fromPop) {
+  if (!V.el || V.el.hidden) return;
+  if (!fromPop && history.state?.viewer) { history.back(); return; }
+  V.panes.forEach(p => { p.destroy(); p.el.remove(); });
+  V.panes = []; V.active = null; V.el.hidden = true; document.body.classList.remove('noscroll');
+  if (S.code) updateTable();
+}
+async function pickFiles(firstId) {
+  const open = new Set(V.panes.map(p => p.id));
+  const chosen = new Set(firstId ? [firstId] : []);
+  const max = 3 - open.size;
+  const list = h('div', { class: 'pick-list' });
+  const draw = () => list.replaceChildren(...S.files.filter(f => !open.has(f.id)).map(f => h('button', {
+    class: 'pick-item', style: chosen.has(f.id) ? { borderColor: 'var(--accent)', background: 'var(--accent-soft)' } : null,
+    onclick: () => { if (chosen.has(f.id)) chosen.delete(f.id); else if (chosen.size < max) chosen.add(f.id); else toast(`あと${max}つまで選べます`); draw(); }
+  }, f.thumb ? h('img', { src: f.thumb, alt: '' }) : icon('doc'),
+    h('div', { style: { flex: '1', minWidth: '0' } }, h('b', {}, fileLabel(f))),
+    chosen.has(f.id) ? icon('check') : (S.prefs.fav[f.id] ? h('span', { style: { color: 'var(--star)' } }, icon('starFill')) : null))));
+  draw();
+  const r = await modal({ title: '並べて読む文書を選ぶ', wide: true, body: [h('p', { class: 'hint' }, `最大3つまで並べられます（あと${max}つ）。`), list],
+    actions: [{ text: 'キャンセル', value: null }, { text: '開く', kind: 'primary', onClick: () => chosen.size ? [...chosen] : (toast('文書を選んでください'), false) }] });
+  if (r) openViewer(S.files.filter(f => r.includes(f.id)).map(f => f.id));
+}
+
+/* ---------------- コメント ----------------
+   self  : 自分用に残す（この端末だけに保存。置き換えで消える）
+   author: 書き手に伝える（自分と、その文書をアップした端末にだけ表示）
+   all   : みんなに共有（全員に表示） */
+function visibleComments(f) {
+  const out = [];
+  const n = S.prefs.notes[f.id];
+  if (n && n.v === verOf(f)) for (const c of n.list) out.push({ ...c, type: 'self' });
+  const mineFile = !!S.prefs.mine[f.id];
+  for (const [id, c] of Object.entries(S.comments[f.id] || {})) {
+    if (c.type === 'all' || (c.type === 'author' && (mineFile || S.prefs.myc[id]))) out.push({ id, ...c });
+  }
+  return out.sort((a, b) => a.createdAt - b.createdAt);
+}
+function unreadCount(f, cs) {
+  const t = S.prefs.cseen[f.id] || 0;
+  return cs.filter(c => c.type !== 'self' && !S.prefs.myc[c.id] && c.createdAt > t).length;
+}
+function notifyNewComments(prev) {
+  let toMe = 0, shared = 0;
+  for (const [fid, cs] of Object.entries(S.comments)) {
+    const mineFile = !!S.prefs.mine[fid];
+    for (const [cid, c] of Object.entries(cs || {})) {
+      if (prev[fid]?.[cid] || S.prefs.myc[cid]) continue;
+      if (c.type === 'author' && mineFile) toMe++; else if (c.type === 'all') shared++;
+    }
+  }
+  if (toMe) toast(`あなたの文書にコメントが届きました（${toMe}件）`);
+  else if (shared) toast(`新しいコメントがあります（${shared}件）`);
+  V.panes?.forEach(p => p.updateCBadge());
+}
+
+const REPLACED_MSG = 'このファイルは置き換えられました。この画面を閉じると、新しいバージョンに変わります。メモ等は消えるので、必要に応じてスクリーンショットを撮ってください';
+function checkPanesForChanges() {
+  if (!V.el || V.el.hidden) return;
+  let changed = false;
+  for (const p of V.panes) {
+    const nf = S.files.find(f => f.id === p.id);
+    if (!nf) { if (p.noticeState !== 'deleted') { p.noticeState = 'deleted'; p.showNotice('このファイルは削除されました。この画面を閉じると、テーブルからも消えます。'); changed = true; } }
+    else if (verOf(nf) !== p.version && p.noticeState !== 'v' + verOf(nf)) { p.noticeState = 'v' + verOf(nf); p.showNotice(REPLACED_MSG); changed = true; }
+  }
+  if (changed) toast('読んでいるファイルが置き換え・削除されました');
+}
+
+async function replaceFile(f) {
+  if (!S.prefs.mine[f.id]) return toast('自分がアップしたファイルだけ置き換えられます');
+  if (S.table.locked && !S.teacher) return toast('現在アップロードは締め切られています');
+  const inp = h('input', { type: 'file', accept: ACCEPT, hidden: true });
+  document.body.append(inp);
+  const file = await new Promise(res => { inp.onchange = () => res(inp.files[0] || null); inp.click(); });
+  inp.remove();
+  if (!file) return;
+  if (!okFile(file)) return toast('PDF・Word(.docx)・画像のみ使えます');
+  const kind = isImage(file) ? '・画像はPDFに変換' : isDocx(file) ? '・WordはPDFに変換' : '';
+  const titleIn = h('input', { class: 'input', value: f.title });
+  const stat = h('span', {}, ''), bar = h('i');
+  let busy = false, ov = null;
+  await modal({ title: 'ファイルを置き換える', wide: true, bind: (_c, o) => { ov = o; }, body: [
+    h('div', { class: 'cmp' },
+      h('div', {}, h('small', {}, 'いまのファイル'), h('b', {}, fileLabel(f))),
+      h('div', {}, h('small', {}, '新しいファイル'), h('b', {}, file.name), h('small', { style: { marginTop: '4px' } }, fmtSize(file.size) + kind))),
+    h('div', { class: 'field' }, h('label', {}, 'タイトル'), titleIn),
+    h('p', { class: 'hint' }, 'テーブル上の位置（アップ順）と署名はそのままです。いま読んでいる人の画面には置き換えのお知らせが出ます。このファイルへの書き込みと「自分用」コメントは、置き換え後は消えます（全員分）。「書き手に伝える」「みんなに共有」のコメントは「旧版」の印が付いて残ります。'),
+    h('div', { class: 'stat', style: { display: 'flex', gap: '8px', alignItems: 'center', fontSize: '13px', color: 'var(--muted)' } }, stat, h('span', { class: 'bar' }, bar))
+  ], actions: [
+    { text: 'キャンセル', value: null, onClick: () => busy ? false : undefined },
+    { text: '置き換える', kind: 'primary', onClick: async () => {
+      if (busy) return false;
+      busy = true; ov.dataset.busy = '1'; ov.querySelectorAll('.modal-f .btn, input').forEach(b => b.disabled = true);
+      try {
+        const { bytes, pages, thumb, srcType } = await preparePdf(file, t => { stat.textContent = t; });
+        const cur = S.files.find(x => x.id === f.id);
+        if (!cur) throw new Error('元のファイルが削除されています');
+        const version = verOf(cur) + 1, oldKey = blobKeyOf(cur), newKey = f.id + '~v' + version;
+        stat.textContent = 'アップロード中…';
+        const patch = { title: titleIn.value.trim() || cur.title, srcType, pages, size: bytes.length, thumb, version, blobKey: newKey, replacedAt: Date.now() };
+        await S.backend.replaceFile(S.code, f.id, oldKey, newKey, patch, bytesToChunks(bytes), p => { bar.style.width = Math.round(p * 100) + '%'; });
+        idb.set('pdf', pdfKey(newKey), bytes.buffer.slice(0)); idb.del('pdf', pdfKey(oldKey));
+        S.prefs.seen[f.id] = version; savePrefs();
+        toast('置き換えました'); return 'done';
+      } catch (e) {
+        console.error(e); stat.textContent = '失敗：' + (e.message || e); stat.style.color = 'var(--danger)';
+        busy = false; delete ov.dataset.busy; ov.querySelectorAll('.modal-f .btn, input').forEach(b => b.disabled = false);
+        return false;
+      }
+    } }
+  ] });
+}
+
+class Pane {
+  constructor(file) {
+    this.file = file; this.id = file.id; this.version = verOf(file); this.zoom = 1; this.pages = []; this.visible = new Set();
+    this.ann = { pages: {}, memo: '' }; this.hist = []; this.drag = null;
+    const fav = !!S.prefs.fav[this.id];
+    this.pgEl = h('span', { class: 'pg' });
+    this.cbadge = h('span', { class: 'cbadge', hidden: true });
+    this.cBtn = h('button', { class: 'icon-btn', title: 'コメント', style: { position: 'relative' }, onclick: () => this.toggleComments() }, icon('chat'), this.cbadge);
+    this.cpanel = null;
+    this.starBtn = h('button', { class: 'icon-btn' + (fav ? ' on' : ''), title: 'お気に入り', onclick: () => {
+      toggleFav([this.id]); const on = !!S.prefs.fav[this.id]; this.starBtn.classList.toggle('on', on); this.starBtn.replaceChildren(icon(on ? 'starFill' : 'star'));
+    } }, icon(fav ? 'starFill' : 'star'));
+    this.noticeEl = h('div', { class: 'pane-notice', hidden: true });
+    this.pagesEl = h('div', { class: 'pages' }, h('div', { class: 'pstatus' }, '読み込み中…'));
+    this.scroll = h('div', { class: 'pane-scroll' }, this.pagesEl);
+    this.scroll.addEventListener('scroll', () => this.onScroll(), { passive: true });
+    this.el = h('div', { class: 'pane', onpointerdown: () => setActive(this) },
+      h('div', { class: 'pane-h' },
+        this.ptEl = h('div', { class: 'pt' }),
+        this.pgEl,
+        h('button', { class: 'icon-btn', title: '縮小', onclick: () => this.setZoom(-1) }, icon('zoomOut')),
+        h('button', { class: 'icon-btn', title: '拡大', onclick: () => this.setZoom(1) }, icon('zoomIn')),
+        this.starBtn, this.cBtn,
+        h('button', { class: 'icon-btn', title: 'ダウンロード', onclick: () => downloadFile(file) }, icon('download')),
+        h('button', { class: 'icon-btn', title: '閉じる', onclick: () => removePane(this) }, icon('x'))),
+      this.noticeEl, this.body = h('div', { class: 'pane-body' }, this.scroll));
+    this.updateCBadge(); this.updateLabel();
+  }
+  updateLabel() { const l = fileLabel(liveFile(this.file)); this.ptEl.textContent = l; this.ptEl.title = l; }
+  /* ---- comments ---- */
+  toggleComments(force) {
+    const show = force ?? (!this.cpanel || this.cpanel.hidden);
+    if (!this.cpanel) this.buildCPanel();
+    this.cpanel.hidden = !show; this.cBtn.classList.toggle('on', show);
+    if (show) { this.drawComments(); setTimeout(() => this.cTa.focus(), 50); }
+    else updateTable();
+  }
+  buildCPanel() {
+    const mine = !!S.prefs.mine[this.id];
+    this.cFilter = 'all'; this.cType = mine ? 'self' : 'all';
+    this.cList = h('div', { class: 'cp-list' });
+    this.cFilterEl = h('div', { class: 'cp-filter' });
+    this.cTypesEl = h('div', { class: 'ctypes' });
+    this.cTa = h('textarea', { placeholder: 'コメントを書く', maxlength: '1000' });
+    this.cAnon = h('input', { type: 'checkbox' });
+    this.cPage = h('input', { type: 'checkbox', checked: true });
+    this.cAnonLbl = h('label', {}, this.cAnon, '匿名で');
+    this.cPageLbl = h('label', {}, this.cPage, h('span', {}, 'ページを付ける'));
+    const send = h('button', { class: 'btn primary', onclick: () => this.postComment() }, '送信');
+    this.cTa.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); this.postComment(); } });
+    this.cpanel = h('div', { class: 'cpanel', hidden: true },
+      h('div', { class: 'cp-h' }, icon('chat', 'i-s'), h('span', { class: 'cp-title' }, 'コメント'), h('button', { class: 'icon-btn', title: '閉じる', onclick: () => this.toggleComments(false) }, icon('x'))),
+      this.cFilterEl, this.cList,
+      h('div', { class: 'cp-form' }, this.cTypesEl, this.cTa, h('div', { class: 'cp-row' }, this.cAnonLbl, this.cPageLbl, send)));
+    this.body.append(this.cpanel);
+    this.drawCTypes();
+  }
+  drawCTypes() {
+    const mine = !!S.prefs.mine[this.id];
+    const T = [['self', '自分用に残す', '自分だけ'], ['author', '書き手に伝える', mine ? '（自分の文書）' : '自分と書き手'], ['all', 'みんなに共有', '全員']];
+    this.cTypesEl.replaceChildren(...T.map(([k, l, sub]) => h('button', {
+      class: k + (this.cType === k ? ' on' : ''), disabled: k === 'author' && mine,
+      onclick: () => { this.cType = k; this.drawCTypes(); }
+    }, l, h('small', {}, sub))));
+    this.cAnonLbl.hidden = this.cType === 'self';
+    this.cTa.placeholder = { self: '自分用のメモ（他の人には見えません）', author: `書き手（${nameOf(liveFile(this.file))}）にだけ伝わります`, all: 'テーブルの全員に見えます' }[this.cType];
+  }
+  async postComment() {
+    const text = this.cTa.value.trim(); if (!text) return;
+    const page = this.cPage.checked ? this.curPage || 1 : null;
+    const cid = Date.now().toString(36) + rid(5);
+    const base = { text, page, v: this.version, createdAt: Date.now() };
+    if (this.cType === 'self') {
+      const n = (S.prefs.notes[this.id] ||= { v: this.version, list: [] });
+      if (n.v !== this.version) { n.v = this.version; n.list = []; }
+      n.list.push({ id: cid, ...base }); savePrefs();
+    } else {
+      const anon = this.cAnon.checked;
+      S.prefs.myc[cid] = 1; S.prefs.cseen[this.id] = Date.now(); savePrefs();
+      try { await S.backend.addComment(S.code, this.id, cid, { ...base, type: this.cType, anonymous: anon, author: anon ? null : S.me.name }); }
+      catch (e) { delete S.prefs.myc[cid]; savePrefs(); return toast('送信できませんでした：' + e.message); }
+    }
+    this.cTa.value = ''; this.drawComments(); updateTable();
+    toast({ self: '自分用に保存しました', author: '書き手に送りました', all: 'みんなに共有しました' }[this.cType]);
+  }
+  drawComments() {
+    if (!this.cpanel) return;
+    const f = S.files.find(x => x.id === this.id) || this.file;
+    const all = visibleComments(f);
+    const cnt = k => all.filter(c => c.type === k).length;
+    const F = [['all', 'すべて', all.length], ['self', '自分用', cnt('self')], ['author', S.prefs.mine[this.id] ? 'あなたへ' : '書き手へ', cnt('author')], ['all2', 'みんな', cnt('all')]];
+    this.cFilterEl.replaceChildren(...F.map(([k, l, n]) => h('button', { class: this.cFilter === k ? 'on' : '', onclick: () => { this.cFilter = k; this.drawComments(); } }, `${l} ${n}`)));
+    const list = this.cFilter === 'all' ? all : all.filter(c => c.type === (this.cFilter === 'all2' ? 'all' : this.cFilter));
+    const mineFile = !!S.prefs.mine[this.id];
+    const atBottom = this.cList.scrollHeight - this.cList.scrollTop - this.cList.clientHeight < 40;
+    this.cList.replaceChildren(...(list.length ? list.map(c => {
+      const own = c.type === 'self' || !!S.prefs.myc[c.id];
+      const canDel = own || (S.teacher && c.type === 'all');
+      const label = { self: '自分用', author: mineFile && !own ? 'あなたへ' : '書き手へ', all: 'みんな' }[c.type];
+      return h('div', { class: 'cmt ' + c.type },
+        h('div', { class: 'cmt-h' }, h('span', { class: 'ctype ' + c.type }, label),
+          c.type === 'self' ? null : h('b', {}, c.anonymous ? '匿名' : (c.author || '')), own && c.type !== 'self' ? h('span', {}, '（自分）') : null,
+          h('span', {}, fmtTime(c.createdAt)),
+          c.page ? h('button', { class: 'pgtag', title: 'このページへ移動', onclick: () => this.goPage(c.page) }, 'p.' + c.page) : null,
+          (c.v || 1) < verOf(f) ? h('span', { class: 'old', title: '置き換え前の版へのコメント' }, '旧版') : null,
+          canDel ? h('button', { class: 'del', onclick: () => this.deleteComment(c) }, '削除') : null),
+        h('div', { class: 'cmt-t' }, c.text));
+    }) : [h('div', { class: 'cp-empty' }, 'まだコメントはありません。', h('br'), '下の欄から書けます。')]));
+    if (atBottom) this.cList.scrollTop = this.cList.scrollHeight;
+    S.prefs.cseen[this.id] = Date.now(); savePrefs(); this.updateCBadge();
+  }
+  async deleteComment(c) {
+    if (!(await confirmBox('コメントを削除', 'このコメントを削除しますか？', '削除', true))) return;
+    if (c.type === 'self') { const n = S.prefs.notes[this.id]; if (n) n.list = n.list.filter(x => x.id !== c.id); savePrefs(); }
+    else { await S.backend.deleteComment(S.code, this.id, c.id); delete S.prefs.myc[c.id]; savePrefs(); }
+    this.drawComments();
+  }
+  goPage(n) { const p = this.pages[n - 1]; if (p) this.scroll.scrollTop = p.el.offsetTop - 8; }
+  updateCBadge() {
+    const f = S.files.find(x => x.id === this.id) || this.file;
+    const un = (this.cpanel && !this.cpanel.hidden) ? 0 : unreadCount(f, visibleComments(f));
+    this.cbadge.hidden = !un; this.cbadge.textContent = un;
+  }
+  async load() {
+    try {
+      const [bytes, ann0] = await Promise.all([getPdfBytes(this.file), idb.get('ann', annKey(this.id))]);
+      if (this.dead) return;
+      // 書き込み・メモはバージョンごと。置き換えられた後は古いものを捨てる
+      let ann = ann0;
+      if (ann && (ann.v || 1) !== this.version) { ann = null; idb.del('ann', annKey(this.id)); if (S.prefs.inked[this.id]) { delete S.prefs.inked[this.id]; savePrefs(); } }
+      if (ann) this.ann = { pages: ann.pages || {}, memo: '' };
+      this.pdf = await openPdf(bytes);
+      if (this.dead) return this.pdf.destroy();
+      this.io = new IntersectionObserver(es => {
+        for (const e of es) {
+          const p = e.target._p;
+          if (e.isIntersecting) { this.visible.add(p); if (!p.rendered) this.render(p); }
+          else { this.visible.delete(p); this.release(p); }
+        }
+      }, { root: this.scroll, rootMargin: '900px 0px' });
+      const els = [];
+      for (let i = 1; i <= this.pdf.numPages; i++) {
+        const page = await this.pdf.getPage(i); if (this.dead) return;
+        const vp = page.getViewport({ scale: 1 });
+        const p = { i, page, w: vp.width, h: vp.height, rendered: false, task: null };
+        p.pdfC = h('canvas'); p.inkC = h('canvas', { class: 'ink' });
+        p.el = h('div', { class: 'page' }, p.pdfC, p.inkC, h('span', { class: 'pnum' }, i));
+        p.el._p = p; this.bindInk(p); this.pages.push(p); els.push(p.el);
+      }
+      this.pagesEl.replaceChildren(...els);
+      this.layout(); this.pages.forEach(p => this.io.observe(p.el)); this.onScroll();
+    } catch (e) {
+      console.error(e);
+      this.pagesEl.replaceChildren(h('div', { class: 'pstatus' }, '開けませんでした：' + (e.message || e)));
+    }
+  }
+  layout() {
+    if (!this.pages.length) return;
+    const ratio = this.scroll.scrollHeight ? this.scroll.scrollTop / this.scroll.scrollHeight : 0;
+    const avail = Math.max(200, Math.min(this.scroll.clientWidth - 24, 1000));
+    for (const p of this.pages) {
+      p.cssW = Math.round(avail * this.zoom); p.cssH = Math.round(p.cssW * p.h / p.w);
+      p.el.style.width = p.cssW + 'px'; p.el.style.height = p.cssH + 'px'; p.rendered = false;
+    }
+    this.scroll.scrollTop = ratio * this.scroll.scrollHeight;
+    for (const p of this.visible) this.render(p);
+  }
+  setZoom(d) {
+    const i = ZOOMS.indexOf(this.zoom); const ni = Math.max(0, Math.min(ZOOMS.length - 1, (i < 0 ? 3 : i) + d));
+    this.zoom = ZOOMS[ni]; this.layout(); toast(Math.round(this.zoom * 100) + '%');
+  }
+  async render(p) {
+    p.rendered = true;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const vp = p.page.getViewport({ scale: p.cssW / p.w * dpr });
+    if (p.task) { p.task.cancel(); p.task = null; }
+    const off = document.createElement('canvas'); off.width = Math.floor(vp.width); off.height = Math.floor(vp.height);
+    const task = p.task = p.page.render({ canvasContext: off.getContext('2d'), viewport: vp });
+    try { await task.promise; } catch { return; }
+    if (p.task !== task || this.dead) return;
+    p.task = null;
+    p.pdfC.width = off.width; p.pdfC.height = off.height; p.pdfC.getContext('2d').drawImage(off, 0, 0);
+    p.inkC.width = off.width; p.inkC.height = off.height; this.drawInk(p);
+  }
+  release(p) {
+    if (p.task) { p.task.cancel(); p.task = null; }
+    p.pdfC.width = p.pdfC.height = 0; p.inkC.width = p.inkC.height = 0; p.rendered = false;
+  }
+  onScroll() {
+    if (this.pages.length) {
+      const y = this.scroll.scrollTop + this.scroll.clientHeight / 3;
+      let cur = 1; for (const p of this.pages) { if (p.el.offsetTop <= y) cur = p.i; else break; }
+      this.curPage = cur; this.pgEl.textContent = `${cur} / ${this.pages.length}`;
+    }
+    if (V.sync && !V.syncing && V.panes.length > 1) {
+      const s = this.scroll, r = s.scrollTop / Math.max(1, s.scrollHeight - s.clientHeight);
+      V.syncing = true;
+      for (const o of V.panes) if (o !== this) o.scroll.scrollTop = r * (o.scroll.scrollHeight - o.scroll.clientHeight);
+      requestAnimationFrame(() => requestAnimationFrame(() => { V.syncing = false; }));
+    }
+  }
+  /* ---- ink ---- */
+  drawInk(p, extra) {
+    const c = p.inkC; if (!c.width) return;
+    const ctx = c.getContext('2d'); ctx.clearRect(0, 0, c.width, c.height);
+    const list = (this.ann.pages[p.i] || []).concat(extra ? [extra] : []);
+    for (const s of list) drawStroke(ctx, s, c.width, c.height);
+  }
+  norm(e, p) {
+    const r = p.inkC.getBoundingClientRect();
+    return [Math.round((e.clientX - r.left) / r.width * 1e4) / 1e4, Math.round((e.clientY - r.top) / r.height * 1e4) / 1e4];
+  }
+  bindInk(p) {
+    const c = p.inkC;
+    c.addEventListener('pointerdown', e => {
+      setActive(this);
+      if (V.tool === 'hand' || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      e.preventDefault(); c.setPointerCapture(e.pointerId);
+      const [x, y] = this.norm(e, p);
+      if (V.tool === 'eraser') { this.drag = { p, id: e.pointerId, removed: [] }; this.eraseAt(p, x, y); }
+      else {
+        const t = V.tool;
+        this.drag = { p, id: e.pointerId, stroke: { t, c: V.colors[t], w: SIZES[t][V.size[t]] / 800, p: [x, y] } };
+        this.drawInk(p, this.drag.stroke);
+      }
+    });
+    c.addEventListener('pointermove', e => {
+      const d = this.drag; if (!d || d.p !== p || d.id !== e.pointerId) return;
+      e.preventDefault();
+      const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+      for (const ev of (evs.length ? evs : [e])) {
+        const [x, y] = this.norm(ev, p);
+        if (d.stroke) { const a = d.stroke.p; const lx = a[a.length - 2], ly = a[a.length - 1]; if (Math.abs(x - lx) + Math.abs(y - ly) > 0.0015) a.push(x, y); }
+        else this.eraseAt(p, x, y);
+      }
+      if (d.stroke && !this.raf) this.raf = requestAnimationFrame(() => { this.raf = 0; if (this.drag?.stroke) this.drawInk(p, this.drag.stroke); });
+    });
+    const end = e => {
+      const d = this.drag; if (!d || d.p !== p || d.id !== e.pointerId) return;
+      this.drag = null;
+      if (d.stroke) {
+        (this.ann.pages[p.i] ||= []).push(d.stroke);
+        this.hist.push({ op: 'add', page: p.i, stroke: d.stroke }); this.drawInk(p); this.save();
+      } else if (d.removed.length) { this.hist.push({ op: 'del', page: p.i, items: d.removed }); this.save(); }
+    };
+    c.addEventListener('pointerup', end); c.addEventListener('pointercancel', end);
+  }
+  eraseAt(p, x, y) {
+    const arr = this.ann.pages[p.i]; if (!arr || !arr.length) return;
+    const ar = p.cssH / p.cssW, r = 12 / p.cssW; let hit = false;
+    for (let k = arr.length - 1; k >= 0; k--) {
+      const s = arr[k];
+      if (strokeHit(s, x, y, r + s.w / 2, ar)) { this.drag.removed.push({ s, idx: k }); arr.splice(k, 1); hit = true; }
+    }
+    if (hit) this.drawInk(p);
+  }
+  undoOnce() {
+    const a = this.hist.pop(); if (!a) return toast('元に戻す操作はありません');
+    if (a.op === 'add') { const arr = this.ann.pages[a.page] || []; const i = arr.indexOf(a.stroke); if (i >= 0) arr.splice(i, 1); }
+    else if (a.op === 'del') { const arr = (this.ann.pages[a.page] ||= []); for (const it of a.items.slice().reverse()) arr.splice(Math.min(it.idx, arr.length), 0, it.s); }
+    else if (a.op === 'clear') this.ann.pages = a.pages;
+    this.pages.forEach(p => this.drawInk(p)); this.save();
+  }
+  async clearAll() {
+    if (!Object.values(this.ann.pages).some(a => a.length)) return toast('書き込みはありません');
+    if (!(await confirmBox('書き込みを消す', `「${fileLabel(liveFile(this.file))}」の線・マーカーをすべて消します（コメントは残ります）。`, '消す', true))) return;
+    this.hist.push({ op: 'clear', pages: this.ann.pages }); this.ann.pages = {};
+    this.pages.forEach(p => this.drawInk(p)); this.save();
+  }
+  save(now) {
+    clearTimeout(this.st);
+    const run = () => {
+      this.st = null;
+      const has = Object.values(this.ann.pages).some(a => a.length);
+      // 置き換え後の新版に古い書き込みが混ざらないよう、読み込んだ版の番号と一緒に保存
+      idb.get('ann', annKey(this.id)).then(cur => {
+        if (cur && (cur.v || 1) > this.version) return;
+        idb.set('ann', annKey(this.id), { v: this.version, pages: this.ann.pages, updatedAt: Date.now() });
+      });
+      const want = has ? this.version : undefined;
+      if (S.prefs.inked[this.id] !== want) { has ? (S.prefs.inked[this.id] = this.version) : delete S.prefs.inked[this.id]; savePrefs(); }
+    };
+    if (now) run(); else this.st = setTimeout(run, 400);
+  }
+  showNotice(msg) {
+    this.noticeEl.replaceChildren(icon('alert'), h('div', {}, msg));
+    this.noticeEl.hidden = false;
+  }
+  destroy() {
+    if (this.st) this.save(true);
+    this.dead = true; this.io?.disconnect();
+    this.pages.forEach(p => p.task?.cancel());
+    this.pdf?.destroy();
+  }
+}
+function drawStroke(ctx, s, W, H) {
+  const a = s.p; if (!a || a.length < 2) return;
+  ctx.save();
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = s.c; ctx.lineWidth = Math.max(1, s.w * W);
+  if (s.t === 'marker') ctx.globalAlpha = 0.4;
+  ctx.beginPath(); ctx.moveTo(a[0] * W, a[1] * H);
+  if (a.length === 2) ctx.lineTo(a[0] * W + 0.1, a[1] * H);
+  else {
+    for (let i = 2; i < a.length - 2; i += 2) {
+      const mx = (a[i] + a[i + 2]) / 2, my = (a[i + 1] + a[i + 3]) / 2;
+      ctx.quadraticCurveTo(a[i] * W, a[i + 1] * H, mx * W, my * H);
+    }
+    ctx.lineTo(a[a.length - 2] * W, a[a.length - 1] * H);
+  }
+  ctx.stroke(); ctx.restore();
+}
+function strokeHit(s, x, y, r, ar) {
+  const a = s.p, r2 = r * r;
+  const d2 = (px, py) => { const dx = px - x, dy = (py - y) * ar; return dx * dx + dy * dy; };
+  if (a.length === 2) return d2(a[0], a[1]) <= r2;
+  for (let i = 0; i < a.length - 2; i += 2) {
+    const x1 = a[i], y1 = a[i + 1] * ar, x2 = a[i + 2], y2 = a[i + 3] * ar, py = y * ar;
+    const vx = x2 - x1, vy = y2 - y1, L = vx * vx + vy * vy;
+    let t = L ? ((x - x1) * vx + (py - y1) * vy) / L : 0; t = Math.max(0, Math.min(1, t));
+    const dx = x1 + t * vx - x, dy = y1 + t * vy - py;
+    if (dx * dx + dy * dy <= r2) return true;
+  }
+  return false;
+}
+
+/* =====================================================================
+   起動
+   ===================================================================== */
+async function init() {
+  mount(h('div', { class: 'center-wrap' }, h('p', { class: 'hint' }, '読み込み中…')));
+  try { S.backend = DEMO ? makeDemoBackend() : await makeFirebaseBackend(FIREBASE_CONFIG); }
+  catch (e) { mount(h('div', { class: 'center-wrap' }, h('div', { class: 'panel' }, h('h2', {}, '接続できませんでした'), h('p', { class: 'hint' }, String(e.message || e))))); return; }
+  try {
+    const cfg = await S.backend.getConfig();
+    S.teacher = !!cfg.teacherHash && LS.get('yk:teacher') === cfg.teacherHash;
+    const code = hashCode();
+    if (code && S.me.name && await S.backend.getTableMeta(code)) return enterTable(code);
+  } catch (e) { console.error(e); return renderJoin('接続エラー：' + e.message); }
+  renderJoin();
+}
+init();
+})();
+</script>
+</body>
+</html>
