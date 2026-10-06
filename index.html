@@ -155,6 +155,10 @@ select.input{width:auto;min-height:40px;padding:6px 10px}
 .rrow .rbar{grid-column:2/4;height:8px;background:var(--bg2);border-radius:4px;overflow:hidden}
 .rrow .rbar i{display:block;height:100%;background:var(--accent)}
 .rrow .rv{grid-column:2/4;font-size:12px;color:var(--muted)}
+.roster{border-collapse:collapse;width:100%;font-size:13px}
+.roster th,.roster td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top;white-space:nowrap}
+.roster td:nth-child(3),.roster td:nth-child(4),.roster td:nth-child(2){white-space:normal;word-break:break-all;min-width:90px}
+.roster th{background:var(--bg2);font-size:12px}
 .new{position:absolute;left:8px;top:10px;font-size:10px;font-weight:800;background:#d9480f;color:#fff;border-radius:5px;padding:2px 6px;letter-spacing:.05em}
 .checkbox{position:absolute;right:8px;top:10px;width:26px;height:26px;border-radius:8px;border:2px solid #fff;background:rgba(0,0,0,.25);display:grid;place-items:center;color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .checkbox.on{background:var(--accent)}
@@ -712,6 +716,13 @@ function loadPrefs(code) {
 function savePrefs() { if (S.code) LS.set('yk:p:' + S.code, S.prefs); }
 const groupOf = id => S.prefs.groups.find(g => g.id === S.prefs.assign[id]) || null;
 const canEdit = f => S.teacher || !!S.prefs.mine[f.id];
+/* 表示名：匿名処理（先生がON）なら ul01, ul02…（アップ順）。タイトル表示ONなら「名前_タイトル」 */
+const ulName = f => 'ul' + String(f.no || 0).padStart(2, '0');
+const isAnonView = () => !!S.table?.anonymize;
+const showTitles = () => S.table?.showTitle !== false;
+const nameOf = f => isAnonView() ? ulName(f) : (f.author || '（署名なし）');
+const fileLabel = f => showTitles() ? `${nameOf(f)}_${f.title || ''}` : nameOf(f);
+const liveFile = f => S.files.find(x => x.id === f.id) || f;
 function hashCode() { const m = location.hash.match(/t=([A-Za-z0-9]+)/); return m ? m[1].toUpperCase() : ''; }
 function shareUrl(code) { return location.origin + location.pathname + '#t=' + code; }
 
@@ -923,7 +934,8 @@ function enterTable(code) {
     checkPanesForChanges();
     if (!first) { notifyNewComments(prevComments); notifyNewPolls(prevPolls); }
     S.pollViews.forEach(fn => fn());
-    V.panes?.forEach(p => p.cpanel && !p.cpanel.hidden && p.drawComments());
+    V.panes?.forEach(p => { p.updateLabel(); if (p.cpanel && !p.cpanel.hidden) p.drawComments(); });
+    if (V.el && !V.el.hidden) drawTabs();
   });
 }
 
@@ -936,7 +948,7 @@ function buildTableShell() {
   E.pollBar = h('div', { class: 'poll-bar', hidden: true });
   E.fileIn = h('input', { type: 'file', accept: ACCEPT, multiple: true, hidden: true,
     onchange: e => { const fs = [...e.target.files]; e.target.value = ''; if (fs.length) startUpload(fs); } });
-  const search = h('input', { class: 'input', type: 'search', placeholder: 'タイトル・名前で検索' });
+  const search = h('input', { class: 'input', type: 'search', placeholder: '表示名で検索' });
   search.addEventListener('input', () => { S.ui.search = search.value; drawGrid(); });
   E.shuffle = h('button', { class: 'tg', title: 'ランダムに並べ直す', hidden: S.ui.sort !== 'random', onclick: () => { LS.set('yk:seed:' + S.code, rid(6)); drawGrid(); toast('並べ直しました'); } }, icon('shuffle', 'i-s'), 'シャッフル');
   const sort = h('select', { class: 'input', 'aria-label': '並び順', onchange: e => {
@@ -989,7 +1001,12 @@ function updateTable() {
   E.selTg.classList.toggle('on', S.ui.select);
   E.teacherBar.hidden = !S.teacher;
   if (S.teacher) E.teacherBar.replaceChildren(h('div', {},
-    h('b', {}, '先生モード'), h('span', {}, '：すべての文書を削除・名前変更できます'), h('span', { style: { flex: '1' } }),
+    h('b', {}, '先生モード'), h('span', { style: { flex: '1' } }),
+    h('button', { class: 'tg' + (S.table.anonymize ? ' on' : ''), title: 'ONにすると、全員の画面で名前が ul01, ul02… になります', onclick: () => S.backend.updateTableMeta(S.code, { anonymize: !S.table.anonymize }) },
+      icon('anon', 'i-s'), '生徒に対して匿名：' + (S.table.anonymize ? 'ON' : 'OFF')),
+    h('button', { class: 'tg' + (showTitles() ? ' on' : ''), onclick: () => S.backend.updateTableMeta(S.code, { showTitle: !showTitles() }) },
+      icon('doc', 'i-s'), 'タイトル表示：' + (showTitles() ? 'ON' : 'OFF')),
+    h('button', { class: 'btn', style: { minHeight: '32px', padding: '4px 12px' }, onclick: showRoster }, icon('list', 'i-s'), '提出者対応一覧'),
     h('button', { class: 'btn', style: { minHeight: '32px', padding: '4px 12px' }, onclick: () => S.backend.updateTableMeta(S.code, { locked: !locked }) },
       icon(locked ? 'lock' : 'unlock', 'i-s'), locked ? 'アップ受付：停止中' : 'アップ受付：受付中'),
     h('button', { class: 'btn', style: { minHeight: '32px', padding: '4px 12px' }, onclick: async () => {
@@ -1015,13 +1032,13 @@ function drawChips() {
 function visibleFiles() {
   let fs = S.files.slice(); const P = S.prefs, F = S.ui.filter;
   const q = S.ui.search.trim().toLowerCase();
-  if (q) fs = fs.filter(f => (f.title || '').toLowerCase().includes(q) || (!f.anonymous && (f.author || '').toLowerCase().includes(q)) || ('#' + f.no) === q);
+  if (q) fs = fs.filter(f => fileLabel(f).toLowerCase().includes(q));
   if (F === 'fav') fs = fs.filter(f => P.fav[f.id]);
   else if (F === 'none') fs = fs.filter(f => !groupOf(f.id));
   else if (F.startsWith('g:')) fs = fs.filter(f => P.assign[f.id] === F.slice(2));
   if (S.ui.sort === 'title') {
     const coll = new Intl.Collator('ja', { numeric: true, sensitivity: 'base' });
-    fs.sort((a, b) => coll.compare(a.title || '', b.title || '') || a.no - b.no);
+    fs.sort((a, b) => coll.compare(fileLabel(a), fileLabel(b)) || a.no - b.no);
   } else if (S.ui.sort === 'random') {
     // 端末ごとに固定の並び（シャッフルを押すまで変わらない。新しい文書もランダムな位置に入る）
     let seed = LS.get('yk:seed:' + S.code, null); if (!seed) { seed = rid(6); LS.set('yk:seed:' + S.code, seed); }
@@ -1067,10 +1084,9 @@ function fileCard(f) {
       !P.seen[f.id] ? h('span', { class: 'new' }, 'NEW') : (P.seen[f.id] < verOf(f) ? h('span', { class: 'new upd' }, '更新') : null),
       S.ui.select ? h('span', { class: 'checkbox' + (sel ? ' on' : '') }, sel ? icon('check') : null) : null),
     h('div', { class: 'meta' },
-      h('div', { class: 'title', title: f.title }, h('span', { class: 'no' }, '#' + f.no), f.title),
+      h('div', { class: 'title', title: fileLabel(f) }, fileLabel(f)),
       h('div', { class: 'sub' },
-        f.anonymous ? [icon('anon', 'i-s'), '匿名'] : [icon('user', 'i-s'), f.author || ''],
-        h('span', {}, '・' + (f.pages || '?') + 'p'),
+        h('span', {}, (f.pages || '?') + 'p'),
         (() => { const cs = visibleComments(f); if (!cs.length) return null; const un = unreadCount(f, cs);
           return h('span', { class: 'ccount' + (un ? ' unread' : ''), title: un ? `新しいコメント ${un}件` : 'コメント' }, '・', icon('chat', 'i-s'), cs.length + (un ? `（新${un}）` : '')); })(),
         P.inked[f.id] === verOf(f) ? h('span', { title: '書き込みあり', style: { display: 'inline-flex' } }, '・', icon('memo', 'i-s')) : null),
@@ -1117,11 +1133,9 @@ function fileMenu(f, anchor) {
     '-', ...groupMenuItems([f.id]), '-',
     { text: 'PDFをダウンロード', icon: 'download', action: () => downloadFile(f) },
     S.prefs.mine[f.id] ? { text: '別のファイルに置き換え…', icon: 'swap', action: () => replaceFile(f) } : null,
-    canEdit(f) ? { text: 'タイトルを変更', icon: 'memo', action: async () => {
-      const t = await askText('タイトルを変更', '', f.title, '変更'); if (t) S.backend.updateFile(S.code, f.id, { title: t });
-    } } : null,
+    canEdit(f) ? { text: '署名・タイトルを変更', icon: 'memo', action: () => editSignature(f) } : null,
     canEdit(f) ? { text: '削除', icon: 'trash', danger: true, action: async () => {
-      if (await confirmBox('文書を削除', `「${f.title}」をテーブルから削除します。全員の画面から消えます。`, '削除する', true)) {
+      if (await confirmBox('文書を削除', `「${fileLabel(f)}」をテーブルから削除します。全員の画面から消えます。`, '削除する', true)) {
         await S.backend.deleteFile(S.code, f.id, blobKeyOf(f)); S.backend.deleteComment(S.code, f.id, null).catch(() => {}); idb.del('pdf', pdfKey(blobKeyOf(f))); toast('削除しました');
       }
     } } : null
@@ -1131,7 +1145,7 @@ async function downloadFile(f) {
   try {
     const bytes = await getPdfBytes(f);
     const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
-    const a = h('a', { href: url, download: (f.title || 'document') + '.pdf' }); document.body.append(a); a.click(); a.remove();
+    const a = h('a', { href: url, download: fileLabel(liveFile(f)).replace(/[\\/:*?"<>|]/g, '_') + '.pdf' }); document.body.append(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   } catch (e) { toast('ダウンロードできませんでした：' + e.message); }
 }
@@ -1181,6 +1195,37 @@ function manageGroups() {
 }
 
 /* ---------------- アップロード ---------------- */
+async function editSignature(f) {
+  const sig = h('input', { class: 'input', value: f.author || '' }), ttl = h('input', { class: 'input', value: f.title || '' });
+  const err = h('div', { class: 'err' });
+  await modal({ title: '署名・タイトルを変更', body: [h('div', { class: 'field' }, h('label', {}, '署名'), sig), h('div', { class: 'field' }, h('label', {}, 'タイトル'), ttl), err],
+    actions: [{ text: 'キャンセル', value: null }, { text: '変更', kind: 'primary', onClick: async () => {
+      if (!sig.value.trim() || !ttl.value.trim()) { err.textContent = '署名とタイトルを入れてください'; return false; }
+      await S.backend.updateFile(S.code, f.id, { author: sig.value.trim(), title: ttl.value.trim(), anonymous: false });
+    } }] });
+}
+function showRoster() {
+  const body = h('div');
+  const rowsOf = () => S.files.map(f => [ulName(f), fileLabel(f), f.author || '', f.title || '', TYPE_LABEL[f.srcType] || 'PDF', new Date(f.createdAt).toLocaleString('ja-JP')]);
+  const draw = () => {
+    const rows = rowsOf();
+    body.replaceChildren(
+      h('p', { class: 'hint' }, `いまの表示：生徒に対して匿名 ${isAnonView() ? 'ON' : 'OFF'}／タイトル表示 ${showTitles() ? 'ON' : 'OFF'}。この一覧は先生の画面にだけ表示されます。`),
+      rows.length ? h('div', { style: { overflowX: 'auto' } }, h('table', { class: 'roster' },
+        h('thead', {}, h('tr', {}, ['番号', '表示名', '署名', 'タイトル', '種類', '提出日時'].map(x => h('th', {}, x)))),
+        h('tbody', {}, rows.map(r => h('tr', {}, r.map(c => h('td', {}, c))))))) : h('p', { class: 'hint' }, 'まだ提出はありません。'));
+  };
+  draw(); S.pollViews.add(draw);
+  modal({ title: '提出者対応一覧', wide: true, body, actions: [
+    { text: 'CSVで保存', onClick: () => {
+      const csv = [['番号', '表示名', '署名', 'タイトル', '種類', '提出日時'], ...rowsOf()].map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+      const url = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv' }));
+      const a = h('a', { href: url, download: `${S.table.name}_提出者対応一覧.csv` }); document.body.append(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 5000); return false;
+    } },
+    { text: '閉じる', kind: 'primary' }] }).then(() => S.pollViews.delete(draw));
+}
+
 async function startUpload(fileList) {
   if (!S.table) return;
   if (S.table.locked && !S.teacher) return toast('現在アップロードは締め切られています');
@@ -1188,7 +1233,6 @@ async function startUpload(fileList) {
   if (fileList.some(f => /\.doc$/i.test(f.name))) toast('古い形式(.doc)は非対応です。Wordで .docx か PDF に保存し直してください');
   else if (ok.length < fileList.length) toast('PDF・Word(.docx)・画像のみアップできます');
   if (!ok.length) return;
-  let anon = LS.get('yk:anon', false);
   const imgs = ok.filter(isImage).sort((a, b) => new Intl.Collator('ja', { numeric: true }).compare(a.name, b.name));
   let merge = false;
   let rows = [];
@@ -1198,7 +1242,7 @@ async function startUpload(fileList) {
     rows = jobs.map(files => {
       const f0 = files[0], type = files.every(isImage) ? 'image' : isDocx(f0) ? 'docx' : 'pdf';
       const size = files.reduce((a, f) => a + f.size, 0);
-      const r = { files, title: h('input', { class: 'input', value: stripExt(f0.name) }),
+      const r = { files, title: h('input', { class: 'input', placeholder: `タイトル（${files.length > 1 ? '画像' + files.length + '枚' : f0.name}）` }),
         stat: h('span', {}, files.length > 1 ? `画像${files.length}枚 → 1つのPDFに` : type === 'docx' ? 'Word → PDFに変換してアップ' : type === 'image' ? '画像 → PDFに変換してアップ' : '待機中'), bar: h('i') };
       r.el = h('div', { class: 'up-row' }, h('span', { class: 'badge' + TYPE_CLS[type] }, TYPE_LABEL[type]),
         h('div', { class: 'info' }, r.title, h('div', { class: 'stat' }, fmtSize(size), r.stat, h('span', { class: 'bar' }, r.bar))));
@@ -1210,25 +1254,31 @@ async function startUpload(fileList) {
   let titleEl = null;
   buildRows();
   const mergeChk = h('input', { type: 'checkbox', onchange: e => { merge = e.target.checked; buildRows(); } });
-  const optNamed = h('button', { class: 'opt', onclick: () => setAnon(false) }, h('b', {}, icon('user', 'i-s'), '名前を出す'), h('small', {}, `「${S.me.name}」と表示されます`));
-  const optAnon = h('button', { class: 'opt', onclick: () => setAnon(true) }, h('b', {}, icon('anon', 'i-s'), '匿名'), h('small', {}, '名前は保存されず、先生にも分かりません'));
-  const setAnon = v => { anon = v; LS.set('yk:anon', v); optNamed.classList.toggle('on', !v); optAnon.classList.toggle('on', v); };
-  setAnon(anon);
+  const sigIn = h('input', { class: 'input', value: LS.get('yk:sig', '') || S.me.name, placeholder: '署名（先生の指示どおりに）' });
+  const upErr = h('div', { class: 'err' });
   let busy = false, ov = null;
   await modal({ bind: (_c, o) => { ov = o; titleEl = o.querySelector('.modal-h h3'); }, title: `アップロード（${rows.length}件）`, wide: true, body: [
+    h('p', { class: 'hint', style: { margin: '0 0 8px' } }, '署名とタイトルは、先生の指示どおりに書いてください。'),
+    h('div', { class: 'field' }, h('label', {}, '署名'), sigIn),
+    h('div', { style: { fontSize: '13px', fontWeight: '600', margin: '4px 0 0' } }, 'タイトル'),
     listEl,
     imgs.length >= 2 ? h('label', { class: 'merge-opt' }, mergeChk, h('div', {}, h('b', {}, `画像${imgs.length}枚をまとめて1つの文書にする`),
       h('small', {}, '手書きの原稿を何枚も撮ったときなどに。ページの順番はファイル名順です。'))) : null,
-    h('div', { class: 'opt-cards' }, optNamed, optAnon),
+    upErr,
     ok.some(isDocx) ? h('p', { class: 'hint' }, 'Wordはこの端末でPDFに変換されます。文字・表・画像は残りますが、縦書きや細かいレイアウトは崩れることがあります。崩れる場合は Word で「PDFとして保存」してからアップしてください。') : null,
     imgs.length ? h('p', { class: 'hint' }, '画像（JPG・PNGなど）はPDFに変換して置かれます。大きな写真は長い辺が2400pxになるよう縮小されます。') : null
   ], actions: [
     { text: 'キャンセル', value: null, onClick: () => busy ? false : undefined },
     { text: 'アップロード', kind: 'primary', onClick: async () => {
       if (busy) return false;
+      const sig = sigIn.value.trim();
+      if (!sig) { upErr.textContent = '署名を入れてください'; sigIn.focus(); return false; }
+      const emptyT = rows.find(r => !r.done && !r.title.value.trim());
+      if (emptyT) { upErr.textContent = 'タイトルを入れてください'; emptyT.title.focus(); return false; }
+      upErr.textContent = ''; LS.set('yk:sig', sig);
       busy = true;
       ov.dataset.busy = '1';
-      ov.querySelectorAll('.modal-f .btn, .opt, .up-row input, .merge-opt input').forEach(b => b.disabled = true);
+      ov.querySelectorAll('.modal-f .btn, .up-row input, .merge-opt input, .field input').forEach(b => b.disabled = true);
       let fail = 0;
       for (const r of rows) {
         if (r.done) continue;
@@ -1236,7 +1286,7 @@ async function startUpload(fileList) {
           const { bytes, pages, thumb, srcType } = await preparePdf(r.files, t => { r.stat.textContent = t; });
           r.stat.textContent = 'アップロード中…';
           const id = S.backend.newId();
-          const meta = { title: r.title.value.trim() || stripExt(r.files[0].name), srcType, version: 1, anonymous: !!anon, author: anon ? null : S.me.name,
+          const meta = { title: r.title.value.trim(), srcType, version: 1, anonymous: false, author: sig,
             pages, size: bytes.length, thumb, createdAt: Date.now() };
           S.prefs.mine[id] = 1; S.prefs.seen[id] = 1; savePrefs();
           await S.backend.addFile(S.code, id, meta, bytesToChunks(bytes), p => { r.bar.style.width = Math.round(p * 100) + '%'; });
@@ -1266,7 +1316,7 @@ const myVote = pid => { const k = myVoteKey(pid); return k ? S.votes[pid]?.[k] |
 const canSeeResults = p => S.teacher || p.results === 'live' || (p.results === 'publish' && p.published);
 function pollTargets(p) {
   if (p.target === 'choices') return (p.choices || []).map(c => ({ id: c.id, label: c.label }));
-  return S.files.map(f => ({ id: f.id, label: `#${f.no} ${f.title}`, sub: f.anonymous ? '匿名' : f.author, thumb: f.thumb, mine: !!S.prefs.mine[f.id] }));
+  return S.files.map(f => ({ id: f.id, label: fileLabel(f), thumb: f.thumb, mine: !!S.prefs.mine[f.id] }));
 }
 function tally(pid) {
   const t = {}, who = {}; let voters = 0;
@@ -1506,7 +1556,7 @@ function drawTabs() {
   V.tabs.classList.toggle('show', multi);
   V.tab = Math.min(V.tab, V.panes.length - 1);
   V.panes.forEach((p, i) => p.el.classList.toggle('tab-hidden', i !== V.tab));
-  V.tabs.replaceChildren(...V.panes.map((p, i) => h('button', { class: i === V.tab ? 'on' : '', onclick: () => { V.tab = i; setActive(p); drawTabs(); p.layout(); } }, `#${p.file.no} ${p.file.title}`)));
+  V.tabs.replaceChildren(...V.panes.map((p, i) => h('button', { class: i === V.tab ? 'on' : '', onclick: () => { V.tab = i; setActive(p); drawTabs(); p.layout(); } }, fileLabel(liveFile(p.file)))));
 }
 function setActive(p) { V.active = p; V.panes.forEach(x => x.el.classList.toggle('active', x === p)); }
 
@@ -1550,7 +1600,7 @@ async function pickFiles(firstId) {
     class: 'pick-item', style: chosen.has(f.id) ? { borderColor: 'var(--accent)', background: 'var(--accent-soft)' } : null,
     onclick: () => { if (chosen.has(f.id)) chosen.delete(f.id); else if (chosen.size < max) chosen.add(f.id); else toast(`あと${max}つまで選べます`); draw(); }
   }, f.thumb ? h('img', { src: f.thumb, alt: '' }) : icon('doc'),
-    h('div', { style: { flex: '1', minWidth: '0' } }, h('b', {}, `#${f.no} ${f.title}`), h('div', { class: 'hint', style: { margin: '0' } }, f.anonymous ? '匿名' : f.author)),
+    h('div', { style: { flex: '1', minWidth: '0' } }, h('b', {}, fileLabel(f))),
     chosen.has(f.id) ? icon('check') : (S.prefs.fav[f.id] ? h('span', { style: { color: 'var(--star)' } }, icon('starFill')) : null))));
   draw();
   const r = await modal({ title: '並べて読む文書を選ぶ', wide: true, body: [h('p', { class: 'hint' }, `最大3つまで並べられます（あと${max}つ）。`), list],
@@ -1617,10 +1667,10 @@ async function replaceFile(f) {
   let busy = false, ov = null;
   await modal({ title: 'ファイルを置き換える', wide: true, bind: (_c, o) => { ov = o; }, body: [
     h('div', { class: 'cmp' },
-      h('div', {}, h('small', {}, `いまのファイル（#${f.no}）`), h('b', {}, f.title)),
+      h('div', {}, h('small', {}, 'いまのファイル'), h('b', {}, fileLabel(f))),
       h('div', {}, h('small', {}, '新しいファイル'), h('b', {}, file.name), h('small', { style: { marginTop: '4px' } }, fmtSize(file.size) + kind))),
     h('div', { class: 'field' }, h('label', {}, 'タイトル'), titleIn),
-    h('p', { class: 'hint' }, 'テーブル上の位置（番号）・匿名/顕名の設定はそのままです。いま読んでいる人の画面には置き換えのお知らせが出ます。このファイルへの書き込みと「自分用」コメントは、置き換え後は消えます（全員分）。「書き手に伝える」「みんなに共有」のコメントは「旧版」の印が付いて残ります。'),
+    h('p', { class: 'hint' }, 'テーブル上の位置（アップ順）と署名はそのままです。いま読んでいる人の画面には置き換えのお知らせが出ます。このファイルへの書き込みと「自分用」コメントは、置き換え後は消えます（全員分）。「書き手に伝える」「みんなに共有」のコメントは「旧版」の印が付いて残ります。'),
     h('div', { class: 'stat', style: { display: 'flex', gap: '8px', alignItems: 'center', fontSize: '13px', color: 'var(--muted)' } }, stat, h('span', { class: 'bar' }, bar))
   ], actions: [
     { text: 'キャンセル', value: null, onClick: () => busy ? false : undefined },
@@ -1665,7 +1715,7 @@ class Pane {
     this.scroll.addEventListener('scroll', () => this.onScroll(), { passive: true });
     this.el = h('div', { class: 'pane', onpointerdown: () => setActive(this) },
       h('div', { class: 'pane-h' },
-        h('div', { class: 'pt', title: file.title }, `#${file.no} ${file.title}`, h('small', {}, file.anonymous ? '匿名' : file.author)),
+        this.ptEl = h('div', { class: 'pt' }),
         this.pgEl,
         h('button', { class: 'icon-btn', title: '縮小', onclick: () => this.setZoom(-1) }, icon('zoomOut')),
         h('button', { class: 'icon-btn', title: '拡大', onclick: () => this.setZoom(1) }, icon('zoomIn')),
@@ -1673,8 +1723,9 @@ class Pane {
         h('button', { class: 'icon-btn', title: 'ダウンロード', onclick: () => downloadFile(file) }, icon('download')),
         h('button', { class: 'icon-btn', title: '閉じる', onclick: () => removePane(this) }, icon('x'))),
       this.noticeEl, this.body = h('div', { class: 'pane-body' }, this.scroll));
-    this.updateCBadge();
+    this.updateCBadge(); this.updateLabel();
   }
+  updateLabel() { const l = fileLabel(liveFile(this.file)); this.ptEl.textContent = l; this.ptEl.title = l; }
   /* ---- comments ---- */
   toggleComments(force) {
     const show = force ?? (!this.cpanel || this.cpanel.hidden);
@@ -1711,7 +1762,7 @@ class Pane {
       onclick: () => { this.cType = k; this.drawCTypes(); }
     }, l, h('small', {}, sub))));
     this.cAnonLbl.hidden = this.cType === 'self';
-    this.cTa.placeholder = { self: '自分用のメモ（他の人には見えません）', author: `書き手（${this.file.anonymous ? '匿名の人' : this.file.author}）にだけ伝わります`, all: 'テーブルの全員に見えます' }[this.cType];
+    this.cTa.placeholder = { self: '自分用のメモ（他の人には見えません）', author: `書き手（${nameOf(liveFile(this.file))}）にだけ伝わります`, all: 'テーブルの全員に見えます' }[this.cType];
   }
   async postComment() {
     const text = this.cTa.value.trim(); if (!text) return;
@@ -1911,7 +1962,7 @@ class Pane {
   }
   async clearAll() {
     if (!Object.values(this.ann.pages).some(a => a.length)) return toast('書き込みはありません');
-    if (!(await confirmBox('書き込みを消す', `「${this.file.title}」の線・マーカーをすべて消します（コメントは残ります）。`, '消す', true))) return;
+    if (!(await confirmBox('書き込みを消す', `「${fileLabel(liveFile(this.file))}」の線・マーカーをすべて消します（コメントは残ります）。`, '消す', true))) return;
     this.hist.push({ op: 'clear', pages: this.ann.pages }); this.ann.pages = {};
     this.pages.forEach(p => this.drawInk(p)); this.save();
   }
