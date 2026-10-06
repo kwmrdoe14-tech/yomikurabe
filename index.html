@@ -343,6 +343,8 @@ const FIREBASE_CONFIG = {
   messagingSenderId: "11549072007",
   appId: "1:11549072007:web:2b4d6cd6fe8ab67aec7622"
 };
+// 先生メニューに入れるGoogleアカウント（データベースのルールにも同じものを書いています）
+const TEACHER_EMAILS = ['kwmrdoe14@gmail.com'];
 </script>
 
 <script>
@@ -517,6 +519,7 @@ function makeDemoBackend() {
     demo: true,
     async getConfig() { await ready; return clone(db.config); },
     async setTeacherHash(v) { await ready; db.config.teacherHash = v; await save(); },
+    async isTeacher() { return true; }, currentEmail: () => 'デモ', async signIn() {}, async signOut() {}, async cleanupLegacy() {},
     async createTable(code, meta) { await ready; db.tables[code] = { meta, files: {} }; await save(code); },
     async getTableMeta(code) { await ready; return clone(db.tables[code]?.meta); },
     async listTables() { await ready; return Object.entries(db.tables).map(([code, t]) => ({ code, ...t.meta, count: Object.keys(t.files || {}).length })); },
@@ -550,13 +553,24 @@ function makeDemoBackend() {
 async function makeFirebaseBackend(cfg) {
   const appMod = await import(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-app.js`);
   const D = await import(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-database.js`);
-  const db = D.getDatabase(appMod.initializeApp(cfg));
+  const A = await import(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-auth.js`);
+  const app = appMod.initializeApp(cfg);
+  const db = D.getDatabase(app);
+  const auth = A.getAuth(app);
+  const authReady = new Promise(res => { const off = A.onAuthStateChanged(auth, u => { off(); res(u); }); });
   const R = p => D.ref(db, p);
   const val = async p => (await D.get(R(p))).val();
   return {
     demo: false,
-    async getConfig() { return (await val('config')) || {}; },
-    async setTeacherHash(v) { await D.set(R('config/teacherHash'), v); },
+    async getConfig() { return {}; },
+    async isTeacher() {
+      await authReady; const u = auth.currentUser;
+      return !!(u && u.emailVerified && TEACHER_EMAILS.includes((u.email || '').toLowerCase()));
+    },
+    currentEmail: () => (auth.currentUser && auth.currentUser.email) || '',
+    async signIn() { const p = new A.GoogleAuthProvider(); p.setCustomParameters({ prompt: 'select_account' }); await A.signInWithPopup(auth, p); },
+    async signOut() { await A.signOut(auth); },
+    async cleanupLegacy() { await D.remove(R('config/teacherHash')).catch(() => {}); },
     async createTable(code, meta) {
       await D.set(R(`tables/${code}/meta`), meta);
       await D.set(R(`tableIndex/${code}`), { name: meta.name, createdAt: meta.createdAt });
@@ -823,47 +837,31 @@ function renderJoin(msg) {
    ===================================================================== */
 async function renderTeacher() {
   stopWatch(); S.code = null;
-  const cfg = await S.backend.getConfig();
   const back = h('button', { class: 'linkish', onclick: () => renderJoin() }, icon('back'), '参加画面へ');
   const err = h('div', { class: 'err' });
-  if (!cfg.teacherHash) {
-    const p1 = h('input', { class: 'input', type: 'password', placeholder: '合言葉' });
-    const p2 = h('input', { class: 'input', type: 'password', placeholder: 'もう一度' });
+  S.teacher = await S.backend.isTeacher();
+  if (!S.teacher) {
+    const email = S.backend.currentEmail();
+    const btn = h('button', { class: 'btn primary', style: { width: '100%' }, onclick: async () => {
+      err.textContent = ''; btn.disabled = true;
+      try { if (email) await S.backend.signOut(); await S.backend.signIn(); renderTeacher(); }
+      catch (e) { if (!e || (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request')) err.textContent = 'ログインできませんでした：' + (e && e.message); }
+      finally { btn.disabled = false; }
+    } }, 'Googleでログイン');
     mount(h('div', { class: 'center-wrap' }, h('div', { class: 'panel' }, back,
-      h('h2', {}, '先生用の合言葉を決める'),
-      h('p', { class: 'hint' }, '最初の1回だけ設定します。テーブルの作成・削除や、他の人の文書の削除に使います。'),
-      h('div', { class: 'field' }, p1), h('div', { class: 'field' }, p2), err,
-      h('button', { class: 'btn primary', style: { width: '100%' }, onclick: async () => {
-        if (p1.value.length < 4) return void (err.textContent = '4文字以上にしてください');
-        if (p1.value !== p2.value) return void (err.textContent = '2つが一致しません');
-        const hh = await sha256('yk:' + p1.value);
-        try { await S.backend.setTeacherHash(hh); LS.set('yk:teacher', hh); S.teacher = true; renderTeacher(); }
-        catch (e) { err.textContent = '保存できませんでした：' + e.message; }
-      } }, '設定する'))));
-    return p1.focus();
+      h('h2', {}, '先生メニュー'),
+      h('p', { class: 'hint' }, email ? email + ' は先生として登録されていません。登録済みのアカウントでログインし直してください。' : '先生メニューは、登録された先生のGoogleアカウントでログインしたときだけ使えます。'),
+      err, btn)));
+    return;
   }
-  if (LS.get('yk:teacher') !== cfg.teacherHash) {
-    S.teacher = false;
-    const p = h('input', { class: 'input', type: 'password', placeholder: '先生用の合言葉' });
-    const go = async () => {
-      const hh = await sha256('yk:' + p.value);
-      if (hh !== cfg.teacherHash) return void (err.textContent = '合言葉が違います');
-      LS.set('yk:teacher', hh); S.teacher = true; renderTeacher();
-    };
-    p.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
-    mount(h('div', { class: 'center-wrap' }, h('div', { class: 'panel' }, back,
-      h('h2', {}, '先生メニュー'), h('div', { class: 'field' }, p), err,
-      h('button', { class: 'btn primary', style: { width: '100%' }, onclick: go }, '入る'))));
-    return p.focus();
-  }
-  S.teacher = true;
+  S.backend.cleanupLegacy();
   const nameIn = h('input', { class: 'input', placeholder: '例：2年1組 国語「羅生門」感想' });
   const list = h('div', { class: 'tlist' }, h('p', { class: 'hint' }, '読み込み中…'));
   const create = async () => {
     const name = nameIn.value.trim(); if (!name) return void (err.textContent = 'テーブル名を入れてください');
     const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; let code;
     for (let i = 0; i < 20; i++) {
-      code = Array.from(crypto.getRandomValues(new Uint8Array(5)), b => A[b % A.length]).join('');
+      code = Array.from(crypto.getRandomValues(new Uint8Array(8)), b => A[b % A.length]).join('');
       if (!(await S.backend.getTableMeta(code))) break;
     }
     await S.backend.createTable(code, { name, createdAt: Date.now(), locked: false });
@@ -886,7 +884,7 @@ async function renderTeacher() {
   }
   mount(h('div', { class: 'center-wrap' }, h('div', { class: 'panel wide' },
     h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } }, back,
-      h('button', { class: 'linkish', onclick: () => { LS.set('yk:teacher', null); S.teacher = false; toast('先生モードを終了しました'); renderJoin(); } }, icon('logout'), '先生モード終了')),
+      h('button', { class: 'linkish', onclick: async () => { await S.backend.signOut().catch(() => {}); S.teacher = false; toast('ログアウトしました'); renderJoin(); } }, icon('logout'), 'ログアウト')),
     h('h2', {}, '先生メニュー'),
     h('div', { class: 'field' }, h('label', {}, '新しいテーブル'),
       h('div', { style: { display: 'flex', gap: '8px' } }, nameIn, h('button', { class: 'btn primary', onclick: create }, icon('plus'), '作成'))),
@@ -2030,8 +2028,7 @@ async function init() {
   try { S.backend = DEMO ? makeDemoBackend() : await makeFirebaseBackend(FIREBASE_CONFIG); }
   catch (e) { mount(h('div', { class: 'center-wrap' }, h('div', { class: 'panel' }, h('h2', {}, '接続できませんでした'), h('p', { class: 'hint' }, String(e.message || e))))); return; }
   try {
-    const cfg = await S.backend.getConfig();
-    S.teacher = !!cfg.teacherHash && LS.get('yk:teacher') === cfg.teacherHash;
+    S.teacher = await S.backend.isTeacher();
     const code = hashCode();
     if (code && S.me.name && await S.backend.getTableMeta(code)) return enterTable(code);
   } catch (e) { console.error(e); return renderJoin('接続エラー：' + e.message); }
